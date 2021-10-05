@@ -32,3 +32,5 @@
 *.app
 out
 build
+
+imgui.ini

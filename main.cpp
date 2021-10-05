@@ -6,6 +6,7 @@
 #include <iostream>
 #include <math.h>
 #include <string>
+#include <vector>
 
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <GLES2/gl2.h>
@@ -18,7 +19,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 int w_w = 900;
 int w_h = 600;
-bool nodeco = false;//No window decorations && handle dragging manually
+bool nodeco = false;//No window decorations
+bool drag = false;//Handle dragging manually
 //////////////////////////////////////////////////////////////////////////////////////////////////
 ///OBJECTS
 
@@ -43,8 +45,20 @@ int cp_x,cp_y,offset_cpx,offset_cpy,w_posx,w_posy,buttonEvent;
 ///MAIN FUNC()
 ///GLFW BOILERPLATE
 
-int main(int, char**)
+int main(int argc, char* argv[])
 {
+
+    ///////////////////////////////////////////////
+    ///ARGS
+    std::vector<std::string> args(argv, argv+argc);
+
+    for (size_t i = 1; i < args.size(); ++i)
+    {
+      if (args[i] == "-nd") {nodeco = true;}
+      if (args[i] == "-dg") {drag = true;} 
+    }
+    ///////////////////////////////////////////////
+
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -69,7 +83,7 @@ int main(int, char**)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 ///CREATE glwindow
 
-    if(nodeco){glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);}
+    if(nodeco){glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);} else {glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);}
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);//glwindow to transparent; handle color through (internal) ImGui Window;
     
     GLFWwindow* glwindow = glfwCreateWindow(w_w, w_h, "OpenGL", NULL, NULL);
@@ -77,7 +91,7 @@ int main(int, char**)
     if (glwindow == NULL)
         return 1;
 
-    if(nodeco){
+    if(drag){
         glfwSetCursorPosCallback(glwindow, cursor_position_callback);
         glfwSetMouseButtonCallback(glwindow, mouse_button_callback);
     }
@@ -119,7 +133,7 @@ int main(int, char**)
 
         ///////////////////////////////////////////////////////////////////////////
         //Handle window drags
-        if(nodeco){
+        if(drag){
 
             if(buttonEvent == 1){
 
@@ -151,15 +165,23 @@ int main(int, char**)
             
             ImGui::Begin("imwindow", &imwindow, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-            if(nodeco){
+            if(drag){
                 if(ImGui::Button("X")){
                     break;
                 }
             }
+            ImGui::Text("%dx%d",w_w,w_h);
     
             ImGui::Text("Hello World");
 
             ImGui::ColorEdit3("Color", (float*)&bg, ImGuiColorEditFlags_Float);
+            if(ImGui::Button("Export")){
+                std::string exp = "ImVec4 col = ImVec4(" + std::to_string(bg.x) + "f," + std::to_string(bg.y) + "f," + std::to_string(bg.z) + "f,1.00f);";
+                ImGui::LogToClipboard();
+                ImGui::LogText(exp.c_str());
+                ImGui::LogFinish();
+            }
+
             
 
             if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))){
@@ -185,7 +207,7 @@ int main(int, char**)
 
         glfwSwapBuffers(glwindow);
 
-        if(nodeco){
+        if(drag){
             glfwWaitEvents();
             glfwPollEvents();            
         }
