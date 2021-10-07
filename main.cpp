@@ -17,13 +17,18 @@
 #include "font/opensans.cpp"
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-int w_w = 900;
-int w_h = 600;
-bool nodeco = false;//No window decorations
-bool drag = false;//Handle dragging manually
-bool nopad = false;
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //ANCHOR OBJECTS
+
+ImVec2 GetRegionWithPadding(){
+    ImVec2 ret;
+    ImVec2 region = ImGui::GetWindowContentRegionMax();
+    ImVec2 padding = ImGui::GetStyle().WindowPadding;
+    ret.x = region.x + padding.x;
+    ret.y = region.y + padding.y;
+    return ret;
+}
 
 struct MainWindow{
 
@@ -34,36 +39,35 @@ class Window{
         bool init = false;
         std::string name;
         bool state = true;
-        ImVec2 varsiz;
-        ImVec2 ipos;
-        ImVec2 isiz;
-        ImVec2 wpos;
-        ImVec2 wsiz;
-
-        void pos(ImVec2 pos){
-            wpos = pos;
-            ImGui::SetNextWindowPos(wpos);
+        ImVec2 pos;
+        ImVec2 size;
+        ImVec2 default_pos;
+        ImVec2 default_size;
+        
+        void SetPos(ImVec2 p){
+            pos = p;
+            ImGui::SetNextWindowPos(pos);
         }
-        void siz(ImVec2 siz){
-            wsiz = siz;
-            ImGui::SetNextWindowSize(wsiz);
+        void SetSiz(ImVec2 s){
+            size = s;
+            ImGui::SetNextWindowSize(size);
         }
-        void begin(std::string title, ImGuiWindowFlags flags = 0){
+        void Begin(std::string title, ImGuiWindowFlags flags = 0){
             name = title;
             ImGui::Begin(name.c_str(), &state, flags);
         }
-        void end(){
+        void End(){
             ImGui::End();
         }
-        void upsiz(){
-            ImGuiStyle& style = ImGui::GetStyle();
-            ImVec2 padding = style.WindowPadding;
-            varsiz.x = ImGui::GetWindowContentRegionMax().x + padding.x;
-            varsiz.y = ImGui::GetWindowContentRegionMax().y + padding.y;
-
+        //We use GetWindowContentRegionMax() to get the focused window size. A bit tricky when WindowPadding is not 0,0
+        void Varsizer(){
+            size = GetRegionWithPadding();
         }
-        Window(ImVec2 initialsize = ImVec2(0,0)){
-            varsiz = initialsize;
+        Window(ImVec2 def_size = ImVec2(0,0),ImVec2 def_pos = ImVec2(0,0)){
+            default_size = def_size;
+            size = def_size;
+            default_pos = def_pos;
+            pos = def_pos;
         }
 };
 
@@ -82,15 +86,11 @@ void cursor(){
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
 
-void cursor_position_callback(GLFWwindow* glwindow, double x, double y);
-
-void mouse_button_callback(GLFWwindow *glwindow, int button, int action, int mods);
-
 static void glfw_error_callback(int error, const char* description){
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-int cp_x,cp_y,offset_cpx,offset_cpy,w_posx,w_posy,buttonEvent;
+//int cp_x,cp_y,offset_cpx,offset_cpy,w_posx,w_posy,buttonEvent;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //SECTION MAIN FUNC()
@@ -98,6 +98,9 @@ int cp_x,cp_y,offset_cpx,offset_cpy,w_posx,w_posy,buttonEvent;
 
 int main(int argc, char* argv[])
 {
+    int w_w=900;
+    int w_h=600;
+    bool resizing = false;
 
     ///////////////////////////////////////////////
     //ANCHOR ARGS
@@ -105,9 +108,7 @@ int main(int argc, char* argv[])
 
     for (size_t i = 1; i < args.size(); ++i)
     {
-      if (args[i] == "-nd") {nodeco = true;}
-      if (args[i] == "-dg") {drag = true;}
-      if (args[i] == "-np") {nopad = true;}
+      if (args[i] == "-x") {}
     }
     ///////////////////////////////////////////////
 
@@ -135,7 +136,7 @@ int main(int argc, char* argv[])
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //ANCHOR CREATE glwindow
 
-    if(nodeco){glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);} else {glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);}
+    glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, GLFW_TRUE);//glwindow to transparent; handle color through (internal) ImGui Window;
     
     GLFWwindow* glwindow = glfwCreateWindow(w_w, w_h, "OpenGL", NULL, NULL);
@@ -145,10 +146,14 @@ int main(int argc, char* argv[])
 
     glfwGetWindowSize(glwindow, &w_w, &w_h);
 
-    if(drag){
-        glfwSetCursorPosCallback(glwindow, cursor_position_callback);
-        glfwSetMouseButtonCallback(glwindow, mouse_button_callback);
-    }
+    glfwSetWindowUserPointer(glwindow,&resizing);
+
+    glfwSetWindowSizeCallback(glwindow, [](GLFWwindow* window, int width, int height)
+                {
+                    bool *resizing = static_cast<bool*>(glfwGetWindowUserPointer(window));
+                    *resizing = true;
+                });
+
 
     glfwMakeContextCurrent(glwindow);
     glfwSwapInterval(1); // Enable vsync
@@ -168,8 +173,8 @@ int main(int argc, char* argv[])
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //ANCHOR IMGUI WINDOWS
 
-    Window menubar;
-    Window sidebar(ImVec2(w_w/5,w_h));
+    Window menubar(ImVec2(w_w,w_h/24));
+    Window sidebar(ImVec2(w_w/5,w_h-(w_h/24)));
     Window viewport;
 
     //bool viewport = true; //Viewport
@@ -182,9 +187,6 @@ int main(int argc, char* argv[])
     io.IniFilename = NULL;
     ImVec4 bg = ImVec4(0.123f,0.123f,0.123,1.00f); //Main bg color
     ImGuiStyle& style = ImGui::GetStyle();
-    if(nopad){
-        style.WindowPadding = ImVec2(0.00f, 0.00f);
-    }
     ImVec2 padding = style.WindowPadding;
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,32 +194,13 @@ int main(int argc, char* argv[])
 
     bool dbg;
     bool sty;
-    ImVec2 div = ImVec2(w_w/5,w_h);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //SECTION MAIN LOOP >>>>
 
     while(!glfwWindowShouldClose(glwindow)){   
 
-        ///////////////////////////////////////////////////////////////////////////
-        //Handle window drags
-        if(drag){
-
-            if(buttonEvent == 1){
-
-                glfwGetWindowPos(glwindow, &w_posx, &w_posy);
-                glfwSetWindowPos(glwindow, w_posx + offset_cpx, w_posy + offset_cpy);
-                offset_cpx = 0;
-                offset_cpy = 0;
-                cp_x += offset_cpx;
-                cp_y += offset_cpy;
-
-            }
-        
-            glfwPostEmptyEvent();
-
-        } else {glfwPollEvents(); glfwGetWindowSize(glwindow, &w_w, &w_h);}
-        ///////////////////////////////////////////////////////////////////////////
+        glfwPollEvents(); glfwGetWindowSize(glwindow, &w_w, &w_h);
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -231,9 +214,11 @@ int main(int argc, char* argv[])
 
         //ANCHOR MENUBAR
         if(menubar.state){
-            menubar.pos(ImVec2(0,0));
-            menubar.siz(ImVec2(w_w,w_h/24));
-            menubar.begin("menubar",ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
+            menubar.SetPos(ImVec2(0,0));
+            ImGui::SetNextWindowSizeConstraints(ImVec2(-1, 0),ImVec2(-1, FLT_MAX));
+            menubar.SetSiz(menubar.size);
+            menubar.Begin("menubar",ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_MenuBar);
+            //menubar.Varsizer();
 
             if (ImGui::BeginMenuBar()){
                 
@@ -246,7 +231,7 @@ int main(int argc, char* argv[])
                 ImGui::EndMenuBar();
             }
 
-            menubar.end();
+            menubar.End();
             
 
         }
@@ -254,26 +239,25 @@ int main(int argc, char* argv[])
         //ANCHOR SIDEBAR
         if(sidebar.state){
             
-            sidebar.pos(ImVec2(0,menubar.wsiz.y));
-
-            //ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1),ImVec2(FLT_MAX, -1));
-            sidebar.siz(sidebar.varsiz);
-
-            sidebar.begin("sidebar",ImGuiWindowFlags_NoTitleBar);
+            sidebar.SetPos(ImVec2(0,menubar.size.y));
+            ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1),ImVec2(FLT_MAX, -1));//Constrain resizing to horizontal only
+            sidebar.SetSiz(sidebar.size);//Sidebar size will be variable/changable but with a default size/layout [initial_size in constructor()]
             
-            if(nodeco){
-                if(ImGui::Button("X")){
-                    break;
-                }
+            sidebar.Begin("sidebar",ImGuiWindowFlags_NoTitleBar);
+            sidebar.Varsizer();//Update any changes to size
+            if(resizing){
+                sidebar.size = sidebar.default_size;
+                resizing = false;
             }
+            
             //cursor();
             ImGui::Text("%dx%d",w_w,w_h);
-            ImGui::Text("Mouse pos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+            ImGui::Text("Mouse SetPos: (%g, %g)", io.MousePos.x, io.MousePos.y);
             ImGui::Text("Padding: %fx%f",padding.x, padding.y);
             ImGui::Text("Content: %fx%f",ImGui::GetWindowContentRegionMax().x,ImGui::GetWindowContentRegionMax().y);
-            ImGui::Text("Wsiz: %fx%f",sidebar.wsiz.x,sidebar.wsiz.y);
+            ImGui::Text("size: %fx%f",sidebar.size.x,sidebar.size.y);
     
-            ImGui::Text("Hello World");
+            ImGui::Text("Hello Worldd");
             
 
             ImGui::ColorEdit3("Color", (float*)&bg, ImGuiColorEditFlags_Float);
@@ -284,9 +268,6 @@ int main(int argc, char* argv[])
                 ImGui::LogFinish();
             }
 
-            if(ImGui::Button("No Padding")){
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding,ImVec2(0.00f, 0.00f));
-            }
 
             
 
@@ -294,35 +275,32 @@ int main(int argc, char* argv[])
                 break;
             }
 
-            //sidebar.siz(ImGui::GetWindowContentRegionMax());
-            sidebar.upsiz();
+            //sidebar.SetSiz(ImGui::GetWindowContentRegionMax());
+            
             //div.y = w_h;
             //div = ImGui::GetWindowContentRegionMax();
             
 
-            if(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Enter))){
-                div = ImGui::GetContentRegionAvail();
-            }
-            //sidebar.siz(div);
-            //sidebar.siz(div.x,div.y);
+            //sidebar.SetSiz(div);
+            //sidebar.SetSiz(div.x,div.y);
 
-            sidebar.end();
+            sidebar.End();
 
         }
 
         //ANCHOR VIEWPORT
         if(viewport.state){
             
-            viewport.pos(ImVec2(sidebar.wsiz.x,sidebar.wpos.y));
-            viewport.siz(ImVec2(w_w-sidebar.wsiz.x,w_h-menubar.wsiz.y));
-            viewport.begin("Viewport",ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
+            viewport.SetPos(ImVec2(sidebar.size.x,sidebar.pos.y));
+            viewport.SetSiz(ImVec2(w_w-sidebar.size.x,w_h-menubar.size.y));
+            viewport.Begin("Viewport",ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
             ImGui::Text("Hello World");
             
 
             ImGui::Text("Hello World");
 
-            viewport.end();
+            viewport.End();
         }
 
         //ANCHOR DEBUG
@@ -342,7 +320,7 @@ int main(int argc, char* argv[])
 
         
 
-//!SECTION GUI END
+//!SECTION GUI End
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //ANCHOR RENDER
 
@@ -356,14 +334,9 @@ int main(int argc, char* argv[])
 
         glfwSwapBuffers(glwindow);
 
-        if(drag){
-            glfwWaitEvents();
-            glfwPollEvents();            
-        }
-
     }
 
-//!SECTION MAIN LOOP END <<<<
+//!SECTION MAIN LOOP End <<<<
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -375,31 +348,5 @@ int main(int argc, char* argv[])
 
     return 0;
 
-//!SECTION MAIN FUNC END()
-}
-
-void cursor_position_callback(GLFWwindow* glwindow, double x, double y){
-
-    if(buttonEvent == 1){
-        offset_cpx = x - cp_x;
-        offset_cpy = y - cp_y;
-    }
-
-}
-
-void mouse_button_callback(GLFWwindow* glwindow, int button, int action, int mods){
-
-    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS){
-        buttonEvent = 1;
-        double x, y;
-        glfwGetCursorPos(glwindow, &x, &y);
-        cp_x = floor(x);
-        cp_y = floor(y);
-    }
-    if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE){
-        buttonEvent = 0;
-        cp_x = 0;
-        cp_y = 0;
-    }
-    
+//!SECTION MAIN FUNC End()
 }
