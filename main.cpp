@@ -66,10 +66,14 @@ class Window {
 };
 
 void metrics(Window w) {
+  ImGui::NewLine();
+  ImGui::NewLine();
+  ImGui::NewLine();
   ImGui::Text("name: %s", w.name.c_str());
   ImGui::Text("state: %d", w.state);
-  ImGui::Text("name: %f,%f", w.pos.x, w.pos.y);
-  ImGui::Text("name: %f,%f", w.size.x, w.size.y);
+  ImGui::Text("pos: %f,%f", w.pos.x, w.pos.y);
+  ImGui::Text("size: %f,%f", w.size.x, w.size.y);
+  ImGui::Text("region: %f,%f", GetRegionWithPadding().x, GetRegionWithPadding().y);
 }
 
 void cursor(Window w) {
@@ -99,12 +103,14 @@ static void glfw_error_callback(int error, const char *description) {
 //-----------------------------------------------------------------------------
 
 int main(int argc, char *argv[]) {
+    
   int w_w = 900;
   int w_h = 600;
   bool resizing = false;
 
   //---------------------------------------------------
   // ANCHOR ARGS
+  //---------------------------------------------------
   std::vector<std::string> args(argv, argv + argc);
 
   for (size_t i = 1; i < args.size(); ++i) {
@@ -195,14 +201,18 @@ int main(int argc, char *argv[]) {
   // ANCHOR VARS
   //-----------------------------------------------------------------------------
 
-  bool dbg;
+  bool dbg = false;
   bool sty;
+  bool exit = false;
 
   //-----------------------------------------------------------------------------
   // SECTION MAIN LOOP >>>>
   //-----------------------------------------------------------------------------
 
   while (!glfwWindowShouldClose(glwindow)) {
+    if(exit){
+        break;
+    }
     glfwPollEvents();
     glfwGetWindowSize(glwindow, &w_w, &w_h);
 
@@ -231,6 +241,7 @@ int main(int argc, char *argv[]) {
         if (ImGui::BeginMenu("Debug")) {
           ImGui::MenuItem("Settings", NULL, &dbg);
           ImGui::MenuItem("Style Editor", NULL, &sty);
+          ImGui::MenuItem("Exit", NULL, &exit);
           ImGui::EndMenu();
         }
 
