@@ -68,12 +68,5 @@ void glfwSetWindowCenter(GLFWwindow *window) {
                      owner_y + (owner_height * 0.5) - window_height);
   }
 }
-void TextCentered(std::string text) {
-  auto windowWidth = ImGui::GetWindowSize().x;
-  auto textWidth = ImGui::CalcTextSize(text.c_str()).x;
-
-  ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-  ImGui::Text(text.c_str());
-}
 
 }  // namespace extra
