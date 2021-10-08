@@ -35,7 +35,6 @@ class Window {
   ImVec2 size;
   ImVec2 default_pos;
   ImVec2 default_size;
-  ImVec2 cursor;
 
   void SetPos(ImVec2 p) {
     pos = p;
@@ -58,15 +57,6 @@ class Window {
   // tricky when WindowPadding is not 0,0
   void Varsizer() { size = GetRegionWithPadding(); }
 
-  void UpdateCursor(ImGuiIO io) {
-    cursor = ImVec2(io.MousePos.x-pos.x, io.MousePos.y-pos.y);
-  }
-
-  ImVec2 GetCursor(ImGuiIO io) {
-    cursor = ImVec2(io.MousePos.x-pos.x, io.MousePos.y-pos.y);
-    return cursor;
-  }
-
   Window(ImVec2 def_size = ImVec2(0, 0), ImVec2 def_pos = ImVec2(0, 0)) {
     default_size = def_size;
     size = def_size;
@@ -75,7 +65,8 @@ class Window {
   }
 };
 
-void metrics(Window w,int w_w, int w_h, ImGuiIO io) {
+void metrics(Window w, int w_w, int w_h, ImGuiIO io) {  // ugly but temp debug stuff
+  //w.UpdateCursor(io);
   ImVec2 padding = ImGui::GetStyle().WindowPadding;
   ImGui::NewLine();
   ImGui::NewLine();
@@ -83,14 +74,16 @@ void metrics(Window w,int w_w, int w_h, ImGuiIO io) {
   ImGui::Text("%dx%d", w_w, w_h);
   ImGui::Text("name: %s", w.name.c_str());
   ImGui::Text("state: %d", w.state);
-  ImGui::Text("pos: %f,%f", w.pos.x, w.pos.y);
-  ImGui::Text("size: %f,%f", w.size.x, w.size.y);
-  ImGui::Text("region: %f,%f", GetRegionWithPadding().x,
+  ImGui::Text("pos: %g,%g", w.pos.x, w.pos.y);
+  ImGui::Text("size: %g,%g", w.size.x, w.size.y);
+  ImGui::Text("region: %g,%g", GetRegionWithPadding().x,
               GetRegionWithPadding().y);
-  ImGui::Text("padding: %fx%f", padding.x, padding.y);
-  ImGui::Text("Mouse SetPos: (%g, %g)", io.MousePos.x, io.MousePos.y);
+  ImGui::Text("padding: %gx%g", padding.x, padding.y);
+  ImGui::Text("mousepos: (%g,%g)", io.MousePos.x, io.MousePos.y);
+  ImGui::Text("local cursor: (%g,%g)", io.MousePos.x - w.pos.x, io.MousePos.y - w.pos.y);
+  ImGui::Text("global cursor: (%g,%g)", ImGui::GetCursorPosX,
+              ImGui::GetCursorPosY);
 }
-
 
 //-----------------------------------------------------------------------------
 // ANCHOR GLFW FUNCS
@@ -210,9 +203,9 @@ int main(int argc, char *argv[]) {
 
   Window menubar(ImVec2(mb_Sx, mb_Sy), ImVec2(mb_Px, mb_Py));
   Window sidebar(ImVec2(sb_Sx, sb_Sy), ImVec2(sb_Px, sb_Py));
-  Window viewport;  // We don't need a hardcoded layout size and pos for
-                    // viewport since it is entirely dynamic and dependant on
-                    // sidebar and menu
+  Window viewport;  // We don't need a hardcoded layout size and pos
+                    // for viewport since it is entirely dynamic and
+                    // dependant on sidebar and menu
 
   //-----------------------------------------------------------------------------
   // ANCHOR STYLES
@@ -221,7 +214,7 @@ int main(int argc, char *argv[]) {
   // io.Fonts->Build();
   io.IniFilename = NULL;
   ImVec4 bg = ImVec4(0.123f, 0.123f, 0.123, 1.00f);  // Main bg color
-  //ImGuiStyle &style = ImGui::GetStyle();
+  // ImGuiStyle &style = ImGui::GetStyle();
 
   //-----------------------------------------------------------------------------
   // ANCHOR VARS
@@ -295,7 +288,6 @@ int main(int argc, char *argv[]) {
         sidebar.size = sidebar.default_size;
         resizing = false;
       }
-      
 
       // cursor();
 
@@ -309,8 +301,8 @@ int main(int argc, char *argv[]) {
         ImGui::LogFinish();
       }
 
-      //cursor(sidebar);
-      metrics(sidebar,w_w,w_h,io);
+      // cursor(sidebar);
+      metrics(sidebar, w_w, w_h, io);
 
       if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
         break;
@@ -334,7 +326,20 @@ int main(int argc, char *argv[]) {
       viewport.Begin("Viewport", ImGuiWindowFlags_NoResize |
                                      ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-      metrics(viewport,w_w, w_h, io);
+      //metrics(viewport, w_w, w_h, io);
+      ImGui::Text("local cursor: (%g,%g)", io.MousePos.x - viewport.pos.x, io.MousePos.y - viewport.pos.y);
+      ImGui::Text("global cursor: (%g,%g)", ImGui::GetCursorPosX,
+              ImGui::GetCursorPosY);
+
+      ImGui::SetCursorPos(ImVec2(viewport.size.x / 2, 245));
+      ImGui::Text("X");
+      ImGui::SetCursorPos(ImVec2(0, 0));
+
+      ImGui::SetCursorPos(ImVec2(171, 245));
+      ImGui::Text("X");
+      ImGui::SetCursorPos(ImVec2(0, 0));
+
+      // ImGui::SetCursorPos(ImVec2(0,0));
 
       viewport.End();
     }
@@ -355,7 +360,7 @@ int main(int argc, char *argv[]) {
       ImGui::ShowStyleEditor();
     }
 
-    if(met) {
+    if (met) {
       ImGui::ShowMetricsWindow(&met);
     }
 
