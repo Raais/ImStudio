@@ -178,9 +178,11 @@ int main(int argc, char* argv[]) {
   float sb_Sx = w_w / 8;
   float sb_Sy = w_h - mb_Sy;
   ImVec2 sb_S = ImVec2(sb_Sx, sb_Sy);
-  // float vp_Sx = w_w - sb_Sx;
-  // float vp_Sy = w_h - mb_Sy;
 
+  float vp_Sx = w_w - sb_Sx;
+  float vp_Sy = w_h - mb_Sy;
+  ImVec2 vp_S = ImVec2(vp_Sx, vp_Sy);
+  //-----------------------------------------------------------------------------
   float mb_Px = 0;
   float mb_Py = 0;
   ImVec2 mb_P = ImVec2(mb_Px, mb_Py);
@@ -188,8 +190,10 @@ int main(int argc, char* argv[]) {
   float sb_Px = 0;
   float sb_Py = mb_Sy;
   ImVec2 sb_P = ImVec2(sb_Px, sb_Py);
-  // float vp_Px = sb_Sx;
-  // float vp_Py = sb_Py;
+
+  float vp_Px = sb_Sx;
+  float vp_Py = sb_Py;
+  ImVec2 vp_P = ImVec2(vp_Px, vp_Py);
 
   //-----------------------------------------------------------------------------
   // ANCHOR IMGUI WINDOWS (MAIN)
@@ -304,11 +308,14 @@ int main(int argc, char* argv[]) {
 
     // ANCHOR VIEWPORT
     if (viewport) {
-      ImGui::SetNextWindowPos(ImVec2(sb_S.x, sb_P.y));
-      ImGui::SetNextWindowSize(ImVec2(w_w - sb_S.x, w_h - mb_S.y));
+      ImGui::SetNextWindowPos(vp_P);
+      ImGui::SetNextWindowSize(vp_S);
       ImGui::Begin(
           "Viewport", NULL,
           ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
+      vp_P = ImVec2(sb_S.x, sb_P.y);
+      vp_S = ImVec2(w_w - sb_S.x, w_h - mb_S.y);
+
       metrics(w_w, w_h);
 
       ImGui::SetCursorPos(ImVec2(64, 70));
