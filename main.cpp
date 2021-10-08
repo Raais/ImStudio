@@ -73,7 +73,8 @@ void metrics(Window w) {
   ImGui::Text("state: %d", w.state);
   ImGui::Text("pos: %f,%f", w.pos.x, w.pos.y);
   ImGui::Text("size: %f,%f", w.size.x, w.size.y);
-  ImGui::Text("region: %f,%f", GetRegionWithPadding().x, GetRegionWithPadding().y);
+  ImGui::Text("region: %f,%f", GetRegionWithPadding().x,
+              GetRegionWithPadding().y);
 }
 
 void cursor(Window w) {
@@ -103,7 +104,6 @@ static void glfw_error_callback(int error, const char *description) {
 //-----------------------------------------------------------------------------
 
 int main(int argc, char *argv[]) {
-    
   int w_w = 900;
   int w_h = 600;
   bool resizing = false;
@@ -180,12 +180,32 @@ int main(int argc, char *argv[]) {
   ImGui_ImplOpenGL3_Init(glsl_version);
 
   //-----------------------------------------------------------------------------
+  // ANCHOR DEFAULT LAYOUT | Define relationships between windows
+  //-----------------------------------------------------------------------------
+
+  float mb_Sx = w_w;
+  float mb_Sy = w_h / 24;
+  float sb_Sx = w_w / 8;
+  float sb_Sy = w_h - mb_Sy;
+  // float vp_Sx = w_w - sb_Sx;
+  // float vp_Sy = w_h - mb_Sy;
+
+  float mb_Px = 0;
+  float mb_Py = 0;
+  float sb_Px = 0;
+  float sb_Py = mb_Sy;
+  // float vp_Px = sb_Sx;
+  // float vp_Py = sb_Py;
+
+  //-----------------------------------------------------------------------------
   // ANCHOR IMGUI WINDOWS
   //-----------------------------------------------------------------------------
 
-  Window menubar(ImVec2(w_w, w_h / 24));
-  Window sidebar(ImVec2(w_w / 8, w_h - (w_h / 24)));
-  Window viewport;
+  Window menubar(ImVec2(mb_Sx, mb_Sy), ImVec2(mb_Px, mb_Py));
+  Window sidebar(ImVec2(sb_Sx, sb_Sy), ImVec2(sb_Px, sb_Py));
+  Window viewport;  // We don't need a hardcoded layout size and pos for
+                    // viewport since it is entirely dynamic and dependant on
+                    // sidebar and menu
 
   //-----------------------------------------------------------------------------
   // ANCHOR STYLES
@@ -202,7 +222,7 @@ int main(int argc, char *argv[]) {
   //-----------------------------------------------------------------------------
 
   bool dbg = false;
-  bool sty;
+  bool sty = false;
   bool exit = false;
 
   //-----------------------------------------------------------------------------
@@ -210,8 +230,8 @@ int main(int argc, char *argv[]) {
   //-----------------------------------------------------------------------------
 
   while (!glfwWindowShouldClose(glwindow)) {
-    if(exit){
-        break;
+    if (exit) {
+      break;
     }
     glfwPollEvents();
     glfwGetWindowSize(glwindow, &w_w, &w_h);
@@ -229,12 +249,12 @@ int main(int argc, char *argv[]) {
 
     // ANCHOR MENUBAR
     if (menubar.state) {
-      menubar.SetPos(ImVec2(0, 0));
+      menubar.SetPos(menubar.pos);
       ImGui::SetNextWindowSizeConstraints(ImVec2(-1, 0), ImVec2(-1, FLT_MAX));
       menubar.SetSiz(menubar.size);
-      menubar.Begin("menubar", ImGuiWindowFlags_NoMove |
-                                   ImGuiWindowFlags_NoTitleBar |
-                                   ImGuiWindowFlags_MenuBar);
+      menubar.Begin("menubar",
+                    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
+                        ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar);
       // menubar.Varsizer();
 
       if (ImGui::BeginMenuBar()) {
@@ -253,7 +273,7 @@ int main(int argc, char *argv[]) {
 
     // ANCHOR SIDEBAR
     if (sidebar.state) {
-      sidebar.SetPos(ImVec2(0, menubar.size.y));
+      sidebar.SetPos(sidebar.pos);
       ImGui::SetNextWindowSizeConstraints(
           ImVec2(0, -1),
           ImVec2(FLT_MAX, -1));  // Constrain resizing to horizontal only
