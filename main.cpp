@@ -35,13 +35,14 @@ class Window {
   ImVec2 size;
   ImVec2 default_pos;
   ImVec2 default_size;
+  ImVec2 cursor;
 
   void SetPos(ImVec2 p) {
     pos = p;
     ImGui::SetNextWindowPos(pos);
   }
 
-  void SetSiz(ImVec2 s) {
+  void SetSize(ImVec2 s) {
     size = s;
     ImGui::SetNextWindowSize(size);
   }
@@ -57,6 +58,15 @@ class Window {
   // tricky when WindowPadding is not 0,0
   void Varsizer() { size = GetRegionWithPadding(); }
 
+  void UpdateCursor(ImGuiIO io) {
+    cursor = ImVec2(io.MousePos.x-pos.x, io.MousePos.y-pos.y);
+  }
+
+  ImVec2 GetCursor(ImGuiIO io) {
+    cursor = ImVec2(io.MousePos.x-pos.x, io.MousePos.y-pos.y);
+    return cursor;
+  }
+
   Window(ImVec2 def_size = ImVec2(0, 0), ImVec2 def_pos = ImVec2(0, 0)) {
     default_size = def_size;
     size = def_size;
@@ -65,25 +75,22 @@ class Window {
   }
 };
 
-void metrics(Window w) {
+void metrics(Window w,int w_w, int w_h, ImGuiIO io) {
+  ImVec2 padding = ImGui::GetStyle().WindowPadding;
   ImGui::NewLine();
   ImGui::NewLine();
   ImGui::NewLine();
+  ImGui::Text("%dx%d", w_w, w_h);
   ImGui::Text("name: %s", w.name.c_str());
   ImGui::Text("state: %d", w.state);
   ImGui::Text("pos: %f,%f", w.pos.x, w.pos.y);
   ImGui::Text("size: %f,%f", w.size.x, w.size.y);
   ImGui::Text("region: %f,%f", GetRegionWithPadding().x,
               GetRegionWithPadding().y);
+  ImGui::Text("padding: %fx%f", padding.x, padding.y);
+  ImGui::Text("Mouse SetPos: (%g, %g)", io.MousePos.x, io.MousePos.y);
 }
 
-void cursor(Window w) {
-  ImGuiIO &io = ImGui::GetIO();
-  ImGui::SetCursorPos(ImVec2(io.MousePos.x, io.MousePos.y));
-
-  ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "+");
-  ImGui::SetCursorPos(ImVec2(0, 0));
-}
 
 //-----------------------------------------------------------------------------
 // ANCHOR GLFW FUNCS
@@ -214,8 +221,7 @@ int main(int argc, char *argv[]) {
   // io.Fonts->Build();
   io.IniFilename = NULL;
   ImVec4 bg = ImVec4(0.123f, 0.123f, 0.123, 1.00f);  // Main bg color
-  ImGuiStyle &style = ImGui::GetStyle();
-  ImVec2 padding = style.WindowPadding;
+  //ImGuiStyle &style = ImGui::GetStyle();
 
   //-----------------------------------------------------------------------------
   // ANCHOR VARS
@@ -223,6 +229,7 @@ int main(int argc, char *argv[]) {
 
   bool dbg = false;
   bool sty = false;
+  bool met = false;
   bool exit = false;
 
   //-----------------------------------------------------------------------------
@@ -251,7 +258,7 @@ int main(int argc, char *argv[]) {
     if (menubar.state) {
       menubar.SetPos(menubar.pos);
       ImGui::SetNextWindowSizeConstraints(ImVec2(-1, 0), ImVec2(-1, FLT_MAX));
-      menubar.SetSiz(menubar.size);
+      menubar.SetSize(menubar.size);
       menubar.Begin("menubar",
                     ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar |
                         ImGuiWindowFlags_NoResize | ImGuiWindowFlags_MenuBar);
@@ -261,6 +268,7 @@ int main(int argc, char *argv[]) {
         if (ImGui::BeginMenu("Debug")) {
           ImGui::MenuItem("Settings", NULL, &dbg);
           ImGui::MenuItem("Style Editor", NULL, &sty);
+          ImGui::MenuItem("Metrics", NULL, &met);
           ImGui::MenuItem("Exit", NULL, &exit);
           ImGui::EndMenu();
         }
@@ -277,7 +285,7 @@ int main(int argc, char *argv[]) {
       ImGui::SetNextWindowSizeConstraints(
           ImVec2(0, -1),
           ImVec2(FLT_MAX, -1));  // Constrain resizing to horizontal only
-      sidebar.SetSiz(
+      sidebar.SetSize(
           sidebar.size);  // Sidebar size will be variable/changable but with a
                           // default size/layout [initial_size in constructor()]
 
@@ -287,16 +295,9 @@ int main(int argc, char *argv[]) {
         sidebar.size = sidebar.default_size;
         resizing = false;
       }
+      
 
       // cursor();
-      ImGui::Text("%dx%d", w_w, w_h);
-      ImGui::Text("Mouse SetPos: (%g, %g)", io.MousePos.x, io.MousePos.y);
-      ImGui::Text("Padding: %fx%f", padding.x, padding.y);
-      ImGui::Text("Content: %fx%f", ImGui::GetWindowContentRegionMax().x,
-                  ImGui::GetWindowContentRegionMax().y);
-      ImGui::Text("size: %fx%f", sidebar.size.x, sidebar.size.y);
-
-      ImGui::Text("Hello Worldd");
 
       ImGui::ColorEdit3("Color", (float *)&bg, ImGuiColorEditFlags_Float);
       if (ImGui::Button("Export")) {
@@ -308,17 +309,20 @@ int main(int argc, char *argv[]) {
         ImGui::LogFinish();
       }
 
+      //cursor(sidebar);
+      metrics(sidebar,w_w,w_h,io);
+
       if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
         break;
       }
 
-      // sidebar.SetSiz(ImGui::GetWindowContentRegionMax());
+      // sidebar.SetSize(ImGui::GetWindowContentRegionMax());
 
       // div.y = w_h;
       // div = ImGui::GetWindowContentRegionMax();
 
-      // sidebar.SetSiz(div);
-      // sidebar.SetSiz(div.x,div.y);
+      // sidebar.SetSize(div);
+      // sidebar.SetSize(div.x,div.y);
 
       sidebar.End();
     }
@@ -326,12 +330,11 @@ int main(int argc, char *argv[]) {
     // ANCHOR VIEWPORT
     if (viewport.state) {
       viewport.SetPos(ImVec2(sidebar.size.x, sidebar.pos.y));
-      viewport.SetSiz(ImVec2(w_w - sidebar.size.x, w_h - menubar.size.y));
+      viewport.SetSize(ImVec2(w_w - sidebar.size.x, w_h - menubar.size.y));
       viewport.Begin("Viewport", ImGuiWindowFlags_NoResize |
                                      ImGuiWindowFlags_NoBringToFrontOnFocus);
 
-      cursor(viewport);
-      metrics(viewport);
+      metrics(viewport,w_w, w_h, io);
 
       viewport.End();
     }
@@ -350,6 +353,10 @@ int main(int argc, char *argv[]) {
 
     if (sty) {
       ImGui::ShowStyleEditor();
+    }
+
+    if(met) {
+      ImGui::ShowMetricsWindow(&met);
     }
 
     //! SECTION GUI End
