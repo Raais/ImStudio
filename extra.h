@@ -81,10 +81,17 @@ ImVec2 GetLocalCursor() {
   return cursor;
 }
 
-ImVec2 GetWindowRatio() {  // AKA scale factor
+ImVec2 GetWindowSRatio() {  // AKA scale factor
   ImGuiWindow *  w     = ImGui::GetCurrentWindow();
   ImGuiViewport *v     = ImGui::GetMainViewport();
   ImVec2         ratio = ImVec2(v->Size.x / w->Size.x, v->Size.y / w->Size.y);
+  return ratio;
+}
+
+ImVec2 GetWindowPRatio() {  // AKA scale factor
+  ImGuiWindow *  w     = ImGui::GetCurrentWindow();
+  ImGuiViewport *v     = ImGui::GetMainViewport();
+  ImVec2         ratio = ImVec2(v->Size.x / w->Pos.x, v->Size.y / w->Pos.y);
   return ratio;
 }
 
@@ -102,13 +109,15 @@ void metrics() {  // ugly debug stuff
   // ImGui::Text("%f%",(window->Size.x/vw->Size.x)*100);
   ImGui::Text("name: %s", window->Name);
   ImGui::Text("IMsize: %g,%g", window->Size.x, window->Size.y);
+  ImGui::Text("IMpos: %g,%g", window->Pos.x, window->Pos.y);
   ImGui::Text("padding: %gx%g", padding.x, padding.y);
   ImGui::Text("mousepos: (%g,%g)", io.MousePos.x, io.MousePos.y);
   ImGui::Text("local cursor: (%g,%g)", extra::GetLocalCursor().x,
               extra::GetLocalCursor().y);
   ImGui::Text("global cursor: (%g,%g)", ImGui::GetCursorPosX,
               ImGui::GetCursorPosY);
-  ImGui::Text("ratio:: %f,%f", extra::GetWindowRatio().x, GetWindowRatio().y);
+  ImGui::Text("ratioS:: %f,%f", extra::GetWindowSRatio().x, GetWindowSRatio().y);
+  ImGui::Text("ratioP:: %f,%f", extra::GetWindowPRatio().x, GetWindowPRatio().y);
 }
 
 template <typename... Args>

@@ -7,21 +7,91 @@
 #include <vector>
 
 #include "font/opensans.cpp"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_opengl3.h"
-#include "imgui_internal.h"
+#include "../../imgui.h"
+#include "../../backends/imgui_impl_glfw.h"
+#include "../../backends/imgui_impl_opengl3.h"
+#include "../../imgui_internal.h"
 #include "extra.h"
 
 //-----------------------------------------------------------------------------
 // ANCHOR OBJECTS
 //-----------------------------------------------------------------------------
 
-ImVec2 GetWindowRatio() {
-  ImGuiWindow*   w     = ImGui::GetCurrentWindow();
-  ImGuiViewport* v     = ImGui::GetMainViewport();
-  ImVec2         ratio = ImVec2(v->Size.x / w->Size.x, v->Size.y / w->Size.y);
-  return ratio;
+class Win {
+ public:
+  int         id    = 0;
+  bool        popen = true;
+  std::string name  = "window_";
+  void        draw() {
+    // std::cout << name << std::endl;
+    if (popen) {
+      ImGui::Begin(name.c_str(), &popen);
+      ImGui::Text("hello");
+      ImGui::End();
+    }
+  }
+  Win(int newid) {
+    id = newid;
+    name += std::to_string(id);
+  };
+};
+
+class Cbx {
+ public:
+  int count;
+};
+
+class Btn {
+ public:
+  int count;
+};
+
+class Rdo {
+ public:
+  int count;
+};
+
+class Txt {
+ public:
+  int count;
+};
+
+class DrawBuffer {
+ public:
+  int              idvar = 0;
+  std::vector<Win> win   = {};
+  void             drawall() {
+    if (!win.empty()) {
+      for (auto i = win.begin(); i != win.end(); ++i) {
+        Win& w = *i;
+        w.draw();
+
+        if (w.popen == false) {
+          i = win.erase(i);
+          break;
+        }
+
+        // std::cout << "hello2" << std::endl;
+      }
+    }
+    // std::cout << "hello3" << std::endl;
+  }
+  void createwin() {
+    idvar++;
+    Win newin(idvar);
+    win.push_back(newin);
+  }
+};
+
+static void HelpMarker(const char* desc) {
+  ImGui::TextDisabled("(?)");
+  if (ImGui::IsItemHovered()) {
+    ImGui::BeginTooltip();
+    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+    ImGui::TextUnformatted(desc);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -134,23 +204,7 @@ int main(int argc, char* argv[]) {
   style.FrameRounding  = 12.00f;
   style.GrabRounding   = 12.00f;
 
-  ImVec4* colors                     = style.Colors;  // TODO Redo color scheme
-  colors[ImGuiCol_Border]            = ImVec4(0.11f, 0.11f, 0.11f, 0.50f);
-  colors[ImGuiCol_FrameBg]           = ImVec4(0.23f, 0.23f, 0.23f, 0.54f);
-  colors[ImGuiCol_FrameBgActive]     = ImVec4(0.19f, 0.56f, 0.98f, 0.67f);
-  colors[ImGuiCol_TitleBgActive]     = ImVec4(1.00f, 0.36f, 0.00f, 1.00f);
-  colors[ImGuiCol_CheckMark]         = ImVec4(0.97f, 0.29f, 0.00f, 1.00f);
-  colors[ImGuiCol_SliderGrab]        = ImVec4(0.80f, 0.16f, 0.00f, 1.00f);
-  colors[ImGuiCol_Button]            = ImVec4(1.00f, 0.23f, 0.00f, 0.84f);
-  colors[ImGuiCol_ButtonHovered]     = ImVec4(0.98f, 0.43f, 0.26f, 1.00f);
-  colors[ImGuiCol_ButtonActive]      = ImVec4(0.62f, 0.12f, 0.00f, 1.00f);
-  colors[ImGuiCol_ResizeGrip]        = ImVec4(0.64f, 0.64f, 0.64f, 0.20f);
-  colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.98f, 0.50f, 0.26f, 0.67f);
-  colors[ImGuiCol_ResizeGripActive]  = ImVec4(1.00f, 0.33f, 0.00f, 0.95f);
-  colors[ImGuiCol_Tab]               = ImVec4(0.81f, 0.24f, 0.04f, 0.86f);
-  colors[ImGuiCol_TabHovered]        = ImVec4(1.00f, 0.34f, 0.14f, 0.80f);
-  colors[ImGuiCol_TabActive]         = ImVec4(1.00f, 0.34f, 0.10f, 1.00f);
-  colors[ImGuiCol_TabUnfocused]      = ImVec4(0.91f, 0.09f, 0.00f, 0.97f);
+  ImVec4* colors = style.Colors;  // TODO Redo color scheme
 
   //-----------------------------------------------------------------------------
   // ANCHOR LAYOUT (size & pos) | Define relationships between windows
@@ -163,19 +217,21 @@ int main(int argc, char* argv[]) {
   bool wksp_interface = true;
   bool wksp_logic     = false;
 
-  bool menubar  = true;
-  bool sidebar  = true;
-  bool viewport = true;
+  bool menubar    = true;
+  bool sidebar    = true;
+  bool viewport   = true;
+  bool properties = true;
 
   //-----------------------------------------------------------------------------
   // ANCHOR STATE (CHILDREN)
   //-----------------------------------------------------------------------------
 
-  bool child_debug   = false;
-  bool child_sty     = false;
-  bool child_metrics = false;
-  bool child_colexp  = false;
-  bool ly_save       = false;
+  bool       child_debug   = false;
+  bool       child_sty     = false;
+  bool       child_metrics = false;
+  bool       child_colexp  = false;
+  bool       ly_save       = false;
+  DrawBuffer bf;
 
   //-----------------------------------------------------------------------------
   // ANCHOR VARS
@@ -212,7 +268,9 @@ int main(int argc, char* argv[]) {
                        ImGuiWindowFlags_NoScrollbar |
                        ImGuiWindowFlags_NoScrollWithMouse);
 
+      // MENU
       if (ImGui::BeginMenuBar()) {
+        /// menu-debug
         if (ImGui::BeginMenu("Debug")) {
           ImGui::MenuItem("Settings", NULL, &child_debug);
           ImGui::MenuItem("Style Editor", NULL, &child_sty);
@@ -222,12 +280,16 @@ int main(int argc, char* argv[]) {
           };
           ImGui::EndMenu();
         }
+
+        /// menu-edit
         if (ImGui::BeginMenu("Edit")) {
           if (ImGui::MenuItem("Save Layout")) {
             ly_save = true;
           }
           ImGui::EndMenu();
         }
+
+        /// menu-tools
         if (ImGui::BeginMenu("Tools")) {
           ImGui::MenuItem("Color Export", NULL, &child_colexp);
           ImGui::EndMenu();
@@ -236,17 +298,22 @@ int main(int argc, char* argv[]) {
         ImGui::EndMenuBar();
       }
 
+      // TAB
       if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None)) {
+        // tab-interface
         if (ImGui::BeginTabItem("Interface")) {
           wksp_logic     = false;
           wksp_interface = true;
           ImGui::EndTabItem();
         }
+
+        // tab-logic
         if (ImGui::BeginTabItem("Logic")) {
           wksp_interface = false;
           wksp_logic     = true;
           ImGui::EndTabItem();
         }
+
         ImGui::EndTabBar();
       }
 
@@ -258,94 +325,159 @@ int main(int argc, char* argv[]) {
     //-----------------------------------------------------------------------------
     if (wksp_interface) {
       // ANCHOR SIDEBAR
-      ImVec2 sb_P  = ImVec2(0, mb_S.y);
-      static ImVec2 sb_S  = ImVec2(w_w / 8, w_h - mb_S.y);
-      static ImVec2 sb_Sr = ImVec2(8, 1.015444);
-      if (sidebar) {
-        ImGui::SetNextWindowPos(sb_P);
-        ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
-        ImGui::SetNextWindowSize(sb_S);
-        ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar);
-        sb_S = ImGui::GetWindowSize();
-        if (ly_save) {
-          sb_Sr   = extra::GetWindowRatio();
-          ly_save = false;
-        }
-        if (resizing) {
-          sb_S     = ImVec2(w_w / sb_Sr.x, w_h / sb_Sr.y);
-          resizing = false;
-        }
+      static ImVec2 sb_P = ImVec2(0, mb_S.y);
+      static ImVec2 sb_S = ImVec2(w_w / 12, w_h - mb_S.y);
+      static ImVec2 sb_Sr =
+          ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
+                                 // scaling/resizing simpler
 
-        extra::metrics();
-
-        ImGui::ColorEdit3("Color", (float*)&bg, ImGuiColorEditFlags_Float);
-        if (ImGui::Button("Export")) {
-          std::string exp = extra::string_format(
-              "ImVec4 col = ImVec4(%ff,%ff,%ff,1.00f;", bg.x, bg.y, bg.z);
-          ImGui::LogToClipboard();
-          ImGui::LogText(exp.c_str());
-          ImGui::LogFinish();
-        }
-
-        if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
-          break;
-        }
-
-        ;  // For viewport
-        ImGui::End();
-      }
-
-      //-----------------------------------------------------------------------------
-      // ANCHOR VIEWPORT
-      ImVec2 vp_P = ImVec2(sb_S.x, mb_S.y);
-      ImVec2 vp_S = ImVec2(w_w - sb_S.x, w_h - mb_S.y);
-      if (viewport) {
-        ImGui::SetNextWindowPos(vp_P);
-        ImGui::SetNextWindowSize(vp_S);
-        ImGui::Begin(
-            "Viewport", NULL,
-            ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
-
-        extra::metrics();
-
-        ImGui::End();
-      }
-
-      //-----------------------------------------------------------------------------
-      //-----------------------------------------------------------------------------
-      // ANCHOR CHILDREN
-      if (child_debug) {
-        ImGui::SetNextWindowBgAlpha(0.35f);
-        if (ImGui::Begin("child_debug", &child_debug,
-                         ImGuiWindowFlags_AlwaysAutoResize)) {
-          ImGui::Text("hello");
-          ImGui::End();
-        }
-      }
-
-      if (child_sty) {
-        ImGui::ShowStyleEditor();
-      }
-
-      if (child_metrics) {
-        ImGui::ShowMetricsWindow(&child_metrics);
-      }
-
-      if (child_colexp) {
-        ImGui::SetNextWindowBgAlpha(0.35f);
-        if (ImGui::Begin("Color Export", &child_colexp,
-                         ImGuiWindowFlags_AlwaysAutoResize)) {
-          ImGui::ColorEdit3("Your Color", (float*)&bg,
-                            ImGuiColorEditFlags_Float);
-          if (ImGui::Button("Export to Clipboard")) {
-            std::string exp = "ImVec4 col = ImVec4(" + std::to_string(bg.x) +
-                              "f," + std::to_string(bg.y) + "f," +
-                              std::to_string(bg.z) + "f,1.00f);";
-            ImGui::LogToClipboard();
-            ImGui::LogText(exp.c_str());
-            ImGui::LogFinish();
+      {
+        if (sidebar) {
+          ImGui::SetNextWindowPos(sb_P);
+          ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1),
+                                              ImVec2(FLT_MAX, -1));
+          ImGui::SetNextWindowSize(sb_S);
+          ImGui::Begin("Sidebar", NULL,
+                       ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
+          sb_S = ImGui::GetWindowSize();
+          if (ly_save) {
+            sb_Sr = extra::GetWindowSRatio();
           }
+          if (resizing) {
+            sb_S = ImVec2(w_w / sb_Sr.x, w_h / sb_Sr.y);
+          }
+
+          /// content-sidebar
+          {
+            {
+              if (ImGui::Button("Window")) {
+                bf.createwin();
+              }
+              if (ImGui::Button("Checkbox")) {
+              }
+              if (ImGui::Button("Button")) {
+              }
+              if (ImGui::Button("Radio Button")) {
+              }
+              if (ImGui::Button("Text")) {
+              }
+
+              if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
+                break;
+              }
+            }
+          }
+
           ImGui::End();
+        }
+
+        //-----------------------------------------------------------------------------
+        // ANCHOR PROPERTIES
+        static ImVec2 pt_P  = ImVec2(w_w - 300, mb_S.y);
+        static ImVec2 pt_S  = ImVec2(300, w_h - mb_S.y);
+        static ImVec2 pt_Sr = ImVec2(6.40000, 1.046766);
+        static ImVec2 pt_Pr = ImVec2(1.175750, 22.869566);
+        if (properties) {
+          ImGui::SetNextWindowPos(pt_P);
+          ImGui::SetNextWindowSize(pt_S);
+          ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove);
+          pt_P = ImGui::GetWindowPos();
+          pt_S = ImGui::GetWindowSize();
+          if (ly_save) {
+            pt_Sr   = extra::GetWindowSRatio();
+            pt_Pr   = extra::GetWindowPRatio();
+            ly_save = false;
+          }
+          if (resizing) {
+            pt_P     = ImVec2(w_w / pt_Pr.x, mb_S.y);
+            pt_S     = ImVec2(w_w / pt_Sr.x, w_h / pt_Sr.y);
+            resizing = false;
+          }
+
+          /// content-properties
+          {
+            {
+              if (!bf.win.empty()) {
+                const char* items[bf.win.size()];
+                for (auto it = bf.win.begin(); it != bf.win.end(); ++it) {
+                  Win& w = *it;
+                  int i = std::distance(bf.win.begin(),it);
+                  items[i]=w.name.c_str();
+                }
+                static int  item_current = 0;
+                ImGui::Combo("combo", &item_current, items,
+                             IM_ARRAYSIZE(items));
+                ImGui::SameLine();
+                HelpMarker(
+                    "Using the simplified one-liner Combo API here.\nRefer to "
+                    "the \"Combo\" section below for an explanation of how to "
+                    "use the more flexible and general BeginCombo/EndCombo "
+                    "API.");
+              }
+            }
+          }
+
+          ImGui::End();
+        }
+
+        //-----------------------------------------------------------------------------
+        // ANCHOR VIEWPORT
+        ImVec2 vp_P = ImVec2(sb_S.x, mb_S.y);
+        ImVec2 vp_S = ImVec2(pt_P.x - sb_S.x, w_h - mb_S.y);
+        if (viewport) {
+          ImGui::SetNextWindowPos(vp_P);
+          ImGui::SetNextWindowSize(vp_S);
+          ImGui::Begin("Viewport", NULL,
+                       ImGuiWindowFlags_NoResize |
+                           ImGuiWindowFlags_NoBringToFrontOnFocus);
+
+          /// content-viewport
+          {
+            ImGui::Text("%d", bf.win.size());
+            bf.drawall();
+            ImGui::Text("%d", bf.win.size());
+          }
+
+          ImGui::End();
+        }
+
+        //-----------------------------------------------------------------------------
+        //-----------------------------------------------------------------------------
+        // ANCHOR CHILDREN
+        if (child_debug) {
+          ImGui::SetNextWindowBgAlpha(0.35f);
+          if (ImGui::Begin("child_debug", &child_debug,
+                           ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::Text("hello");
+            std::cout << "hello4" << std::endl;
+            ImGui::End();
+          }
+        }
+
+        if (child_sty) {
+          ImGui::ShowStyleEditor();
+        }
+
+        if (child_metrics) {
+          ImGui::ShowMetricsWindow(&child_metrics);
+        }
+
+        if (child_colexp) {
+          ImGui::SetNextWindowBgAlpha(0.35f);
+          if (ImGui::Begin("Color Export", &child_colexp,
+                           ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::ColorEdit3("Your Color", (float*)&bg,
+                              ImGuiColorEditFlags_Float);
+            if (ImGui::Button("Export to Clipboard")) {
+              std::string exp = "ImVec4 col = ImVec4(" + std::to_string(bg.x) +
+                                "f," + std::to_string(bg.y) + "f," +
+                                std::to_string(bg.z) + "f,1.00f);";
+              ImGui::LogToClipboard();
+              ImGui::LogText(exp.c_str());
+              ImGui::LogFinish();
+            }
+            ImGui::End();
+          }
         }
       }
     }  //! SECTION wksp_interface End
