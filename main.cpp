@@ -20,12 +20,15 @@
 class Win {
  public:
   int         id    = 0;
-  bool        popen = true;
+  bool        state = true;
   std::string name  = "window_";
+  ImVec2      size  = ImVec2(1070, 680);
+  ImVec2      pos   = ImVec2(280, 120);
   void        draw() {
-    // std::cout << name << std::endl;
-    if (popen) {
-      ImGui::Begin(name.c_str(), &popen);
+    if (state) {
+      ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
+      ImGui::SetNextWindowSize(size, ImGuiCond_Once);
+      ImGui::Begin(name.c_str(), &state);
       ImGui::Text("hello");
       ImGui::End();
     }
@@ -43,7 +46,18 @@ class Cbx {
 
 class Btn {
  public:
-  int count;
+  int         id    = 0;
+  bool        state = true;
+  std::string text  = "button_";
+  void        draw() {
+    if (state) {
+      ImGui::Button(text.c_str());
+    }
+  }
+  Btn(int newid) {
+    id = newid;
+    text += std::to_string(id);
+  };
 };
 
 class Rdo {
@@ -60,18 +74,28 @@ class DrawBuffer {
  public:
   int              idvar = 0;
   std::vector<Win> win   = {};
+  std::vector<Btn> btn   = {};
   void             drawall() {
     if (!win.empty()) {
       for (auto i = win.begin(); i != win.end(); ++i) {
         Win& w = *i;
         w.draw();
 
-        if (w.popen == false) {
+        if (w.state == false) {
           i = win.erase(i);
           break;
         }
+      }
+    }
+    if (!btn.empty()) {
+      for (auto i = btn.begin(); i != btn.end(); ++i) {
+        Btn& b = *i;
+        b.draw();
 
-        // std::cout << "hello2" << std::endl;
+        if (b.state == false) {
+          i = btn.erase(i);
+          break;
+        }
       }
     }
     // std::cout << "hello3" << std::endl;
@@ -80,6 +104,11 @@ class DrawBuffer {
     idvar++;
     Win newin(idvar);
     win.push_back(newin);
+  }
+  void createbtn() {
+    idvar++;
+    Btn newbtn(idvar);
+    btn.push_back(newbtn);
   }
 };
 
@@ -356,6 +385,7 @@ int main(int argc, char* argv[]) {
               if (ImGui::Button("Checkbox")) {
               }
               if (ImGui::Button("Button")) {
+                bf.createbtn();
               }
               if (ImGui::Button("Radio Button")) {
               }
@@ -400,11 +430,11 @@ int main(int argc, char* argv[]) {
               if (!bf.win.empty()) {
                 const char* items[bf.win.size()];
                 for (auto it = bf.win.begin(); it != bf.win.end(); ++it) {
-                  Win& w = *it;
-                  int i = std::distance(bf.win.begin(),it);
-                  items[i]=w.name.c_str();
+                  Win& w   = *it;
+                  int  i   = std::distance(bf.win.begin(), it);
+                  items[i] = w.name.c_str();
                 }
-                static int  item_current = 0;
+                static int item_current = 0;
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
                 ImGui::SameLine();
@@ -436,6 +466,7 @@ int main(int argc, char* argv[]) {
             ImGui::Text("%d", bf.win.size());
             bf.drawall();
             ImGui::Text("%d", bf.win.size());
+            extra::metrics();
           }
 
           ImGui::End();
@@ -490,7 +521,19 @@ int main(int argc, char* argv[]) {
       ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
       ImGui::SetNextWindowSize(lg_S);
       ImGui::Begin("wksp_logic", NULL, ImGuiWindowFlags_NoTitleBar);
-      ImGui::Text("Im not going to help you with that!! :/");
+      {
+        static char text[1024 * 16] =
+            "/*\n"
+            " GENERATED CODE\n"
+            " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
+            "*/\n\n"
+            "auto layout = You.DesignSomethingFancy();\n"
+            "ImStudio.GenerateCode(layout);";
+            
+            
+
+        ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
+      }
       ImGui::End();
     }
 
