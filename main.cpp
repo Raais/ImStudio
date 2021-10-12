@@ -5,110 +5,103 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "font/opensans.cpp"
-#include "../../imgui.h"
-#include "../../backends/imgui_impl_glfw.h"
-#include "../../backends/imgui_impl_opengl3.h"
-#include "../../imgui_internal.h"
+#include "imgui/imgui.h"
+#include "imgui/backends/imgui_impl_glfw.h"
+#include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/imgui_internal.h"
 #include "utils/extra.h"
 
 //-----------------------------------------------------------------------------
 // ANCHOR OBJECTS
 //-----------------------------------------------------------------------------
 
-class Win {
+class Object {
+ public:
+  int         id;
+  std::string type;
+  bool        state   = true;
+  bool        value_b = true;
+  std::string value_s;
+  ImVec2      pos;
+  ImVec2      size;
+  Object(int idvar_, std::string type_) {
+    id      = idvar_;
+    type    = type_;
+    value_s = type_ + std::to_string(idvar_);
+  }
+  void draw() {
+    if (state) {
+      if (type == "button") {
+        ImGui::Button(value_s.c_str());
+      }
+      if (type == "checkbox") {
+        ImGui::Checkbox(value_s.c_str(), &value_b);
+      }
+      if (type == "radio") {
+        ImGui::RadioButton(value_s.c_str(), &value_b);
+      }
+      if (type == "combo") {
+        const char* items[]      = {"Never", "Gonna", "Give", "You", "Up"};
+        static int  item_current = 0;
+        ImGui::Combo(value_s.c_str(), &item_current, items,
+                     IM_ARRAYSIZE(items));
+      }
+    }
+  }
+  void del() { state = false; }
+};
+
+class BufferWindow {
  public:
   int         id    = 0;
-  bool        state = true;
-  std::string name  = "window_";
+  bool        state = false;
+  std::string name  = "window_0";
   ImVec2      size  = ImVec2(1070, 680);
   ImVec2      pos   = ImVec2(280, 120);
-  void        draw() {
+  int         idvar = 0;
+
+  // std::vector<Win> win = {};
+  std::vector<Object> objects = {};
+  void                drawall() {
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
       ImGui::Begin(name.c_str(), &state);
-      ImGui::Text("hello");
+      {
+        for (auto i = objects.begin(); i != objects.end(); ++i) {
+          Object& o = *i;
+          o.draw();
+
+          if (o.state == false) {
+            i = objects.erase(i);
+            break;
+          }
+        }
+      }
       ImGui::End();
     }
   }
-  Win(int newid) {
-    id = newid;
-    name += std::to_string(id);
-  };
-};
-
-class Cbx {
- public:
-  int count;
-};
-
-class Btn {
- public:
-  int         id    = 0;
-  bool        state = true;
-  std::string text  = "button_";
-  void        draw() {
-    if (state) {
-      ImGui::Button(text.c_str());
-    }
-  }
-  Btn(int newid) {
-    id = newid;
-    text += std::to_string(id);
-  };
-};
-
-class Rdo {
- public:
-  int count;
-};
-
-class Txt {
- public:
-  int count;
-};
-
-class DrawBuffer {
- public:
-  int              idvar = 0;
-  std::vector<Win> win   = {};
-  std::vector<Btn> btn   = {};
-  void             drawall() {
-    if (!win.empty()) {
-      for (auto i = win.begin(); i != win.end(); ++i) {
-        Win& w = *i;
-        w.draw();
-
-        if (w.state == false) {
-          i = win.erase(i);
-          break;
-        }
+  Object getobj(int id) {
+    for (Object& o : objects) {
+      if (o.id == id) {
+        return o;
       }
     }
-    if (!btn.empty()) {
-      for (auto i = btn.begin(); i != btn.end(); ++i) {
-        Btn& b = *i;
-        b.draw();
-
-        if (b.state == false) {
-          i = btn.erase(i);
-          break;
-        }
+  }
+  std::string gettype(int id) {
+    for (Object& o : objects) {
+      if (o.id == id) {
+        return o.type;
       }
     }
-    // std::cout << "hello3" << std::endl;
   }
-  void createwin() {
+  void create(std::string type_) {
     idvar++;
-    Win newin(idvar);
-    win.push_back(newin);
-  }
-  void createbtn() {
-    idvar++;
-    Btn newbtn(idvar);
-    btn.push_back(newbtn);
+    Object widget(idvar, type_);
+    objects.push_back(widget);
   }
 };
 
@@ -255,12 +248,12 @@ int main(int argc, char* argv[]) {
   // ANCHOR STATE (CHILDREN)
   //-----------------------------------------------------------------------------
 
-  bool       child_debug   = false;
-  bool       child_sty     = false;
-  bool       child_metrics = false;
-  bool       child_colexp  = false;
-  bool       ly_save       = false;
-  DrawBuffer bf;
+  bool         child_debug   = false;
+  bool         child_sty     = false;
+  bool         child_metrics = false;
+  bool         child_colexp  = false;
+  bool         ly_save       = false;
+  BufferWindow bf;
 
   //-----------------------------------------------------------------------------
   // ANCHOR VARS
@@ -380,16 +373,19 @@ int main(int argc, char* argv[]) {
           {
             {
               if (ImGui::Button("Window")) {
-                bf.createwin();
+                bf.state = true;
               }
               if (ImGui::Button("Checkbox")) {
+                bf.create("checkbox");
               }
               if (ImGui::Button("Button")) {
-                bf.createbtn();
+                bf.create("button");
               }
               if (ImGui::Button("Radio Button")) {
+                bf.create("radio");
               }
-              if (ImGui::Button("Text")) {
+              if (ImGui::Button("Combo")) {
+                bf.create("combo");
               }
 
               if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
@@ -427,12 +423,14 @@ int main(int argc, char* argv[]) {
           /// content-properties
           {
             {
-              if (!bf.win.empty()) {
-                const char* items[bf.win.size()];
-                for (auto it = bf.win.begin(); it != bf.win.end(); ++it) {
-                  Win& w   = *it;
-                  int  i   = std::distance(bf.win.begin(), it);
-                  items[i] = w.name.c_str();
+              {
+                const char* items[bf.objects.size()];
+                int         i = 0;
+                for (auto it = bf.objects.begin(); it != bf.objects.end();
+                     ++it) {
+                  Object& o = *it;
+                  items[i]  = o.value_s.c_str();
+                  i++;
                 }
                 static int item_current = 0;
                 ImGui::Combo("combo", &item_current, items,
@@ -463,9 +461,10 @@ int main(int argc, char* argv[]) {
 
           /// content-viewport
           {
-            ImGui::Text("%d", bf.win.size());
+            ImGui::Text("%d", bf.objects.size());
             bf.drawall();
-            ImGui::Text("%d", bf.win.size());
+            // ImGui::Text("%d", bf.win.size());
+
             extra::metrics();
           }
 
@@ -529,10 +528,11 @@ int main(int argc, char* argv[]) {
             "*/\n\n"
             "auto layout = You.DesignSomethingFancy();\n"
             "ImStudio.GenerateCode(layout);";
-            
-            
 
-        ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text), ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
+        ImGui::InputTextMultiline(
+            "##source", text, IM_ARRAYSIZE(text),
+            ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64),
+            ImGuiInputTextFlags_ReadOnly);
       }
       ImGui::End();
     }
