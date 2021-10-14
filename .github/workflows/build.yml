@@ -1,0 +1,20 @@
+name: build
+on:
+  push:
+    branches:
+    - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build
+        uses: fifsky/ssh-action@v0.0.6
+        with:
+          command: |
+            cd /root
+            ./build.sh
+          host: ${{ secrets.HOST }}
+          user: root
+          pass: ${{ secrets.PASWD}}
+          args: "-tt -vvv"
