@@ -18,42 +18,79 @@
 // ANCHOR OBJECTS
 //-----------------------------------------------------------------------------
 
+// ANCHOR Object
 class Object {
  public:
   int         id;
+  std::string identifier;
   std::string type;
-  bool        state   = true;
-  bool        value_b = true;
+  bool        state    = true;
+  bool        value_b  = true;
+  bool        selected = false;
+  bool        moving   = false;
   std::string value_s;
-  ImVec2      pos;
+  ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
   Object(int idvar_, std::string type_) {
-    id      = idvar_;
-    type    = type_;
-    value_s = type_ + std::to_string(idvar_);
+    id         = idvar_;
+    type       = type_;
+    identifier = type_ + std::to_string(idvar_);
+    value_s    = type_ + std::to_string(idvar_);
   }
   void draw() {
     if (state) {
       if (type == "button") {
+        ImGuiContext& g = *ImGui::GetCurrentContext();
+
+        ImGui::SetCursorPos(pos);
+
         ImGui::Button(value_s.c_str());
+        ImRect r = g.LastItemData.Rect;
+
+        if (ImGui::IsItemActive()) {
+          pos.x    = extra::GetLocalCursor().x;
+          pos.y    = extra::GetLocalCursor().y;
+          selected = true;
+
+        } else {
+          //selected = false;
+        }
+
+        highlight();
+        // ImGui::Text("%g,%g",extra::GetLastItemPos().x,
+        // extra::GetLastItemPos().y);
       }
       if (type == "checkbox") {
         ImGui::Checkbox(value_s.c_str(), &value_b);
+        highlight();
       }
       if (type == "radio") {
         ImGui::RadioButton(value_s.c_str(), &value_b);
+        highlight();
       }
       if (type == "combo") {
         const char* items[]      = {"Never", "Gonna", "Give", "You", "Up"};
         static int  item_current = 0;
         ImGui::Combo(value_s.c_str(), &item_current, items,
                      IM_ARRAYSIZE(items));
+        highlight();
       }
     }
   }
   void del() { state = false; }
+
+ private:
+  void highlight() {
+    if (selected) {
+      ImGui::GetForegroundDrawList()->AddRect(
+          ImGui::GetCurrentContext()->LastItemData.Rect.Min,
+          ImGui::GetCurrentContext()->LastItemData.Rect.Max,
+          IM_COL32(255, 255, 0, 255));
+    }
+  }
 };
 
+// ANCHOR BufferWindow
 class BufferWindow {
  public:
   int         id    = 0;
@@ -65,12 +102,13 @@ class BufferWindow {
 
   // std::vector<Win> win = {};
   std::vector<Object> objects = {};
-  void                drawall() {
+  void                drawall(Object* selected_, int* current) {
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
       ImGui::Begin(name.c_str(), &state);
       {
+        extra::metrics();
         for (auto i = objects.begin(); i != objects.end(); ++i) {
           Object& o = *i;
           o.draw();
@@ -84,12 +122,21 @@ class BufferWindow {
       ImGui::End();
     }
   }
-  Object getobj(int id) {
+  Object* getobj(int id) {
     for (Object& o : objects) {
       if (o.id == id) {
-        return o;
+        return &o;
       }
     }
+  }
+  bool getselected(Object* obj) {
+    for (Object& o : objects) {
+      if (o.selected == true) {
+        obj = &o;
+        return true;
+      }
+    }
+    return false;
   }
   std::string gettype(int id) {
     for (Object& o : objects) {
@@ -352,6 +399,8 @@ int main(int argc, char* argv[]) {
       static ImVec2 sb_Sr =
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
+      Object*    selected     = nullptr;
+      static int item_current = 0;
 
       {
         if (sidebar) {
@@ -423,24 +472,46 @@ int main(int argc, char* argv[]) {
           /// content-properties
           {
             {
-              {
+              if (!bf.objects.empty()) {
                 const char* items[bf.objects.size()];
+                int         idarr[bf.objects.size()];
                 int         i = 0;
                 for (auto it = bf.objects.begin(); it != bf.objects.end();
                      ++it) {
                   Object& o = *it;
-                  items[i]  = o.value_s.c_str();
+                  items[i]  = o.identifier.c_str();
+                  idarr[i]  = o.id;
+                  if (o.selected = true) {
+                    item_current = i;
+                  }
                   i++;
                 }
-                static int item_current = 0;
+
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
-                ImGui::SameLine();
-                HelpMarker(
-                    "Using the simplified one-liner Combo API here.\nRefer to "
-                    "the \"Combo\" section below for an explanation of how to "
-                    "use the more flexible and general BeginCombo/EndCombo "
-                    "API.");
+                //selected = bf.getselected();
+                selected           = bf.getobj(idarr[item_current]);
+                //selected->selected = true;
+                if (selected->type == "button") {
+                  static char str0[128] = "Change me";
+                  ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
+                  selected->value_s = str0;
+                  ImVec2 value_raw  = ImGui::GetMouseDragDelta(0, 0.0f);
+                  ImVec2 value_with_lock_threshold =
+                      ImGui::GetMouseDragDelta(0);
+                  ImGui::Text("GetMouseDragDelta(0):");
+                  ImGui::Text("  w/ default threshold: (%.1f, %.1f)",
+                              value_with_lock_threshold.x,
+                              value_with_lock_threshold.y);
+                  ImGui::Text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x,
+                              value_raw.y);
+                }
+                if (selected->type == "checkbox") {
+                }
+                if (selected->type == "radio") {
+                }
+                if (selected->type == "combo") {
+                }
               }
             }
           }
@@ -462,7 +533,7 @@ int main(int argc, char* argv[]) {
           /// content-viewport
           {
             ImGui::Text("%d", bf.objects.size());
-            bf.drawall();
+            bf.drawall(selected, &item_current);
             // ImGui::Text("%d", bf.win.size());
 
             extra::metrics();
