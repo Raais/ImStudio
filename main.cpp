@@ -492,7 +492,7 @@ int main(int argc, char* argv[]) {
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
                 //selected = bf.getselected();
-                //selectedn           = bf.getobj(idarr[item_current]);
+                selected           = bf.getobj(idarr[item_current]);
                 std::cout << "prop-manual assign" << std::endl;
                 //selected->selected = true;
                 if (selected->type == "button") {
