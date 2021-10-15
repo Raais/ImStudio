@@ -15,8 +15,6 @@
 #include "imgui/imgui_internal.h"
 #include "utils/extra.h"
 
-
-
 //-----------------------------------------------------------------------------
 // ANCHOR OBJECTS
 //-----------------------------------------------------------------------------
@@ -27,9 +25,9 @@ class Object {
   int         id;
   std::string identifier;
   std::string type;
-  bool        state    = true;
-  bool        value_b  = true;
-  bool        moving   = false;
+  bool        state   = true;
+  bool        value_b = true;
+  bool        moving  = false;
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
@@ -40,7 +38,7 @@ class Object {
     value_s    = type_ + std::to_string(idvar_);
     std::cout << "Object constr: " << value_s << "::" << this << std::endl;
   }
-  void draw(Object* selected_) {
+  void draw(int* select) {
     if (state) {
       if (type == "button") {
         std::cout << "drawing button: " << this << std::endl;
@@ -49,14 +47,16 @@ class Object {
         ImGui::Button(value_s.c_str());
 
         if (ImGui::IsItemActive()) {
-          pos.x     = extra::GetLocalCursor().x;
-          pos.y     = extra::GetLocalCursor().y;
-          selected_ = this;
+          pos.x   = extra::GetLocalCursor().x;
+          pos.y   = extra::GetLocalCursor().y;
+          *select = id;
+          // selected_ = this;
           std::cout << "obj-active assign" << std::endl;
         } else {
-        std::cout << "drawing button: not active" << std::endl;}
+          std::cout << "drawing button: not active" << std::endl;
+        }
 
-        highlight(selected_);
+        highlight(select);
         // ImGui::Text("%g,%g",extra::GetLastItemPos().x,
         // extra::GetLastItemPos().y);
       }
@@ -80,8 +80,8 @@ class Object {
   void del() { state = false; }
 
  private:
-  void highlight(Object* selected_) {
-    if (this == selected_) {
+  void highlight(int* select) {
+    if (id == *select) {
       std::cout << "highlight" << std::endl;
       ImGui::GetForegroundDrawList()->AddRect(
           ImGui::GetCurrentContext()->LastItemData.Rect.Min,
@@ -102,18 +102,17 @@ class BufferWindow {
 
   // std::vector<Win> win = {};
   std::vector<Object> objects = {};
-  void                drawall(Object* selected_, int* current) {
+  void                drawall(int* select) {
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
       ImGui::Begin(name.c_str(), &state);
       {
-        std::cout << "drawall [" << selected_ << "]" << std::endl;
+        // std::cout << "drawall [" << selected_ << "]" << std::endl;
         extra::metrics();
         for (auto i = objects.begin(); i != objects.end(); ++i) {
-
           Object& o = *i;
-          o.draw(selected_);
+          o.draw(select);
 
           if (o.state == false) {
             i = objects.erase(i);
@@ -151,7 +150,6 @@ class BufferWindow {
     Object widget(idvar, type_);
     std::cout << "created button: " << &widget << std::endl;
     objects.push_back(widget);
-    
   }
 };
 
@@ -304,6 +302,7 @@ int main(int argc, char* argv[]) {
   bool         child_colexp  = false;
   bool         ly_save       = false;
   BufferWindow bf;
+  bf.objects.reserve(250);
 
   //-----------------------------------------------------------------------------
   // ANCHOR VARS
@@ -402,8 +401,9 @@ int main(int argc, char* argv[]) {
       static ImVec2 sb_Sr =
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
-      static Object*    selected     = nullptr;
-      static int item_current = 0;
+      static Object* selectobj    = nullptr;
+      static int     select       = 0;
+      static int     item_current = 0;
 
       {
         if (sidebar) {
@@ -429,12 +429,10 @@ int main(int argc, char* argv[]) {
               }
               if (ImGui::Button("Checkbox")) {
                 bf.create("checkbox");
-                
               }
               if (ImGui::Button("Button")) {
                 std::cout << "creating button" << std::endl;
                 bf.create("button");
-                
               }
               if (ImGui::Button("Radio Button")) {
                 bf.create("radio");
@@ -458,6 +456,7 @@ int main(int argc, char* argv[]) {
         static ImVec2 pt_S  = ImVec2(300, w_h - mb_S.y);
         static ImVec2 pt_Sr = ImVec2(6.40000, 1.046766);
         static ImVec2 pt_Pr = ImVec2(1.175750, 22.869566);
+        static bool   is    = false;
         if (properties) {
           ImGui::SetNextWindowPos(pt_P);
           ImGui::SetNextWindowSize(pt_S);
@@ -487,46 +486,48 @@ int main(int argc, char* argv[]) {
                   Object& o = *it;
                   items[i]  = o.identifier.c_str();
                   idarr[i]  = o.id;
-                  if (&o == selected) {
-                    item_current = i;
+                  if (o.id == select) {
+                    if (!is) {
+                      item_current = i;
+                    }
+
                     std::cout << i << std::endl;
                     std::cout << "prop-pre check" << std::endl;
-                  } else {std::cout << "prop-pre check FAIL" << std::endl;}
+                  } else {
+                    std::cout << "prop-pre check FAIL" << std::endl;
+                  }
                   i++;
                 }
 
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
-                // selected = bf.getselected();
-                // selected           = bf.getobj(idarr[item_current]);
 
-                if (!selected) {
-                  std::cout << "!selected" << std::endl;
-                  selected = bf.getobj(idarr[item_current]);
-                } else {std::cout << "(selected)" << std::endl;}
-                
-                //std::cout << "prop-manual assign" << std::endl;
-                // selected->selected = true;
-                if (selected->type == "button") {
-                  static char str0[128] = "Change me";
+                if (ImGui::IsMouseDown(0)) {
+                  is = false;
+                } else {
+                  is = true;
+                }
+
+                if (!is) {
+                  selectobj = bf.getobj(select);
+                } else {
+                  selectobj = bf.getobj(idarr[item_current]);
+                  select    = selectobj->id;
+                }
+
+                if (selectobj->type == "button") {
+                  static char str0[128] = "Text";
                   ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
-                  selected->value_s = str0;
-                  ImVec2 value_raw  = ImGui::GetMouseDragDelta(0, 0.0f);
-                  ImVec2 value_with_lock_threshold =
-                      ImGui::GetMouseDragDelta(0);
-                  ImGui::Text("GetMouseDragDelta(0):");
-                  ImGui::Text("  w/ default threshold: (%.1f, %.1f)",
-                              value_with_lock_threshold.x,
-                              value_with_lock_threshold.y);
-                  ImGui::Text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x,
-                              value_raw.y);
+                  if (ImGui::Button("Save")) {
+                    selectobj->value_s = str0;
+                  }
                   std::cout << "button properties" << std::endl;
                 }
-                if (selected->type == "checkbox") {
+                if (selectobj->type == "checkbox") {
                 }
-                if (selected->type == "radio") {
+                if (selectobj->type == "radio") {
                 }
-                if (selected->type == "combo") {
+                if (selectobj->type == "combo") {
                 }
               }
             }
@@ -552,13 +553,9 @@ int main(int argc, char* argv[]) {
             ImGui::Text("%d", bf.objects.size());
             if (!bf.objects.empty()) {
               std::stringstream ss;
-              ImGui::Text("Selected = %s", selected->identifier.c_str());
-              ss << selected;
-              std::string adr = ss.str();
-              ImGui::Text("Selected Address: %s",adr.c_str());
-
+              ImGui::Text("Selected = %s", selectobj->identifier.c_str());
             }
-            bf.drawall(selected, &item_current);
+            bf.drawall(&select);
             // ImGui::Text("%d", bf.win.size());
 
             extra::metrics();
