@@ -53,7 +53,7 @@ class Object {
           selected = true;
 
         } else {
-          //selected = false;
+          selected = false;
         }
 
         highlight();
