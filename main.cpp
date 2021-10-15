@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <sstream>
 
 #include "font/opensans.cpp"
 #include "imgui/imgui.h"
@@ -13,6 +14,8 @@
 #include "imgui/backends/imgui_impl_opengl3.h"
 #include "imgui/imgui_internal.h"
 #include "utils/extra.h"
+
+
 
 //-----------------------------------------------------------------------------
 // ANCHOR OBJECTS
@@ -26,7 +29,6 @@ class Object {
   std::string type;
   bool        state    = true;
   bool        value_b  = true;
-  bool        selected = false;
   bool        moving   = false;
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
@@ -36,24 +38,23 @@ class Object {
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
     value_s    = type_ + std::to_string(idvar_);
+    std::cout << "Object constr: " << value_s << "::" << this << std::endl;
   }
   void draw(Object* selected_) {
     if (state) {
       if (type == "button") {
-        ImGuiContext& g = *ImGui::GetCurrentContext();
-
+        std::cout << "drawing button: " << this << std::endl;
         ImGui::SetCursorPos(pos);
 
         ImGui::Button(value_s.c_str());
-        ImRect r = g.LastItemData.Rect;
 
         if (ImGui::IsItemActive()) {
-          pos.x    = extra::GetLocalCursor().x;
-          pos.y    = extra::GetLocalCursor().y;
+          pos.x     = extra::GetLocalCursor().x;
+          pos.y     = extra::GetLocalCursor().y;
           selected_ = this;
           std::cout << "obj-active assign" << std::endl;
-
-        }
+        } else {
+        std::cout << "drawing button: not active" << std::endl;}
 
         highlight(selected_);
         // ImGui::Text("%g,%g",extra::GetLastItemPos().x,
@@ -61,18 +62,18 @@ class Object {
       }
       if (type == "checkbox") {
         ImGui::Checkbox(value_s.c_str(), &value_b);
-        //highlight();
+        // highlight();
       }
       if (type == "radio") {
         ImGui::RadioButton(value_s.c_str(), &value_b);
-        //highlight();
+        // highlight();
       }
       if (type == "combo") {
         const char* items[]      = {"Never", "Gonna", "Give", "You", "Up"};
         static int  item_current = 0;
         ImGui::Combo(value_s.c_str(), &item_current, items,
                      IM_ARRAYSIZE(items));
-        //highlight();
+        // highlight();
       }
     }
   }
@@ -89,7 +90,6 @@ class Object {
     }
   }
 };
-
 // ANCHOR BufferWindow
 class BufferWindow {
  public:
@@ -108,8 +108,10 @@ class BufferWindow {
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
       ImGui::Begin(name.c_str(), &state);
       {
+        std::cout << "drawall [" << selected_ << "]" << std::endl;
         extra::metrics();
         for (auto i = objects.begin(); i != objects.end(); ++i) {
+
           Object& o = *i;
           o.draw(selected_);
 
@@ -147,7 +149,9 @@ class BufferWindow {
   void create(std::string type_) {
     idvar++;
     Object widget(idvar, type_);
+    std::cout << "created button: " << &widget << std::endl;
     objects.push_back(widget);
+    
   }
 };
 
@@ -398,8 +402,7 @@ int main(int argc, char* argv[]) {
       static ImVec2 sb_Sr =
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
-      Object*    selected     = nullptr;
-      Object*    selectedn     = nullptr;
+      static Object*    selected     = nullptr;
       static int item_current = 0;
 
       {
@@ -426,9 +429,12 @@ int main(int argc, char* argv[]) {
               }
               if (ImGui::Button("Checkbox")) {
                 bf.create("checkbox");
+                
               }
               if (ImGui::Button("Button")) {
+                std::cout << "creating button" << std::endl;
                 bf.create("button");
+                
               }
               if (ImGui::Button("Radio Button")) {
                 bf.create("radio");
@@ -483,18 +489,24 @@ int main(int argc, char* argv[]) {
                   idarr[i]  = o.id;
                   if (&o == selected) {
                     item_current = i;
+                    std::cout << i << std::endl;
                     std::cout << "prop-pre check" << std::endl;
-                  }
+                  } else {std::cout << "prop-pre check FAIL" << std::endl;}
                   i++;
                 }
 
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
-                //selected = bf.getselected();
-                //selected           = bf.getobj(idarr[item_current]);
-                if(!selected){selected           = bf.getobj(idarr[item_current]);}
-                std::cout << "prop-manual assign" << std::endl;
-                //selected->selected = true;
+                // selected = bf.getselected();
+                // selected           = bf.getobj(idarr[item_current]);
+
+                if (!selected) {
+                  std::cout << "!selected" << std::endl;
+                  selected = bf.getobj(idarr[item_current]);
+                } else {std::cout << "(selected)" << std::endl;}
+                
+                //std::cout << "prop-manual assign" << std::endl;
+                // selected->selected = true;
                 if (selected->type == "button") {
                   static char str0[128] = "Change me";
                   ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
@@ -508,6 +520,7 @@ int main(int argc, char* argv[]) {
                               value_with_lock_threshold.y);
                   ImGui::Text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x,
                               value_raw.y);
+                  std::cout << "button properties" << std::endl;
                 }
                 if (selected->type == "checkbox") {
                 }
@@ -535,9 +548,16 @@ int main(int argc, char* argv[]) {
 
           /// content-viewport
           {
+            std::cout << "drawing viewport" << std::endl;
             ImGui::Text("%d", bf.objects.size());
-            if(!bf.objects.empty()){
-            ImGui::Text("Selected = %s",selected->identifier.c_str());}
+            if (!bf.objects.empty()) {
+              std::stringstream ss;
+              ImGui::Text("Selected = %s", selected->identifier.c_str());
+              ss << selected;
+              std::string adr = ss.str();
+              ImGui::Text("Selected Address: %s",adr.c_str());
+
+            }
             bf.drawall(selected, &item_current);
             // ImGui::Text("%d", bf.win.size());
 
