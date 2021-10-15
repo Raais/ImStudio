@@ -129,10 +129,9 @@ class BufferWindow {
       }
     }
   }
-  bool getselected(Object* obj) {
+  bool AnySelected(Object* selected_) {
     for (Object& o : objects) {
-      if (o.selected == true) {
-        obj = &o;
+      if (&o == selected_) {
         return true;
       }
     }
@@ -482,7 +481,7 @@ int main(int argc, char* argv[]) {
                   Object& o = *it;
                   items[i]  = o.identifier.c_str();
                   idarr[i]  = o.id;
-                  if (&o == selected) {
+                  if (Object*    selected     = nullptr;) {
                     item_current = i;
                     std::cout << "prop-pre check" << std::endl;
                   }
@@ -493,6 +492,7 @@ int main(int argc, char* argv[]) {
                              IM_ARRAYSIZE(items));
                 //selected = bf.getselected();
                 //selected           = bf.getobj(idarr[item_current]);
+                if(!selected){selected           = bf.getobj(idarr[item_current]);}
                 std::cout << "prop-manual assign" << std::endl;
                 //selected->selected = true;
                 if (selected->type == "button") {
