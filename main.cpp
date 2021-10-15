@@ -400,6 +400,7 @@ int main(int argc, char* argv[]) {
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
       Object*    selected     = nullptr;
+      Object*    selectedn     = nullptr;
       static int item_current = 0;
 
       {
@@ -491,13 +492,13 @@ int main(int argc, char* argv[]) {
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
                 //selected = bf.getselected();
-                selected           = bf.getobj(idarr[item_current]);
+                selectedn           = bf.getobj(idarr[item_current]);
                 std::cout << "prop-manual assign" << std::endl;
                 //selected->selected = true;
-                if (selected->type == "button") {
+                if (selectedn->type == "button") {
                   static char str0[128] = "Change me";
                   ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
-                  selected->value_s = str0;
+                  selectedn->value_s = str0;
                   ImVec2 value_raw  = ImGui::GetMouseDragDelta(0, 0.0f);
                   ImVec2 value_with_lock_threshold =
                       ImGui::GetMouseDragDelta(0);
@@ -508,11 +509,11 @@ int main(int argc, char* argv[]) {
                   ImGui::Text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x,
                               value_raw.y);
                 }
-                if (selected->type == "checkbox") {
+                if (selectedn->type == "checkbox") {
                 }
-                if (selected->type == "radio") {
+                if (selectedn->type == "radio") {
                 }
-                if (selected->type == "combo") {
+                if (selectedn->type == "combo") {
                 }
               }
             }
