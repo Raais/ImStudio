@@ -537,7 +537,7 @@ int main(int argc, char* argv[]) {
           {
             ImGui::Text("%d", bf.objects.size());
             if(!bf.objects.empty()){
-            ImGui::Text("Selected = %s",selected->value_s.c_str());}
+            ImGui::Text("Selected = %s",selected->identifier.c_str());}
             bf.drawall(selected, &item_current);
             // ImGui::Text("%d", bf.win.size());
 
