@@ -492,13 +492,13 @@ int main(int argc, char* argv[]) {
                 ImGui::Combo("combo", &item_current, items,
                              IM_ARRAYSIZE(items));
                 //selected = bf.getselected();
-                selectedn           = bf.getobj(idarr[item_current]);
+                //selectedn           = bf.getobj(idarr[item_current]);
                 std::cout << "prop-manual assign" << std::endl;
                 //selected->selected = true;
-                if (selectedn->type == "button") {
+                if (selected->type == "button") {
                   static char str0[128] = "Change me";
                   ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
-                  selectedn->value_s = str0;
+                  selected->value_s = str0;
                   ImVec2 value_raw  = ImGui::GetMouseDragDelta(0, 0.0f);
                   ImVec2 value_with_lock_threshold =
                       ImGui::GetMouseDragDelta(0);
@@ -509,11 +509,11 @@ int main(int argc, char* argv[]) {
                   ImGui::Text("  w/ zero threshold: (%.1f, %.1f)", value_raw.x,
                               value_raw.y);
                 }
-                if (selectedn->type == "checkbox") {
+                if (selected->type == "checkbox") {
                 }
-                if (selectedn->type == "radio") {
+                if (selected->type == "radio") {
                 }
-                if (selectedn->type == "combo") {
+                if (selected->type == "combo") {
                 }
               }
             }
@@ -536,6 +536,7 @@ int main(int argc, char* argv[]) {
           /// content-viewport
           {
             ImGui::Text("%d", bf.objects.size());
+            ImGui::Text("Selected = %s",selected->value_s.c_str());
             bf.drawall(selected, &item_current);
             // ImGui::Text("%d", bf.win.size());
 
