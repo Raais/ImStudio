@@ -60,18 +60,18 @@ class Object {
       }
       if (type == "checkbox") {
         ImGui::Checkbox(value_s.c_str(), &value_b);
-        highlight();
+        //highlight();
       }
       if (type == "radio") {
         ImGui::RadioButton(value_s.c_str(), &value_b);
-        highlight();
+        //highlight();
       }
       if (type == "combo") {
         const char* items[]      = {"Never", "Gonna", "Give", "You", "Up"};
         static int  item_current = 0;
         ImGui::Combo(value_s.c_str(), &item_current, items,
                      IM_ARRAYSIZE(items));
-        highlight();
+        //highlight();
       }
     }
   }
