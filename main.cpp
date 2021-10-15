@@ -51,6 +51,7 @@ class Object {
           pos.x    = extra::GetLocalCursor().x;
           pos.y    = extra::GetLocalCursor().y;
           selected_ = this;
+          std::cout << "obj-active assign" << std::endl;
 
         }
 
@@ -80,6 +81,7 @@ class Object {
  private:
   void highlight(Object* selected_) {
     if (this == selected_) {
+      std::cout << "highlight" << std::endl;
       ImGui::GetForegroundDrawList()->AddRect(
           ImGui::GetCurrentContext()->LastItemData.Rect.Min,
           ImGui::GetCurrentContext()->LastItemData.Rect.Max,
@@ -481,6 +483,7 @@ int main(int argc, char* argv[]) {
                   idarr[i]  = o.id;
                   if (&o == selected) {
                     item_current = i;
+                    std::cout << "prop-pre check" << std::endl;
                   }
                   i++;
                 }
@@ -489,6 +492,7 @@ int main(int argc, char* argv[]) {
                              IM_ARRAYSIZE(items));
                 //selected = bf.getselected();
                 selected           = bf.getobj(idarr[item_current]);
+                std::cout << "prop-manual assign" << std::endl;
                 //selected->selected = true;
                 if (selected->type == "button") {
                   static char str0[128] = "Change me";
