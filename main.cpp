@@ -481,7 +481,7 @@ int main(int argc, char* argv[]) {
                   Object& o = *it;
                   items[i]  = o.identifier.c_str();
                   idarr[i]  = o.id;
-                  if (Object*    selected     = nullptr;) {
+                  if (&o == selected) {
                     item_current = i;
                     std::cout << "prop-pre check" << std::endl;
                   }
