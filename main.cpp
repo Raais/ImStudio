@@ -37,7 +37,7 @@ class Object {
     identifier = type_ + std::to_string(idvar_);
     value_s    = type_ + std::to_string(idvar_);
   }
-  void draw() {
+  void draw(Object* selected_) {
     if (state) {
       if (type == "button") {
         ImGuiContext& g = *ImGui::GetCurrentContext();
@@ -50,13 +50,11 @@ class Object {
         if (ImGui::IsItemActive()) {
           pos.x    = extra::GetLocalCursor().x;
           pos.y    = extra::GetLocalCursor().y;
-          selected = true;
+          selected_ = this;
 
-        } else {
-          selected = false;
         }
 
-        highlight();
+        highlight(selected_);
         // ImGui::Text("%g,%g",extra::GetLastItemPos().x,
         // extra::GetLastItemPos().y);
       }
@@ -80,8 +78,8 @@ class Object {
   void del() { state = false; }
 
  private:
-  void highlight() {
-    if (selected) {
+  void highlight(Object* selected_) {
+    if (this == selected_) {
       ImGui::GetForegroundDrawList()->AddRect(
           ImGui::GetCurrentContext()->LastItemData.Rect.Min,
           ImGui::GetCurrentContext()->LastItemData.Rect.Max,
@@ -111,7 +109,7 @@ class BufferWindow {
         extra::metrics();
         for (auto i = objects.begin(); i != objects.end(); ++i) {
           Object& o = *i;
-          o.draw();
+          o.draw(selected_);
 
           if (o.state == false) {
             i = objects.erase(i);
@@ -481,7 +479,7 @@ int main(int argc, char* argv[]) {
                   Object& o = *it;
                   items[i]  = o.identifier.c_str();
                   idarr[i]  = o.id;
-                  if (o.selected = true) {
+                  if (&o == selected) {
                     item_current = i;
                   }
                   i++;
