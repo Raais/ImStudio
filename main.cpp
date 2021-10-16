@@ -99,7 +99,7 @@ class PropertyBuffer {
     void resetpropbuffer() {
       //prop_text1 = "Text";
     }
-}
+};
 
 // ANCHOR BufferWindow
 class BufferWindow : public PropertyBuffer {//class-object
