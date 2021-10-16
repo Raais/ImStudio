@@ -44,7 +44,9 @@ class Object {
         std::cout << "drawing button: " << this << std::endl;
         ImGui::SetCursorPos(pos);
 
+        ImGui::PushID(id);
         ImGui::Button(value_s.c_str());
+        ImGui::PopID();
 
         if (ImGui::IsItemActive()) {
           pos.x   = extra::GetLocalCursor().x;
@@ -300,6 +302,7 @@ int main(int argc, char* argv[]) {
   bool         child_sty     = false;
   bool         child_metrics = false;
   bool         child_colexp  = false;
+  bool         child_stack   = false;
   bool         ly_save       = false;
   BufferWindow bf;
   bf.objects.reserve(250);
@@ -346,6 +349,7 @@ int main(int argc, char* argv[]) {
           ImGui::MenuItem("Settings", NULL, &child_debug);
           ImGui::MenuItem("Style Editor", NULL, &child_sty);
           ImGui::MenuItem("Metrics", NULL, &child_metrics);
+          ImGui::MenuItem("Stack Tool", NULL, &child_stack);
           if (ImGui::MenuItem("Exit")) {
             break;
           };
@@ -583,6 +587,10 @@ int main(int argc, char* argv[]) {
 
         if (child_metrics) {
           ImGui::ShowMetricsWindow(&child_metrics);
+        }
+
+        if (child_stack) {
+          //ImGui::ShowStackToolWindow(); //Need update
         }
 
         if (child_colexp) {
