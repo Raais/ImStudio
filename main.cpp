@@ -92,8 +92,17 @@ class Object {//class-object
     }
   }
 };
+
+class PropertyBuffer {
+  public:
+    static char prop_text1[128] = "Text";
+    void resetpropbuffer() {
+      prop_text1 = "Text";
+    }
+}
+
 // ANCHOR BufferWindow
-class BufferWindow {//class-object
+class BufferWindow : public PropertyBuffer {//class-object
  public:
   int         id    = 0;
   bool        state = false;
@@ -406,6 +415,7 @@ int main(int argc, char* argv[]) {
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
       static Object* selectobj    = nullptr;
+      static Object* selectobjprev    = nullptr;
       static int     select       = 0;
       static int     item_current = 0;
 
@@ -512,16 +522,20 @@ int main(int argc, char* argv[]) {
                   is = true;
                 }
 
-                if (!is) {
+                if (!is) {//viewport select
                   selectobj = bf.getobj(select);
-                } else {
+                } else {//combo select
                   selectobj = bf.getobj(idarr[item_current]);
                   select    = selectobj->id;
                 }
 
+                if(!selectobjprev){
+                  selectobjprev = selectobj;
+                }
+
                 if (selectobj->type == "button") {
-                  static char str0[128] = "Text";
-                  ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
+                  if(selectobj->id != selectobjprev->id){bf.resetpropbuffer();}
+                  ImGui::InputText("Value", bf.prop_text1, IM_ARRAYSIZE(bf.prop_text1));
                   selectobj->value_s = str0;
                   
                   std::cout << "button properties" << std::endl;
@@ -532,6 +546,7 @@ int main(int argc, char* argv[]) {
                 }
                 if (selectobj->type == "combo") {
                 }
+                selectobjprev = selectobj;
               }
             }
           }
