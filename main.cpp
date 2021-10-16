@@ -95,9 +95,9 @@ class Object {//class-object
 
 class PropertyBuffer {
   public:
-    static char prop_text1[128] = "Text";
+    //static char prop_text1[128] = "Text";
     void resetpropbuffer() {
-      prop_text1 = "Text";
+      //prop_text1 = "Text";
     }
 }
 
@@ -529,15 +529,15 @@ int main(int argc, char* argv[]) {
                   select    = selectobj->id;
                 }
 
-                if(!selectobjprev){
+                /*if(!selectobjprev){
                   selectobjprev = selectobj;
-                }
+                }*/
 
                 if (selectobj->type == "button") {
-                  if(selectobj->id != selectobjprev->id){bf.resetpropbuffer();}
+                  //if(selectobj->id != selectobjprev->id){bf.resetpropbuffer();}
+                  static char prop_text1[128] = "Text";
                   ImGui::InputText("Value", bf.prop_text1, IM_ARRAYSIZE(bf.prop_text1));
                   selectobj->value_s = str0;
-                  
                   std::cout << "button properties" << std::endl;
                 }
                 if (selectobj->type == "checkbox") {
