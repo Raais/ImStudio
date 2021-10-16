@@ -12,6 +12,7 @@
 #include "imgui/imgui.h"
 #include "imgui/backends/imgui_impl_glfw.h"
 #include "imgui/backends/imgui_impl_opengl3.h"
+#include "imgui/misc/cpp/imgui_stdlib.cpp"
 #include "imgui/imgui_internal.h"
 #include "utils/extra.h"
 
@@ -20,7 +21,7 @@
 //-----------------------------------------------------------------------------
 
 // ANCHOR Object
-class Object {//class-object
+class Object {  // class-object
  public:
   int         id;
   std::string identifier;
@@ -31,7 +32,7 @@ class Object {//class-object
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
-  Object(int idvar_, std::string type_) {//class-object-constr
+  Object(int idvar_, std::string type_) {  // class-object-constr
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -94,15 +95,14 @@ class Object {//class-object
 };
 
 class PropertyBuffer {
-  public:
-    //static char prop_text1[128] = "Text";
-    void resetpropbuffer() {
-      //prop_text1 = "Text";
-    }
+ public:
+  std::string prop_text1 = "change me";
+  // static char prop_text1[128] = "Text";
+  void resetpropbuffer() { prop_text1 = "change me"; }
 };
 
 // ANCHOR BufferWindow
-class BufferWindow : public PropertyBuffer {//class-object
+class BufferWindow : public PropertyBuffer {  // class-object
  public:
   int         id    = 0;
   bool        state = false;
@@ -113,7 +113,7 @@ class BufferWindow : public PropertyBuffer {//class-object
 
   // std::vector<Win> win = {};
   std::vector<Object> objects = {};
-  void                drawall(int* select) {//class-object-drawall
+  void                drawall(int* select) {  // class-object-drawall
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
@@ -414,10 +414,10 @@ int main(int argc, char* argv[]) {
       static ImVec2 sb_Sr =
           ImVec2(12, 1.015444);  // sb_S expressed as ratio to make
                                  // scaling/resizing simpler
-      static Object* selectobj    = nullptr;
-      static Object* selectobjprev    = nullptr;
-      static int     select       = 0;
-      static int     item_current = 0;
+      static Object* selectobj     = nullptr;
+      static Object* selectobjprev = nullptr;
+      static int     select        = 0;
+      static int     item_current  = 0;
 
       {
         if (sidebar) {
@@ -522,23 +522,27 @@ int main(int argc, char* argv[]) {
                   is = true;
                 }
 
-                if (!is) {//viewport select
+                if (!is) {  // viewport select
                   selectobj = bf.getobj(select);
-                } else {//combo select
+                } else {  // combo select
                   selectobj = bf.getobj(idarr[item_current]);
                   select    = selectobj->id;
                 }
 
-                if(!selectobjprev){
+                if (!selectobjprev) {
                   selectobjprev = selectobj;
                 }
 
+                if (selectobj->id != selectobjprev->id) {
+                  bf.resetpropbuffer();
+                }
+
                 if (selectobj->type == "button") {
-                  
-                  static char prop_text1[128] = "Text";
-                  if(selectobj->id != selectobjprev->id){strcpy(prop_text1,"Text");}
-                  ImGui::InputText("Value", prop_text1, IM_ARRAYSIZE(prop_text1));
-                  selectobj->value_s = prop_text1;
+                  if (selectobj->value_s != selectobj->identifier) {
+                    bf.prop_text1 = selectobj->value_s;
+                  }
+                  ImGui::InputText("Value", &bf.prop_text1);
+                  selectobj->value_s = bf.prop_text1;
                   std::cout << "button properties" << std::endl;
                 }
                 if (selectobj->type == "checkbox") {
@@ -605,7 +609,7 @@ int main(int argc, char* argv[]) {
         }
 
         if (child_stack) {
-          //ImGui::ShowStackToolWindow(); //Need update
+          // ImGui::ShowStackToolWindow(); //Need update
         }
 
         if (child_colexp) {
