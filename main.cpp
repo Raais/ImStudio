@@ -536,7 +536,7 @@ int main(int argc, char* argv[]) {
                 if (selectobj->type == "button") {
                   //if(selectobj->id != selectobjprev->id){bf.resetpropbuffer();}
                   static char prop_text1[128] = "Text";
-                  ImGui::InputText("Value", bf.prop_text1, IM_ARRAYSIZE(bf.prop_text1));
+                  ImGui::InputText("Value", prop_text1, IM_ARRAYSIZE(prop_text1));
                   selectobj->value_s = prop_text1;
                   std::cout << "button properties" << std::endl;
                 }
