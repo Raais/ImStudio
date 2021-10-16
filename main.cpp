@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 
 // ANCHOR Object
-class Object {
+class Object {//class-object
  public:
   int         id;
   std::string identifier;
@@ -31,7 +31,7 @@ class Object {
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
-  Object(int idvar_, std::string type_) {
+  Object(int idvar_, std::string type_) {//class-object-constr
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -93,7 +93,7 @@ class Object {
   }
 };
 // ANCHOR BufferWindow
-class BufferWindow {
+class BufferWindow {//class-object
  public:
   int         id    = 0;
   bool        state = false;
@@ -104,7 +104,7 @@ class BufferWindow {
 
   // std::vector<Win> win = {};
   std::vector<Object> objects = {};
-  void                drawall(int* select) {
+  void                drawall(int* select) {//class-object-drawall
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
@@ -522,9 +522,8 @@ int main(int argc, char* argv[]) {
                 if (selectobj->type == "button") {
                   static char str0[128] = "Text";
                   ImGui::InputText("Value", str0, IM_ARRAYSIZE(str0));
-                  if (ImGui::Button("Save")) {
-                    selectobj->value_s = str0;
-                  }
+                  selectobj->value_s = str0;
+                  
                   std::cout << "button properties" << std::endl;
                 }
                 if (selectobj->type == "checkbox") {
