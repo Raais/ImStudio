@@ -21,14 +21,16 @@
 //-----------------------------------------------------------------------------
 
 // ANCHOR Object
+
 class Object {  // class-object
  public:
   int         id;
   std::string identifier;
   std::string type;
-  bool        state   = true;
-  bool        value_b = true;
-  bool        moving  = false;
+  bool        state    = true;
+  bool        value_b  = false;
+  bool        moving   = false;
+  bool        propinit = false;
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
@@ -42,41 +44,59 @@ class Object {  // class-object
   void draw(int* select) {
     if (state) {
       if (type == "button") {
-        std::cout << "drawing button: " << this << std::endl;
         ImGui::SetCursorPos(pos);
-
         ImGui::PushID(id);
+
         ImGui::Button(value_s.c_str());
+
         ImGui::PopID();
-
         if (ImGui::IsItemActive()) {
-          pos.x   = extra::GetLocalCursor().x;
-          pos.y   = extra::GetLocalCursor().y;
+          pos     = extra::GetLocalCursor();
           *select = id;
-          // selected_ = this;
-          std::cout << "obj-active assign" << std::endl;
-        } else {
-          std::cout << "drawing button: not active" << std::endl;
         }
-
         highlight(select);
-        // ImGui::Text("%g,%g",extra::GetLastItemPos().x,
-        // extra::GetLastItemPos().y);
       }
       if (type == "checkbox") {
+        ImGui::SetCursorPos(pos);
+        ImGui::PushID(id);
+
         ImGui::Checkbox(value_s.c_str(), &value_b);
-        // highlight();
+
+        ImGui::PopID();
+        if (ImGui::IsItemActive()) {
+          pos     = extra::GetLocalCursor();
+          *select = id;
+        }
+        highlight(select);
       }
       if (type == "radio") {
+        ImGui::SetCursorPos(pos);
+        ImGui::PushID(id);
+
         ImGui::RadioButton(value_s.c_str(), &value_b);
-        // highlight();
+
+        ImGui::PopID();
+        if (ImGui::IsItemActive()) {
+          pos     = extra::GetLocalCursor();
+          *select = id;
+        }
+        highlight(select);
       }
       if (type == "combo") {
+        ImGui::SetCursorPos(pos);
+        ImGui::PushID(id);
+
         const char* items[]      = {"Never", "Gonna", "Give", "You", "Up"};
         static int  item_current = 0;
         ImGui::Combo(value_s.c_str(), &item_current, items,
                      IM_ARRAYSIZE(items));
-        // highlight();
+
+        ImGui::PopID();
+        if (ImGui::IsItemActive()) {
+          pos     = extra::GetLocalCursor();
+          *select = id;
+        }
+        highlight(select);
       }
     }
   }
@@ -97,6 +117,7 @@ class Object {  // class-object
 class PropertyBuffer {
  public:
   std::string prop_text1 = "change me";
+  bool        prop_bool1 = false;
   // static char prop_text1[128] = "Text";
   void resetpropbuffer() { prop_text1 = "change me"; }
 };
@@ -538,20 +559,41 @@ int main(int argc, char* argv[]) {
                 }
 
                 if (selectobj->type == "button") {
-                  if (selectobj->value_s != selectobj->identifier) {
+                  if (selectobj->propinit) {
                     bf.prop_text1 = selectobj->value_s;
                   }
+
                   ImGui::InputText("Value", &bf.prop_text1);
+                  if (ImGui::Button("Delete")) {
+                  }
+                  if (ImGui::IsKeyPressed(
+                          ImGui::GetKeyIndex(ImGuiKey_Delete))) {
+                    selectobj->del();
+                  }
                   selectobj->value_s = bf.prop_text1;
-                  std::cout << "button properties" << std::endl;
                 }
+
                 if (selectobj->type == "checkbox") {
+                  const char* items[] = {"False", "True"};
+                  static int  cur     = 0;
+                  if (selectobj->propinit) {
+                    cur = selectobj->value_b;
+                  }
+
+                  ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
+                  if (cur == 0) {
+                    selectobj->value_b = false;
+                  } else {
+                    selectobj->value_b = true;
+                  }
                 }
+
                 if (selectobj->type == "radio") {
                 }
                 if (selectobj->type == "combo") {
                 }
-                selectobjprev = selectobj;
+                selectobj->propinit = true;
+                selectobjprev       = selectobj;
               }
             }
           }
