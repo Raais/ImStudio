@@ -112,7 +112,9 @@ int main(int argc, char* argv[]) {
   ImVec4      bg = ImVec4(0.123f, 0.123f, 0.123, 1.00f);  // Main bg color
   std::string s  = "hey";
   bool        is = false;
-  bool a = false;
+  bool        a  = false;
+  float       sz = 1;
+  ImRect child;
 
   while (!glfwWindowShouldClose(glwindow)) {
     glfwPollEvents();
@@ -125,21 +127,19 @@ int main(int argc, char* argv[]) {
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
     ImGui::SetNextWindowBgAlpha(0.00f);
 
-    if (is) {
-      ImGui::Text("Active");
-    } else {
-      ImGui::Text("Disabled");
-    }
+    if(is){
+      s="Active";
+    }else{s="Disabled";}
 
-    //ImGui::Button("hello");
-    static char str0[128] = "Hello, world!";
-            ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+    ImGui::Text(s.c_str());
+
+    ImGui::BeginChild("left pane", ImVec2(300, 0), true);
+    ImGui::Button("hello");
+    ImGui::EndChild();
 
     if (ImGui::IsItemActive()) {
       is = true;
-    } else {
-      is = false;
-    }
+    } else {is = false;}
 
     if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
       break;

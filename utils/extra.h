@@ -112,6 +112,27 @@ ImVec2 GetLastItemPos() {//Dangerous. FramePadding has to be 4x3
   return pos;
 }
 
+void GrabButton(ImVec2 pos,int random_int) {
+  ImGui::SetCursorPos(pos);
+  ImGui::PushID(random_int);
+  ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(0.00f, 0.00f));
+  ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,0);
+  ImGui::Button("  ");
+  ImGui::PopStyleVar(2);
+  ImGui::PopID();
+}
+
+static void HelpMarker(const char* desc) {
+  ImGui::TextDisabled("(?)");
+  if (ImGui::IsItemHovered()) {
+    ImGui::BeginTooltip();
+    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+    ImGui::TextUnformatted(desc);
+    ImGui::PopTextWrapPos();
+    ImGui::EndTooltip();
+  }
+}
+
 void metrics() {  // ugly debug stuff
 
   ImGuiIO &      io      = ImGui::GetIO();

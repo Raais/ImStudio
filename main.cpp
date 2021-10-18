@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <sstream>
+#include <random>
 
 #include "font/opensans.cpp"
 #include "imgui/imgui.h"
@@ -27,6 +27,7 @@ class Object {  // class-object
   int         id;
   std::string identifier;
   std::string type;
+  bool        init     = false;
   bool        state    = true;
   bool        value_b  = false;
   bool        moving   = false;
@@ -34,6 +35,12 @@ class Object {  // class-object
   std::string value_s;
   ImVec2      pos = ImVec2(100, 100);
   ImVec2      size;
+  ImRect      child       = ImRect(ImVec2(500, 200), ImVec2(700, 400));
+  ImVec2      child_grab1 = ImVec2(100, 100);
+  ImVec2      child_grab2 = ImVec2(200, 200);
+  int         child_id1;
+  int         child_id2;
+
   Object(int idvar_, std::string type_) {  // class-object-constr
     id         = idvar_;
     type       = type_;
@@ -41,7 +48,7 @@ class Object {  // class-object
     value_s    = type_ + std::to_string(idvar_);
     std::cout << "Object constr: " << value_s << "::" << this << std::endl;
   }
-  void draw(int* select) {
+  void draw(int* select, int gen_rand) {
     if (state) {
       if (type == "button") {
         ImGui::SetCursorPos(pos);
@@ -98,6 +105,38 @@ class Object {  // class-object
         }
         highlight(select);
       }
+      if (type == "child") {
+        auto fg = ImGui::GetForegroundDrawList();
+
+        if (!init) {
+          child_id1 = gen_rand;
+          child_id2 = gen_rand + 1;
+        }
+        extra::GrabButton(child_grab1, child_id1);
+        if (ImGui::IsItemActive()) {
+          child_grab1 = extra::GetLocalCursor();
+          *select     = id;
+        }
+
+        extra::GrabButton(child_grab2, child_id2);
+        if (ImGui::IsItemActive()) {
+          child_grab2 = extra::GetLocalCursor();
+          *select     = id;
+        }
+        child.Min.x = child_grab1.x + ImGui::GetWindowPos().x;
+        child.Min.y = child_grab1.y + ImGui::GetWindowPos().y;
+        child.Max.x = child_grab2.x + ImGui::GetWindowPos().x + 15;
+        child.Max.y = child_grab2.y + ImGui::GetWindowPos().y + 14;
+        // child.Min = child_grab1;
+        // child.Max = child_grab2;
+        if (id == *select) {
+          fg->AddRect(child.Min, child.Max, IM_COL32(255, 255, 0, 255));
+        } else {
+          fg->AddRect(child.Min, child.Max, IM_COL32(170, 170, 170, 255));
+        }
+
+        init = true;
+      }
     }
   }
   void del() { state = false; }
@@ -106,10 +145,9 @@ class Object {  // class-object
   void highlight(int* select) {
     if (id == *select) {
       std::cout << "highlight" << std::endl;
-      ImGui::GetForegroundDrawList()->AddRect(
-          ImGui::GetCurrentContext()->LastItemData.Rect.Min,
-          ImGui::GetCurrentContext()->LastItemData.Rect.Max,
-          IM_COL32(255, 255, 0, 255));
+      ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(),
+                                              ImGui::GetItemRectMax(),
+                                              IM_COL32(255, 255, 0, 255));
     }
   }
 };
@@ -134,21 +172,24 @@ class BufferWindow : public PropertyBuffer {  // class-object
 
   // std::vector<Win> win = {};
   std::vector<Object> objects = {};
-  void                drawall(int* select) {  // class-object-drawall
+  void drawall(int* select, int gen_rand) {  // class-object-drawall
     if (state) {
       ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
       ImGui::SetNextWindowSize(size, ImGuiCond_Once);
       ImGui::Begin(name.c_str(), &state);
+      size = ImGui::GetWindowSize();
+      pos  = ImGui::GetWindowPos();
       {
         // std::cout << "drawall [" << selected_ << "]" << std::endl;
         extra::metrics();
         for (auto i = objects.begin(); i != objects.end(); ++i) {
           Object& o = *i;
-          o.draw(select);
 
           if (o.state == false) {
             i = objects.erase(i);
             break;
+          } else {
+            o.draw(select, gen_rand);
           }
         }
       }
@@ -180,21 +221,10 @@ class BufferWindow : public PropertyBuffer {  // class-object
   void create(std::string type_) {
     idvar++;
     Object widget(idvar, type_);
-    std::cout << "created button: " << &widget << std::endl;
+    // std::cout << "created button: " << &widget << std::endl;
     objects.push_back(widget);
   }
 };
-
-static void HelpMarker(const char* desc) {
-  ImGui::TextDisabled("(?)");
-  if (ImGui::IsItemHovered()) {
-    ImGui::BeginTooltip();
-    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-    ImGui::TextUnformatted(desc);
-    ImGui::PopTextWrapPos();
-    ImGui::EndTooltip();
-  }
-}
 
 //-----------------------------------------------------------------------------
 // ANCHOR GLFW STUFF
@@ -330,6 +360,7 @@ int main(int argc, char* argv[]) {
 
   bool         child_debug   = false;
   bool         child_sty     = false;
+  bool         child_demo    = false;
   bool         child_metrics = false;
   bool         child_colexp  = false;
   bool         child_stack   = false;
@@ -341,11 +372,15 @@ int main(int argc, char* argv[]) {
   // ANCHOR VARS
   //-----------------------------------------------------------------------------
 
+  std::mt19937 rng(time(NULL));
+
   //-----------------------------------------------------------------------------
   // SECTION MAIN LOOP
   //-----------------------------------------------------------------------------
 
   while (!glfwWindowShouldClose(glwindow)) {
+    std::uniform_int_distribution<int> gen(999, 9999);
+
     glfwPollEvents();
     glfwGetWindowSize(glwindow, &w_w, &w_h);
 
@@ -378,6 +413,7 @@ int main(int argc, char* argv[]) {
         if (ImGui::BeginMenu("Debug")) {
           ImGui::MenuItem("Settings", NULL, &child_debug);
           ImGui::MenuItem("Style Editor", NULL, &child_sty);
+          ImGui::MenuItem("Demo Window", NULL, &child_demo);
           ImGui::MenuItem("Metrics", NULL, &child_metrics);
           ImGui::MenuItem("Stack Tool", NULL, &child_stack);
           if (ImGui::MenuItem("Exit")) {
@@ -475,6 +511,15 @@ int main(int argc, char* argv[]) {
               if (ImGui::Button("Combo")) {
                 bf.create("combo");
               }
+              if (ImGui::Button("Child")) {
+                bf.create("child");
+              }
+              ImGui::SameLine();
+              extra::HelpMarker(
+                  "This is not an actual child window (ImGui::BeginChild) as "
+                  "it's behavior is not desired here. However, ImStudio will "
+                  "try its best to recreate the layout in the output. More "
+                  "info at Github issue: ocornut/imgui #1496");
 
               if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
                 break;
@@ -564,13 +609,16 @@ int main(int argc, char* argv[]) {
                   }
 
                   ImGui::InputText("Value", &bf.prop_text1);
-                  if (ImGui::Button("Delete")) {
-                  }
-                  if (ImGui::IsKeyPressed(
-                          ImGui::GetKeyIndex(ImGuiKey_Delete))) {
-                    selectobj->del();
-                  }
                   selectobj->value_s = bf.prop_text1;
+
+                  if ((ImGui::Button("Delete")) ||
+                      (ImGui::IsKeyPressed(
+                          ImGui::GetKeyIndex(ImGuiKey_Delete)))) {
+                    selectobj->del();
+                    if (item_current != 0) {
+                      item_current -= 1;
+                    }
+                  }
                 }
 
                 if (selectobj->type == "checkbox") {
@@ -586,11 +634,30 @@ int main(int argc, char* argv[]) {
                   } else {
                     selectobj->value_b = true;
                   }
+
+                  if ((ImGui::Button("Delete")) ||
+                      (ImGui::IsKeyPressed(
+                          ImGui::GetKeyIndex(ImGuiKey_Delete)))) {
+                    selectobj->del();
+                    if (item_current != 0) {
+                      item_current -= 1;
+                    }
+                  }
                 }
 
                 if (selectobj->type == "radio") {
                 }
                 if (selectobj->type == "combo") {
+                }
+                if (selectobj->type == "child") {
+                  if ((ImGui::Button("Delete")) ||
+                      (ImGui::IsKeyPressed(
+                          ImGui::GetKeyIndex(ImGuiKey_Delete)))) {
+                    selectobj->del();
+                    if (item_current != 0) {
+                      item_current -= 1;
+                    }
+                  }
                 }
                 selectobj->propinit = true;
                 selectobjprev       = selectobj;
@@ -615,12 +682,12 @@ int main(int argc, char* argv[]) {
           /// content-viewport
           {
             std::cout << "drawing viewport" << std::endl;
-            ImGui::Text("%d", bf.objects.size());
+            ImGui::Text("objects.size: %d", bf.objects.size());
+            ImGui::Text("itemcur: %d", item_current);
             if (!bf.objects.empty()) {
-              std::stringstream ss;
               ImGui::Text("Selected = %s", selectobj->identifier.c_str());
             }
-            bf.drawall(&select);
+            bf.drawall(&select, gen(rng));
             // ImGui::Text("%d", bf.win.size());
 
             extra::metrics();
@@ -643,7 +710,15 @@ int main(int argc, char* argv[]) {
         }
 
         if (child_sty) {
-          ImGui::ShowStyleEditor();
+          if (ImGui::Begin("Style Editor", &child_sty,
+                           ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::ShowStyleEditor();
+            ImGui::End();
+          }
+                }
+
+        if (child_demo) {
+          ImGui::ShowDemoWindow(&child_demo);
         }
 
         if (child_metrics) {
@@ -688,7 +763,7 @@ int main(int argc, char* argv[]) {
             " GENERATED CODE\n"
             " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
             "*/\n\n"
-            "auto layout = You.DesignSomethingFancy();\n"
+            "auto layout = You.DesignSomethingFunky();\n"
             "ImStudio.GenerateCode(layout);";
 
         ImGui::InputTextMultiline(
