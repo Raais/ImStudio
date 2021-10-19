@@ -1,11 +1,8 @@
-#include <memory>
-#include <stdexcept>
+#include "../includes.h"
+#include "utils.h"
 
-#pragma once
 
-namespace extra {
-
-void glfwSetWindowCenter(GLFWwindow *window) {
+void extra::glfwSetWindowCenter(GLFWwindow *window) {
   // Get window position and size
   int window_x, window_y;
   glfwGetWindowPos(window, &window_x, &window_y);
@@ -73,7 +70,7 @@ void glfwSetWindowCenter(GLFWwindow *window) {
   }
 }
 
-ImVec2 GetLocalCursor() {
+ImVec2 extra::GetLocalCursor() {
   ImGuiIO &     io = ImGui::GetIO();
   ImGuiContext &g  = *ImGui::GetCurrentContext();
   ImGuiWindow * w  = g.CurrentWindow;
@@ -81,7 +78,7 @@ ImVec2 GetLocalCursor() {
   return cursor;
 }
 
-ImVec2 GetStaticCursor() {
+ImVec2 extra::GetStaticCursor() {
   ImGuiContext &g      = *ImGui::GetCurrentContext();
   ImGuiWindow * w      = g.CurrentWindow;
   ImVec2        cursor = ImVec2(ImGui::GetCursorPosX() - w->Pos.x,
@@ -89,21 +86,21 @@ ImVec2 GetStaticCursor() {
   return cursor;
 }
 
-ImVec2 GetWindowSRatio() {  // AKA scale factor
+ImVec2 extra::GetWindowSRatio() {  // AKA scale factor
   ImGuiWindow *  w     = ImGui::GetCurrentWindow();
   ImGuiViewport *v     = ImGui::GetMainViewport();
   ImVec2         ratio = ImVec2(v->Size.x / w->Size.x, v->Size.y / w->Size.y);
   return ratio;
 }
 
-ImVec2 GetWindowPRatio() {  // AKA scale factor
+ImVec2 extra::GetWindowPRatio() {  // AKA scale factor
   ImGuiWindow *  w     = ImGui::GetCurrentWindow();
   ImGuiViewport *v     = ImGui::GetMainViewport();
   ImVec2         ratio = ImVec2(v->Size.x / w->Pos.x, v->Size.y / w->Pos.y);
   return ratio;
 }
 
-ImVec2 GetLastItemPos() {//Dangerous. FramePadding has to be 4x3
+ImVec2 extra::GetLastItemPos() {//Dangerous. FramePadding has to be 4x3
   ImGuiContext &g            = *ImGui::GetCurrentContext();
   ImGuiWindow * w            = ImGui::GetCurrentWindow();
   ImRect        r            = g.LastItemData.Rect;
@@ -112,7 +109,7 @@ ImVec2 GetLastItemPos() {//Dangerous. FramePadding has to be 4x3
   return pos;
 }
 
-void GrabButton(ImVec2 pos,int random_int) {
+void extra::GrabButton(ImVec2 pos,int random_int) {
   ImGui::SetCursorPos(pos);
   ImGui::PushID(random_int);
   ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,ImVec2(0.00f, 0.00f));
@@ -122,7 +119,7 @@ void GrabButton(ImVec2 pos,int random_int) {
   ImGui::PopID();
 }
 
-static void HelpMarker(const char* desc) {
+void extra::HelpMarker(const char* desc) {
   ImGui::TextDisabled("(?)");
   if (ImGui::IsItemHovered()) {
     ImGui::BeginTooltip();
@@ -133,7 +130,7 @@ static void HelpMarker(const char* desc) {
   }
 }
 
-void metrics() {  // ugly debug stuff
+void extra::metrics() {  // ugly debug stuff
 
   ImGuiIO &      io      = ImGui::GetIO();
   ImGuiWindow *  window  = ImGui::GetCurrentWindowRead();
@@ -165,19 +162,3 @@ void metrics() {  // ugly debug stuff
   ImGui::Text("frame padding: %gx%g", ImGui::GetStyle().FramePadding.x,
               ImGui::GetStyle().FramePadding.y);
 }
-
-template <typename... Args>
-std::string string_format(const std::string &format, Args... args) {
-  int size_s = std::snprintf(nullptr, 0, format.c_str(), args...) +
-               1;  // Extra space for '\0'
-  if (size_s <= 0) {
-    throw std::runtime_error("Error during formatting.");
-  }
-  auto size = static_cast<size_t>(size_s);
-  auto buf  = std::make_unique<char[]>(size);
-  std::snprintf(buf.get(), size, format.c_str(), args...);
-  return std::string(buf.get(),
-                     buf.get() + size - 1);  // We don't want the '\0' inside
-}
-
-}  // namespace extra
