@@ -137,6 +137,21 @@ class Object {  // class-object
 
         init = true;
       }
+      if (type == "text") {
+        ImGui::SetCursorPos(pos);
+        ImGui::PushID(id);
+
+        ImGui::Text(value_s.c_str());
+        ImGui::SetCursorPos(pos);
+        ImGui::InvisibleButton("", ImGui::CalcTextSize(value_s.c_str()));
+
+        ImGui::PopID();
+        if (ImGui::IsItemActive()) {
+          pos     = extra::GetLocalCursor();
+          *select = id;
+        }
+        highlight(select);
+      }
     }
   }
   void del() { state = false; }
@@ -520,6 +535,9 @@ int main(int argc, char* argv[]) {
                   "it's behavior is not desired here. However, ImStudio will "
                   "try its best to recreate the layout in the output. More "
                   "info at Github issue: ocornut/imgui #1496");
+              if (ImGui::Button("Text")) {
+                bf.create("text");
+              }
 
               if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape))) {
                 break;
@@ -659,6 +677,23 @@ int main(int argc, char* argv[]) {
                     }
                   }
                 }
+                if (selectobj->type == "text") {
+                  if (selectobj->propinit) {
+                    bf.prop_text1 = selectobj->value_s;
+                  }
+
+                  ImGui::InputText("Value", &bf.prop_text1);
+                  selectobj->value_s = bf.prop_text1;
+
+                  if ((ImGui::Button("Delete")) ||
+                      (ImGui::IsKeyPressed(
+                          ImGui::GetKeyIndex(ImGuiKey_Delete)))) {
+                    selectobj->del();
+                    if (item_current != 0) {
+                      item_current -= 1;
+                    }
+                  }
+                }
                 selectobj->propinit = true;
                 selectobjprev       = selectobj;
               }
@@ -715,7 +750,7 @@ int main(int argc, char* argv[]) {
             ImGui::ShowStyleEditor();
             ImGui::End();
           }
-                }
+        }
 
         if (child_demo) {
           ImGui::ShowDemoWindow(&child_demo);
