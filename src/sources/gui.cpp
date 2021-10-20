@@ -3,6 +3,7 @@
 #include "object.h"
 #include "gui.h"
 
+//ANCHOR MENUBAR.DEFINITION
 void GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
@@ -70,6 +71,7 @@ void GUI::ShowMenubar()
     ImGui::End();
 }
 
+//ANCHOR SIDEBAR.DEFINITION
 void GUI::ShowSidebar()
 {
     ImGui::SetNextWindowPos(sb_P);
@@ -90,7 +92,6 @@ void GUI::ShowSidebar()
             }
             if (ImGui::Button("Button"))
             {
-                std::cout << "creating button" << std::endl;
                 bw.create("button");
             }
             if (ImGui::Button("Radio Button"))
@@ -125,6 +126,7 @@ void GUI::ShowSidebar()
     ImGui::End();
 }
 
+//ANCHOR PROPERTIES.DEFINITION
 void GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
@@ -151,13 +153,6 @@ void GUI::ShowProperties()
                         {
                             selectproparray = i;
                         }
-
-                        std::cout << i << std::endl;
-                        std::cout << "prop-pre check" << std::endl;
-                    }
-                    else
-                    {
-                        std::cout << "prop-pre check FAIL" << std::endl;
                     }
                     i++;
                 }
@@ -278,6 +273,7 @@ void GUI::ShowProperties()
     ImGui::End();
 }
 
+//ANCHOR VIEWPORT.DEFINITION
 void GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
@@ -286,7 +282,6 @@ void GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
-        std::cout << "drawing viewport" << std::endl;
         ImGui::Text("objects.size: %d", bw.objects.size());
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
@@ -302,6 +297,7 @@ void GUI::ShowViewport(int gen_rand)
     ImGui::End();
 }
 
+//ANCHOR OUTPUTWKSP.DEFINITION
 void GUI::ShowOutputWorkspace()
 {
     ImGui::SetNextWindowPos(ot_P);

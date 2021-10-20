@@ -6,43 +6,43 @@
 
 struct GUI
 {
-    bool         state       = true;
-    bool         wksp_create = true;
+    bool         state                  = true;
+    bool         wksp_create            = true;
 
-    bool         menubar     = true;
-    ImVec2       mb_P        = {};
-    ImVec2       mb_S        = {};
-    void         ShowMenubar();
+    bool         menubar                = true;
+    ImVec2       mb_P                   = {};
+    ImVec2       mb_S                   = {};
+    void         ShowMenubar();     
 
-    bool         sidebar = true;
-    ImVec2       sb_P    = {};
-    ImVec2       sb_S    = {};
-    void         ShowSidebar();
+    bool         sidebar                = true;
+    ImVec2       sb_P                   = {};
+    ImVec2       sb_S                   = {};
+    void         ShowSidebar();     
 
-    bool         properties      = true;
-    ImVec2       pt_P            = {};
-    ImVec2       pt_S            = {};
-    int          selectid        = 0;
-    Object *     selectobj       = nullptr;
-    Object *     selectobjprev   = nullptr;
-    int          selectproparray = 0;
-    void         ShowProperties();
+    bool         properties             = true;
+    ImVec2       pt_P                   = {};
+    ImVec2       pt_S                   = {};
+    int          selectid               = 0;
+    Object *     selectobj              = nullptr;
+    Object *     selectobjprev          = nullptr;
+    int          selectproparray        = 0;
+    void         ShowProperties()       ;
 
-    bool         viewport = true;
-    ImVec2       vp_P     = {};
-    ImVec2       vp_S     = {};
-    BufferWindow bw;
+    bool         viewport               = true;
+    ImVec2       vp_P                   = {};
+    ImVec2       vp_S                   = {};
+    BufferWindow bw;        
     void         ShowViewport(int gen_rand);
 
-    bool         wksp_output = false;
-    ImVec2       ot_P          = {};
-    ImVec2       ot_S          = {};
+    bool         wksp_output            = false;
+    ImVec2       ot_P                   = {};
+    ImVec2       ot_S                   = {};
     void         ShowOutputWorkspace();
 
-    bool         child_debug   = false;
-    bool         child_sty     = false;
-    bool         child_demo    = false;
-    bool         child_metrics = false;
-    bool         child_colexp  = false;
-    bool         child_stack   = false;
+    bool         child_debug            = false;
+    bool         child_sty              = false;
+    bool         child_demo             = false;
+    bool         child_metrics          = false;
+    bool         child_colexp           = false;
+    bool         child_stack            = false;
 };

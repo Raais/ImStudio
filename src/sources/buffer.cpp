@@ -76,6 +76,5 @@ void BufferWindow::create(std::string type_)
 {
     idvar++;
     Object widget(idvar, type_);
-    // std::cout << "created button: " << &widget << std::endl;
     objects.push_back(widget);
 }

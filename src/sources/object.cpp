@@ -7,7 +7,6 @@ Object::Object(int idvar_, std::string type_)
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
     value_s    = type_ + std::to_string(idvar_);
-    std::cout << "Object constr: " << value_s << "::" << this << std::endl;
 }
 
 void Object::draw(int *select, int gen_rand)
@@ -144,7 +143,6 @@ void Object::highlight(int *select)
 {
     if (id == *select)
     {
-        std::cout << "highlight" << std::endl;
         ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
                                                 IM_COL32(255, 255, 0, 255));
     }

@@ -200,17 +200,6 @@ int main(int argc, char *argv[])
                     gui.ShowViewport(gen(rng));
                 }
 
-                if (gui.child_debug)
-                {
-                    ImGui::SetNextWindowBgAlpha(0.35f);
-                    if (ImGui::Begin("child_debug", &gui.child_debug, ImGuiWindowFlags_AlwaysAutoResize))
-                    {
-                        ImGui::Text("hello");
-                        std::cout << "hello4" << std::endl;
-                        ImGui::End();
-                    }
-                }
-
                 if (gui.child_sty)
                 {
                     if (ImGui::Begin("Style Editor", &gui.child_sty, ImGuiWindowFlags_AlwaysAutoResize))
