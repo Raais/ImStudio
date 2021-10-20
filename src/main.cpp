@@ -3,10 +3,6 @@
 #include "sources/buffer.h"
 #include "sources/gui.h"
 
-//-----------------------------------------------------------------------------
-// ANCHOR GLFW STUFF
-//-----------------------------------------------------------------------------
-
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
 #endif
@@ -27,9 +23,6 @@ int main(int argc, char *argv[])
     int  w_h      = 600;
     bool resizing = false;
 
-    //---------------------------------------------------
-    // ANCHOR ARGS
-    //---------------------------------------------------
     std::vector<std::string> args(argv, argv + argc);
 
     for (size_t i = 1; i < args.size(); ++i)
@@ -38,8 +31,6 @@ int main(int argc, char *argv[])
         {
         }
     }
-    //---------------------------------------------------
-    //---------------------------------------------------
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -61,10 +52,6 @@ int main(int argc, char *argv[])
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
 #endif
-
-    //-----------------------------------------------------------------------------
-    // ANCHOR CREATE glwindow
-    //-----------------------------------------------------------------------------
 
     glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER,
@@ -89,10 +76,6 @@ int main(int argc, char *argv[])
     glfwSwapInterval(1); // Enable vsync
     // extra::glfwSetWindowCenter(glwindow);
 
-    //-----------------------------------------------------------------------------
-    // ANCHOR IMGUI
-    //-----------------------------------------------------------------------------
-
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO &io = ImGui::GetIO();
@@ -102,7 +85,6 @@ int main(int argc, char *argv[])
 
     //-----------------------------------------------------------------------------
     // ANCHOR STYLES & SETTINGS
-    //-----------------------------------------------------------------------------
 
     // io.Fonts->Build();
     io.IniFilename = NULL;
@@ -117,18 +99,8 @@ int main(int argc, char *argv[])
     style.FrameRounding  = 12.00f;
     style.GrabRounding   = 12.00f;
 
-    //ImVec4 *colors = style.Colors; // TODO Redo color scheme
+    // ImVec4 *colors = style.Colors; // TODO Redo color scheme
 
-    //-----------------------------------------------------------------------------
-    // ANCHOR LAYOUT (size & pos) | Define relationships between windows
-    //-----------------------------------------------------------------------------
-
-    //-----------------------------------------------------------------------------
-    // ANCHOR STATE (WORKSPACES & MAIN LAYOUT WINDOWS)
-    //-----------------------------------------------------------------------------
-
-    //-----------------------------------------------------------------------------
-    // ANCHOR STATE (CHILDREN)
     //-----------------------------------------------------------------------------
 
     GUI gui;
@@ -136,14 +108,11 @@ int main(int argc, char *argv[])
     gui.bw.objects.reserve(250);
 
     //-----------------------------------------------------------------------------
-    // ANCHOR VARS
-    //-----------------------------------------------------------------------------
 
     std::mt19937 rng(time(NULL));
 
     //-----------------------------------------------------------------------------
-    // SECTION MAIN LOOP
-    //-----------------------------------------------------------------------------
+// SECTION MAIN LOOP
 
     while ((!glfwWindowShouldClose(glwindow)) && (gui.state))
     {
@@ -159,103 +128,56 @@ int main(int argc, char *argv[])
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::SetNextWindowBgAlpha(0.00f);
 
-        //-----------------------------------------------------------------------------
-        // SECTION GUI
-        //-----------------------------------------------------------------------------
+// SECTION GUI
 
-        // ANCHOR MENUBAR
+        // window-menubar
         gui.mb_P = ImVec2(0, 0);
         gui.mb_S = ImVec2(w_w, 46);
-        if (gui.menubar)
-        {
-            gui.ShowMenubar();
-        }
+        if (gui.menubar) gui.ShowMenubar();
 
         // workspace-create
         if (gui.wksp_create)
         {
 
-            {
+            { // create-main
                 // create-sidebar
                 gui.sb_P = ImVec2(0, gui.mb_S.y);
                 gui.sb_S = ImVec2(w_w / 12, w_h - gui.mb_S.y);
-                if (gui.sidebar)
-                {
-                    gui.ShowSidebar();
-                }
+                if (gui.sidebar) gui.ShowSidebar();
 
                 // create-properties
                 gui.pt_P = ImVec2(w_w - 300, gui.mb_S.y);
                 gui.pt_S = ImVec2(300, w_h - gui.mb_S.y);
-                if (gui.properties)
-                {
-                    gui.ShowProperties();
-                }
+                if (gui.properties) gui.ShowProperties();
 
                 // create-viewport
                 gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
                 gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
-                if (gui.viewport)
-                {
-                    gui.ShowViewport(gen(rng));
-                }
+                if (gui.viewport) gui.ShowViewport(gen(rng));
 
-                if (gui.child_sty)
-                {
-                    if (ImGui::Begin("Style Editor", &gui.child_sty, ImGuiWindowFlags_AlwaysAutoResize))
-                    {
-                        ImGui::ShowStyleEditor();
-                        ImGui::End();
-                    }
-                }
+            }
+            { // create-children
 
-                if (gui.child_demo)
-                {
-                    ImGui::ShowDemoWindow(&gui.child_demo);
-                }
+                if (gui.child_sty) extra::ShowStyleEditorWindow(&gui.child_sty);
 
-                if (gui.child_metrics)
-                {
-                    ImGui::ShowMetricsWindow(&gui.child_metrics);
-                }
+                if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);
+
+                if (gui.child_metrics) ImGui::ShowMetricsWindow(&gui.child_metrics);
 
                 if (gui.child_stack)
-                {
-                    // ImGui::ShowStackToolWindow(); //Need update
+                { // ImGui::ShowStackToolWindow(); //Need update
                 }
 
-                if (gui.child_colexp)
-                {
-                    ImGui::SetNextWindowBgAlpha(0.35f);
-                    if (ImGui::Begin("Color Export", &gui.child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
-                    {
-                        ImGui::ColorEdit3("Your Color", (float *)&bg, ImGuiColorEditFlags_Float);
-                        if (ImGui::Button("Export to Clipboard"))
-                        {
-                            std::string exp = "ImVec4 col = ImVec4(" + std::to_string(bg.x) + "f," +
-                                              std::to_string(bg.y) + "f," + std::to_string(bg.z) + "f,1.00f);";
-                            ImGui::LogToClipboard();
-                            ImGui::LogText(exp.c_str());
-                            ImGui::LogFinish();
-                        }
-                        ImGui::End();
-                    }
-                }
+                if (gui.child_colexp) extra::ShowColorExportWindow(&gui.child_colexp);
             }
-        } //! SECTION wksp_create End
-        //-----------------------------------------------------------------------------
-        // ANCHOR wksp_output
-        gui.ot_P = ImVec2(0, gui.mb_S.y);
-        gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
-        if (gui.wksp_output)
-        {
-            gui.ShowOutputWorkspace();
         }
 
-        //! SECTION GUI End
-        //-----------------------------------------------------------------------------
-        // ANCHOR RENDER
-        //-----------------------------------------------------------------------------
+        // workspace-output
+        gui.ot_P = ImVec2(0, gui.mb_S.y);
+        gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
+        if (gui.wksp_output) gui.ShowOutputWorkspace();
+
+//! SECTION GUI End
 
         ImGui::Render();
         int display_w, display_h;
@@ -268,8 +190,7 @@ int main(int argc, char *argv[])
         glfwSwapBuffers(glwindow);
     }
 
-    //! SECTION MAIN LOOP End
-    //-----------------------------------------------------------------------------
+//! SECTION MAIN LOOP End
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
@@ -279,7 +200,4 @@ int main(int argc, char *argv[])
     glfwTerminate();
 
     return 0;
-
-    //! SECTION MAIN FUNC() End
-    //-----------------------------------------------------------------------------
 }

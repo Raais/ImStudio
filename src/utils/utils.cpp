@@ -119,6 +119,32 @@ ImVec2 extra::GetLastItemPos()
     return pos;
 }
 
+void extra::ShowStyleEditorWindow(bool *child_sty)
+{
+    ImGui::Begin("Style Editor", child_sty, ImGuiWindowFlags_AlwaysAutoResize);
+    ImGui::ShowStyleEditor();
+    ImGui::End();
+}
+
+void extra::ShowColorExportWindow(bool *child_colexp)
+{
+    ImGui::SetNextWindowBgAlpha(0.35f);
+                    if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
+                    {
+                        static ImVec4 col      = ImVec4(0.123f, 0.123f, 0.123, 1.00f);
+                        ImGui::ColorEdit3("Your Color", (float *)&col, ImGuiColorEditFlags_Float);
+                        if (ImGui::Button("Export to Clipboard"))
+                        {
+                            std::string exp = "ImVec4 col = ImVec4(" + std::to_string(col.x) + "f," +
+                                              std::to_string(col.y) + "f," + std::to_string(col.z) + "f,1.00f);";
+                            ImGui::LogToClipboard();
+                            ImGui::LogText(exp.c_str());
+                            ImGui::LogFinish();
+                        }
+                        ImGui::End();
+                    }
+}
+
 void extra::GrabButton(ImVec2 pos, int random_int)
 {
     ImGui::SetCursorPos(pos);
