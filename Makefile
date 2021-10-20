@@ -1,10 +1,10 @@
 #
 # Cross Platform Makefile
-# Compatible with MSYS2/MINGW, Ubuntu 14.04.1 and Mac OS X
+# Compatible with MSYS2/MINGW, Ubuntu and Mac OS X
 #
 # You will need GLFW (http://www.glfw.org):
 # Linux:
-#   apt-get install libglfw-dev
+#   sudo apt-get libglfw libglfw-dev
 # Mac OS X:
 #   brew install glfw
 # MSYS2:
@@ -14,12 +14,22 @@
 #CXX = g++
 #CXX = clang++
 
-EXE = out
-IMGUI_DIR = imgui
-SOURCES = main.cpp
-#SOURCES = test.cpp
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
-SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp utils/utils.cpp main/object.cpp main/buffer.cpp
+EXE = ImStudio
+SRC_DIR = src
+IMGUI_DIR = $(SRC_DIR)/imgui
+
+#ImGui Core
+SOURCES = $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
+#ImGui Backends
+SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
+#ImGui Extras
+SOURCES += $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp
+
+#ImStudio
+SOURCES += $(SRC_DIR)/main.cpp
+SOURCES += $(wildcard $(SRC_DIR)/utils/*.cpp)
+SOURCES += $(wildcard $(SRC_DIR)/sources/*.cpp)
+
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
@@ -71,9 +81,6 @@ endif
 ## BUILD RULES
 ##---------------------------------------------------------------------
 
-%.o:%.cpp
-	$(CXX) $(CXXFLAGS) -c -o $@ $<
-
 %.o:$(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
@@ -83,10 +90,13 @@ endif
 %.o:$(IMGUI_DIR)/misc/cpp/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:main/%.cpp
+%.o:$(SRC_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:utils/%.cpp
+%.o:$(SRC_DIR)/utils/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(SRC_DIR)/sources/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 all: $(EXE)
