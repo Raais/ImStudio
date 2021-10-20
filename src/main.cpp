@@ -1,6 +1,37 @@
 #include "includes.h"
 #include "sources/object.h"
 #include "sources/buffer.h"
+#include "sources/gui.h"
+
+class GUI
+{
+  public:
+    bool         state          = true;
+    bool         wksp_interface = true;
+    bool         wksp_logic     = false;
+
+    bool         menubar        = true;
+    ImVec2       mb_P           = {};
+    ImVec2       mb_S           = {};
+
+    bool         sidebar        = true;
+    ImVec2       sb_P           = {};
+    ImVec2       sb_S           = {};
+
+    bool         properties     = true;
+    ImVec2       pt_P           = {};
+    ImVec2       pt_S           = {};
+
+    bool         viewport       = true;
+    BufferWindow bf;
+    
+    bool         child_debug   = false;
+    bool         child_sty     = false;
+    bool         child_demo    = false;
+    bool         child_metrics = false;
+    bool         child_colexp  = false;
+    bool         child_stack   = false;
+};
 
 //-----------------------------------------------------------------------------
 // ANCHOR GLFW STUFF
@@ -126,27 +157,13 @@ int main(int argc, char *argv[])
     // ANCHOR STATE (WORKSPACES & MAIN LAYOUT WINDOWS)
     //-----------------------------------------------------------------------------
 
-    bool wksp_interface = true;
-    bool wksp_logic     = false;
-
-    bool menubar    = true;
-    bool sidebar    = true;
-    bool viewport   = true;
-    bool properties = true;
-
     //-----------------------------------------------------------------------------
     // ANCHOR STATE (CHILDREN)
     //-----------------------------------------------------------------------------
 
-    bool         child_debug   = false;
-    bool         child_sty     = false;
-    bool         child_demo    = false;
-    bool         child_metrics = false;
-    bool         child_colexp  = false;
-    bool         child_stack   = false;
-    bool         ly_save       = false;
-    BufferWindow bf;
-    bf.objects.reserve(250);
+    GUI ImStudio;
+
+    ImStudio.bf.objects.reserve(250);
 
     //-----------------------------------------------------------------------------
     // ANCHOR VARS
@@ -158,7 +175,7 @@ int main(int argc, char *argv[])
     // SECTION MAIN LOOP
     //-----------------------------------------------------------------------------
 
-    while (!glfwWindowShouldClose(glwindow))
+    while ((!glfwWindowShouldClose(glwindow)) && (ImStudio.state))
     {
         std::uniform_int_distribution<int> gen(999, 9999);
 
@@ -179,7 +196,7 @@ int main(int argc, char *argv[])
         // ANCHOR MENUBAR
         ImVec2 mb_P = ImVec2(0, 0);
         ImVec2 mb_S = ImVec2(w_w, 46);
-        if (menubar)
+        if (ImStudio.menubar)
         {
             ImGui::SetNextWindowPos(mb_P);
             ImGui::SetNextWindowSize(mb_S);
@@ -194,11 +211,11 @@ int main(int argc, char *argv[])
                 /// menu-debug
                 if (ImGui::BeginMenu("Debug"))
                 {
-                    ImGui::MenuItem("Settings", NULL, &child_debug);
-                    ImGui::MenuItem("Style Editor", NULL, &child_sty);
-                    ImGui::MenuItem("Demo Window", NULL, &child_demo);
-                    ImGui::MenuItem("Metrics", NULL, &child_metrics);
-                    ImGui::MenuItem("Stack Tool", NULL, &child_stack);
+                    ImGui::MenuItem("Settings", NULL, &ImStudio.child_debug);
+                    ImGui::MenuItem("Style Editor", NULL, &ImStudio.child_sty);
+                    ImGui::MenuItem("Demo Window", NULL, &ImStudio.child_demo);
+                    ImGui::MenuItem("Metrics", NULL, &ImStudio.child_metrics);
+                    ImGui::MenuItem("Stack Tool", NULL, &ImStudio.child_stack);
                     if (ImGui::MenuItem("Exit"))
                     {
                         break;
@@ -209,17 +226,13 @@ int main(int argc, char *argv[])
                 /// menu-edit
                 if (ImGui::BeginMenu("Edit"))
                 {
-                    if (ImGui::MenuItem("Save Layout"))
-                    {
-                        ly_save = true;
-                    }
                     ImGui::EndMenu();
                 }
 
                 /// menu-tools
                 if (ImGui::BeginMenu("Tools"))
                 {
-                    ImGui::MenuItem("Color Export", NULL, &child_colexp);
+                    ImGui::MenuItem("Color Export", NULL, &ImStudio.child_colexp);
                     ImGui::EndMenu();
                 }
 
@@ -232,16 +245,16 @@ int main(int argc, char *argv[])
                 // tab-interface
                 if (ImGui::BeginTabItem("Interface"))
                 {
-                    wksp_logic     = false;
-                    wksp_interface = true;
+                    ImStudio.wksp_logic     = false;
+                    ImStudio.wksp_interface = true;
                     ImGui::EndTabItem();
                 }
 
                 // tab-logic
                 if (ImGui::BeginTabItem("Logic"))
                 {
-                    wksp_interface = false;
-                    wksp_logic     = true;
+                    ImStudio.wksp_interface = false;
+                    ImStudio.wksp_logic     = true;
                     ImGui::EndTabItem();
                 }
 
@@ -254,62 +267,53 @@ int main(int argc, char *argv[])
         //-----------------------------------------------------------------------------
         // SECTION wksp_interface
         //-----------------------------------------------------------------------------
-        if (wksp_interface)
+        if (ImStudio.wksp_interface)
         {
             // ANCHOR SIDEBAR
-            static ImVec2 sb_P  = ImVec2(0, mb_S.y);
-            static ImVec2 sb_S  = ImVec2(w_w / 12, w_h - mb_S.y);
-            static ImVec2 sb_Sr = ImVec2(12, 1.015444); // sb_S expressed as ratio to make
-                                                        // scaling/resizing simpler
+            ImVec2 sb_P = ImVec2(0, mb_S.y);
+            ImVec2 sb_S = ImVec2(w_w / 12, w_h - mb_S.y);
+
             static Object *selectobj     = nullptr;
             static Object *selectobjprev = nullptr;
             static int     select        = 0;
             static int     item_current  = 0;
 
             {
-                if (sidebar)
+                if (ImStudio.sidebar)
                 {
                     ImGui::SetNextWindowPos(sb_P);
                     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
                     ImGui::SetNextWindowSize(sb_S);
                     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
                     sb_S = ImGui::GetWindowSize();
-                    if (ly_save)
-                    {
-                        sb_Sr = extra::GetWindowSRatio();
-                    }
-                    if (resizing)
-                    {
-                        sb_S = ImVec2(w_w / sb_Sr.x, w_h / sb_Sr.y);
-                    }
 
                     /// content-sidebar
                     {
                         {
                             if (ImGui::Button("Window"))
                             {
-                                bf.state = true;
+                                ImStudio.bf.state = true;
                             }
                             if (ImGui::Button("Checkbox"))
                             {
-                                bf.create("checkbox");
+                                ImStudio.bf.create("checkbox");
                             }
                             if (ImGui::Button("Button"))
                             {
                                 std::cout << "creating button" << std::endl;
-                                bf.create("button");
+                                ImStudio.bf.create("button");
                             }
                             if (ImGui::Button("Radio Button"))
                             {
-                                bf.create("radio");
+                                ImStudio.bf.create("radio");
                             }
                             if (ImGui::Button("Combo"))
                             {
-                                bf.create("combo");
+                                ImStudio.bf.create("combo");
                             }
                             if (ImGui::Button("Child"))
                             {
-                                bf.create("child");
+                                ImStudio.bf.create("child");
                             }
                             ImGui::SameLine();
                             extra::HelpMarker("This is not an actual child window (ImGui::BeginChild) as "
@@ -318,7 +322,7 @@ int main(int argc, char *argv[])
                                               "info at Github issue: ocornut/imgui #1496");
                             if (ImGui::Button("Text"))
                             {
-                                bf.create("text");
+                                ImStudio.bf.create("text");
                             }
 
                             if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
@@ -333,47 +337,31 @@ int main(int argc, char *argv[])
 
                 //-----------------------------------------------------------------------------
                 // ANCHOR PROPERTIES
-                static ImVec2 pt_P  = ImVec2(w_w - 300, mb_S.y);
-                static ImVec2 pt_S  = ImVec2(300, w_h - mb_S.y);
-                static ImVec2 pt_Sr = ImVec2(6.40000, 1.046766);
-                static ImVec2 pt_Pr = ImVec2(1.175750, 22.869566);
-                static bool   is    = false;
-                if (properties)
+                ImVec2 pt_P = ImVec2(w_w - 300, mb_S.y);
+                ImVec2 pt_S = ImVec2(300, w_h - mb_S.y);
+                if (ImStudio.properties)
                 {
                     ImGui::SetNextWindowPos(pt_P);
                     ImGui::SetNextWindowSize(pt_S);
                     ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove);
                     pt_P = ImGui::GetWindowPos();
                     pt_S = ImGui::GetWindowSize();
-                    if (ly_save)
-                    {
-                        pt_Sr   = extra::GetWindowSRatio();
-                        pt_Pr   = extra::GetWindowPRatio();
-                        ly_save = false;
-                    }
-                    if (resizing)
-                    {
-                        pt_P     = ImVec2(w_w / pt_Pr.x, mb_S.y);
-                        pt_S     = ImVec2(w_w / pt_Sr.x, w_h / pt_Sr.y);
-                        resizing = false;
-                    }
-
                     /// content-properties
                     {
                         {
-                            if (!bf.objects.empty())
+                            if (!ImStudio.bf.objects.empty())
                             {
-                                const char *items[bf.objects.size()];
-                                int         idarr[bf.objects.size()];
+                                const char *items[ImStudio.bf.objects.size()];
+                                int         idarr[ImStudio.bf.objects.size()];
                                 int         i = 0;
-                                for (auto it = bf.objects.begin(); it != bf.objects.end(); ++it)
+                                for (auto it = ImStudio.bf.objects.begin(); it != ImStudio.bf.objects.end(); ++it)
                                 {
                                     Object &o = *it;
                                     items[i]  = o.identifier.c_str();
                                     idarr[i]  = o.id;
                                     if (o.id == select)
                                     {
-                                        if (!is)
+                                        if (ImGui::IsMouseDown(0))
                                         {
                                             item_current = i;
                                         }
@@ -391,21 +379,12 @@ int main(int argc, char *argv[])
                                 ImGui::Combo("combo", &item_current, items, IM_ARRAYSIZE(items));
 
                                 if (ImGui::IsMouseDown(0))
-                                {
-                                    is = false;
-                                }
-                                else
-                                {
-                                    is = true;
-                                }
-
-                                if (!is)
                                 { // viewport select
-                                    selectobj = bf.getobj(select);
+                                    selectobj = ImStudio.bf.getobj(select);
                                 }
                                 else
                                 { // combo select
-                                    selectobj = bf.getobj(idarr[item_current]);
+                                    selectobj = ImStudio.bf.getobj(idarr[item_current]);
                                     select    = selectobj->id;
                                 }
 
@@ -416,18 +395,18 @@ int main(int argc, char *argv[])
 
                                 if (selectobj->id != selectobjprev->id)
                                 {
-                                    bf.resetpropbuffer();
+                                    ImStudio.bf.resetpropbuffer();
                                 }
 
                                 if (selectobj->type == "button")
                                 {
                                     if (selectobj->propinit)
                                     {
-                                        bf.prop_text1 = selectobj->value_s;
+                                        ImStudio.bf.prop_text1 = selectobj->value_s;
                                     }
 
-                                    ImGui::InputText("Value", &bf.prop_text1);
-                                    selectobj->value_s = bf.prop_text1;
+                                    ImGui::InputText("Value", &ImStudio.bf.prop_text1);
+                                    selectobj->value_s = ImStudio.bf.prop_text1;
 
                                     if ((ImGui::Button("Delete")) ||
                                         (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -492,11 +471,11 @@ int main(int argc, char *argv[])
                                 {
                                     if (selectobj->propinit)
                                     {
-                                        bf.prop_text1 = selectobj->value_s;
+                                        ImStudio.bf.prop_text1 = selectobj->value_s;
                                     }
 
-                                    ImGui::InputText("Value", &bf.prop_text1);
-                                    selectobj->value_s = bf.prop_text1;
+                                    ImGui::InputText("Value", &ImStudio.bf.prop_text1);
+                                    selectobj->value_s = ImStudio.bf.prop_text1;
 
                                     if ((ImGui::Button("Delete")) ||
                                         (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -521,7 +500,7 @@ int main(int argc, char *argv[])
                 // ANCHOR VIEWPORT
                 ImVec2 vp_P = ImVec2(sb_S.x, mb_S.y);
                 ImVec2 vp_S = ImVec2(pt_P.x - sb_S.x, w_h - mb_S.y);
-                if (viewport)
+                if (ImStudio.viewport)
                 {
                     ImGui::SetNextWindowPos(vp_P);
                     ImGui::SetNextWindowSize(vp_S);
@@ -530,13 +509,13 @@ int main(int argc, char *argv[])
                     /// content-viewport
                     {
                         std::cout << "drawing viewport" << std::endl;
-                        ImGui::Text("objects.size: %d", bf.objects.size());
+                        ImGui::Text("objects.size: %d", ImStudio.bf.objects.size());
                         ImGui::Text("itemcur: %d", item_current);
-                        if (!bf.objects.empty())
+                        if (!ImStudio.bf.objects.empty())
                         {
                             ImGui::Text("Selected = %s", selectobj->identifier.c_str());
                         }
-                        bf.drawall(&select, gen(rng));
+                        ImStudio.bf.drawall(&select, gen(rng));
                         // ImGui::Text("%d", bf.win.size());
 
                         extra::metrics();
@@ -548,10 +527,10 @@ int main(int argc, char *argv[])
                 //-----------------------------------------------------------------------------
                 //-----------------------------------------------------------------------------
                 // ANCHOR CHILDREN
-                if (child_debug)
+                if (ImStudio.child_debug)
                 {
                     ImGui::SetNextWindowBgAlpha(0.35f);
-                    if (ImGui::Begin("child_debug", &child_debug, ImGuiWindowFlags_AlwaysAutoResize))
+                    if (ImGui::Begin("child_debug", &ImStudio.child_debug, ImGuiWindowFlags_AlwaysAutoResize))
                     {
                         ImGui::Text("hello");
                         std::cout << "hello4" << std::endl;
@@ -559,34 +538,34 @@ int main(int argc, char *argv[])
                     }
                 }
 
-                if (child_sty)
+                if (ImStudio.child_sty)
                 {
-                    if (ImGui::Begin("Style Editor", &child_sty, ImGuiWindowFlags_AlwaysAutoResize))
+                    if (ImGui::Begin("Style Editor", &ImStudio.child_sty, ImGuiWindowFlags_AlwaysAutoResize))
                     {
                         ImGui::ShowStyleEditor();
                         ImGui::End();
                     }
                 }
 
-                if (child_demo)
+                if (ImStudio.child_demo)
                 {
-                    ImGui::ShowDemoWindow(&child_demo);
+                    ImGui::ShowDemoWindow(&ImStudio.child_demo);
                 }
 
-                if (child_metrics)
+                if (ImStudio.child_metrics)
                 {
-                    ImGui::ShowMetricsWindow(&child_metrics);
+                    ImGui::ShowMetricsWindow(&ImStudio.child_metrics);
                 }
 
-                if (child_stack)
+                if (ImStudio.child_stack)
                 {
                     // ImGui::ShowStackToolWindow(); //Need update
                 }
 
-                if (child_colexp)
+                if (ImStudio.child_colexp)
                 {
                     ImGui::SetNextWindowBgAlpha(0.35f);
-                    if (ImGui::Begin("Color Export", &child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
+                    if (ImGui::Begin("Color Export", &ImStudio.child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
                     {
                         ImGui::ColorEdit3("Your Color", (float *)&bg, ImGuiColorEditFlags_Float);
                         if (ImGui::Button("Export to Clipboard"))
@@ -606,7 +585,7 @@ int main(int argc, char *argv[])
         // ANCHOR wksp_logic
         ImVec2 lg_P = ImVec2(0, mb_S.y);
         ImVec2 lg_S = ImVec2(w_w, w_h - mb_S.y);
-        if (wksp_logic)
+        if (ImStudio.wksp_logic)
         {
             ImGui::SetNextWindowPos(lg_P);
             ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
