@@ -4,30 +4,45 @@
 #include "object.h"
 #include "buffer.h"
 
-namespace ImStudio
+struct GUI
 {
+    bool         state       = true;
+    bool         wksp_create = true;
 
-void Menubar
-(
-ImVec2 &mb_P,
-ImVec2 &mb_S, 
-bool &child_debug, 
-bool &child_sty, 
-bool &child_demo, 
-bool &child_metrics,
-bool &child_stack, 
-bool &child_colexp, 
-bool &main_state, 
-bool &ly_save, 
-bool &wksp_logic,
-bool &wksp_interface
-);
+    bool         menubar     = true;
+    ImVec2       mb_P        = {};
+    ImVec2       mb_S        = {};
+    void         ShowMenubar();
 
-void Sidebar(ImVec2 &sb_P, ImVec2 &sb_S, ImVec2 &sb_Sr, bool &ly_save, bool &resizing, int &w_w, int &w_h,
-             BufferWindow &bf, bool &main_state);
+    bool         sidebar = true;
+    ImVec2       sb_P    = {};
+    ImVec2       sb_S    = {};
+    void         ShowSidebar();
 
-void Properties(ImVec2 &pt_P, ImVec2 &pt_Pr, ImVec2 &pt_S, ImVec2 &pt_Sr, ImVec2 &mb_S, int &w_w, int &w_h,
-                bool &ly_save, bool &resizing, BufferWindow &bf, int &select, int &item_current, Object *selectobj,
-                Object *selectobjprev);
+    bool         properties      = true;
+    ImVec2       pt_P            = {};
+    ImVec2       pt_S            = {};
+    int          selectid        = 0;
+    Object *     selectobj       = nullptr;
+    Object *     selectobjprev   = nullptr;
+    int          selectproparray = 0;
+    void         ShowProperties();
 
-} // namespace ImStudio
+    bool         viewport = true;
+    ImVec2       vp_P     = {};
+    ImVec2       vp_S     = {};
+    BufferWindow bw;
+    void         ShowViewport(int gen_rand);
+
+    bool         wksp_output = false;
+    ImVec2       ot_P          = {};
+    ImVec2       ot_S          = {};
+    void         ShowOutputWorkspace();
+
+    bool         child_debug   = false;
+    bool         child_sty     = false;
+    bool         child_demo    = false;
+    bool         child_metrics = false;
+    bool         child_colexp  = false;
+    bool         child_stack   = false;
+};
