@@ -47,29 +47,7 @@ Object *BufferWindow::getobj(int id)
             return &o;
         }
     }
-}
-
-bool BufferWindow::AnySelected(Object *selected_)
-{
-    for (Object &o : objects)
-    {
-        if (&o == selected_)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-std::string BufferWindow::gettype(int id)
-{
-    for (Object &o : objects)
-    {
-        if (o.id == id)
-        {
-            return o.type;
-        }
-    }
+    return nullptr;
 }
 
 void BufferWindow::create(std::string type_)

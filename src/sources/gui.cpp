@@ -282,7 +282,7 @@ void GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
-        ImGui::Text("objects.size: %d", bw.objects.size());
+        ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
         {

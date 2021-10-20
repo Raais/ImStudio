@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     style.FrameRounding  = 12.00f;
     style.GrabRounding   = 12.00f;
 
-    ImVec4 *colors = style.Colors; // TODO Redo color scheme
+    //ImVec4 *colors = style.Colors; // TODO Redo color scheme
 
     //-----------------------------------------------------------------------------
     // ANCHOR LAYOUT (size & pos) | Define relationships between windows
