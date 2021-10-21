@@ -33,6 +33,15 @@ void GUI::ShowMenubar()
         /// menu-edit
         if (ImGui::BeginMenu("Edit"))
         {
+            if(ImGui::BeginMenu("Behavior"))
+            {
+                ImGui::MenuItem("Static Position", NULL, &bw.staticlayout);
+                ImGui::SameLine();
+                extra::HelpMarker("Toggle between static/linear layout and fixed/manual layout");
+
+                ImGui::EndMenu();
+            }
+            
             ImGui::EndMenu();
         }
 

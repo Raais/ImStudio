@@ -12,11 +12,6 @@ static void glfw_error_callback(int error, const char *description)
     fprintf(stderr, "Glfw Error %d: %s\n", error, description);
 }
 
-//-----------------------------------------------------------------------------
-// SECTION MAIN FUNC()
-// ANCHOR GLFW BOILERPLATE
-//-----------------------------------------------------------------------------
-
 int main(int argc, char *argv[])
 {
     int  w_w      = 900;
@@ -164,9 +159,7 @@ int main(int argc, char *argv[])
 
                 if (gui.child_metrics) ImGui::ShowMetricsWindow(&gui.child_metrics);
 
-                if (gui.child_stack)
-                { // ImGui::ShowStackToolWindow(); //Need update
-                }
+                //if (gui.child_stack) ImGui::ShowStackToolWindow();
 
                 if (gui.child_colexp) extra::ShowColorExportWindow(&gui.child_colexp);
             }

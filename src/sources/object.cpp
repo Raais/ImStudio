@@ -9,13 +9,13 @@ Object::Object(int idvar_, std::string type_)
     value_s    = type_ + std::to_string(idvar_);
 }
 
-void Object::draw(int *select, int gen_rand)
+void Object::draw(int *select, int gen_rand, bool staticlayout = false)
 {
     if (state)
     {
         if (type == "button")
         {
-            ImGui::SetCursorPos(pos);
+            if(!staticlayout)ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::Button(value_s.c_str());
@@ -30,7 +30,7 @@ void Object::draw(int *select, int gen_rand)
         }
         if (type == "checkbox")
         {
-            ImGui::SetCursorPos(pos);
+            if(!staticlayout)ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::Checkbox(value_s.c_str(), &value_b);
@@ -45,7 +45,7 @@ void Object::draw(int *select, int gen_rand)
         }
         if (type == "radio")
         {
-            ImGui::SetCursorPos(pos);
+            if(!staticlayout)ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::RadioButton(value_s.c_str(), &value_b);
@@ -60,7 +60,7 @@ void Object::draw(int *select, int gen_rand)
         }
         if (type == "combo")
         {
-            ImGui::SetCursorPos(pos);
+            if(!staticlayout)ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             const char *items[]      = {"Never", "Gonna", "Give", "You", "Up"};
@@ -76,7 +76,7 @@ void Object::draw(int *select, int gen_rand)
             highlight(select);
         }
         if (type == "child")
-        {
+        {//TODO: Child behaviour switch
             auto fg = ImGui::GetForegroundDrawList();
 
             if (!init)
@@ -116,13 +116,18 @@ void Object::draw(int *select, int gen_rand)
         }
         if (type == "text")
         {
-            ImGui::SetCursorPos(pos);
+
             ImGui::PushID(id);
-
+            if(!staticlayout) ImGui::SetCursorPos(pos);
             ImGui::Text(value_s.c_str());
-            ImGui::SetCursorPos(pos);
-            ImGui::InvisibleButton("", ImGui::CalcTextSize(value_s.c_str()));
-
+            if(!staticlayout)
+            {
+                ImVec2 textsize = ImGui::CalcTextSize(value_s.c_str());
+                if(textsize.x <= 0){textsize.x = 1;}
+                ImGui::SetCursorPos(pos);
+                ImGui::InvisibleButton("", textsize);
+            }
+            
             ImGui::PopID();
             if (ImGui::IsItemActive())
             {

@@ -24,7 +24,7 @@ class Object
 
     Object(int idvar_, std::string type_);
 
-    void              draw(int *select, int gen_rand);
+    void              draw(int *select, int gen_rand, bool staticlayout);
     void              del();
 
   private:

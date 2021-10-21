@@ -30,7 +30,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
                 }
                 else
                 {
-                    o.draw(select, gen_rand);
+                    o.draw(select, gen_rand, staticlayout);
                 }
             }
         }
