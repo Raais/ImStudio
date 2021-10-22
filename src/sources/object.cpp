@@ -21,7 +21,7 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
             ImGui::Button(value_s.c_str());
 
             ImGui::PopID();
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -36,7 +36,7 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
             ImGui::Checkbox(value_s.c_str(), &value_b);
 
             ImGui::PopID();
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -51,7 +51,7 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
             ImGui::RadioButton(value_s.c_str(), &value_b);
 
             ImGui::PopID();
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -68,7 +68,7 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
             ImGui::Combo(value_s.c_str(), &item_current, items, IM_ARRAYSIZE(items));
 
             ImGui::PopID();
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -85,14 +85,14 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
                 child_id2 = gen_rand + 1;
             }
             extra::GrabButton(child_grab1, child_id1);
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 child_grab1 = extra::GetLocalCursor();
                 *select     = id;
             }
 
             extra::GrabButton(child_grab2, child_id2);
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 child_grab2 = extra::GetLocalCursor();
                 *select     = id;
@@ -129,12 +129,40 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
             }
             
             ImGui::PopID();
-            if (ImGui::IsItemActive())
+            if ((!locked)&&(ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
             highlight(select);
+        }
+        if (type == "textinput")
+        {
+            ImGui::PushID(id);
+            if(!staticlayout) ImGui::SetCursorPos(pos);
+            ImGui::InputText(label.c_str(),&value_s);
+
+            ImGui::PopID();
+            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            {
+                pos     = extra::GetLocalCursor();
+                //pos.x -= ImGui::GetItemRectMin().x;
+                //pos.y -= ImGui::GetItemRectMin().y;
+                *select = id;
+            }
+            highlight(select);
+        }
+        if (type == "sameline")
+        {
+            if(staticlayout) ImGui::SameLine();
+        }
+        if (type == "newline")
+        {
+            if(staticlayout) ImGui::NewLine();
+        }
+        if (type == "separator")
+        {
+            if(staticlayout) ImGui::Separator();
         }
     }
 }

@@ -3,6 +3,7 @@
 #include "../includes.h"
 #include "object.h"
 #include "buffer.h"
+#include "console.h"
 
 struct GUI
 {
@@ -26,6 +27,7 @@ struct GUI
     Object *     selectobj              = nullptr;
     Object *     selectobjprev          = nullptr;
     int          selectproparray        = 0;
+    bool         globaldelete           = false;
     void         ShowProperties()       ;
 
     bool         viewport               = true;
@@ -38,6 +40,9 @@ struct GUI
     ImVec2       ot_P                   = {};
     ImVec2       ot_S                   = {};
     void         ShowOutputWorkspace();
+
+    bool         child_console          = false;
+    static void  ShowConsole(bool* p_open, GUI* gui_);
 
     bool         child_debug            = false;
     bool         child_sty              = false;

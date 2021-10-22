@@ -7,6 +7,7 @@ class PropertyBuffer
 {
   public:
     std::string prop_text1 = "change me";
+    std::string prop_text2 = "change me";
     bool        prop_bool1 = false;
     void        resetpropbuffer();
 };

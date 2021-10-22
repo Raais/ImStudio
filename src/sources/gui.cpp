@@ -1,6 +1,7 @@
 #include "../includes.h"
-#include "buffer.h"
 #include "object.h"
+#include "buffer.h"
+#include "console.h"
 #include "gui.h"
 
 //ANCHOR MENUBAR.DEFINITION
@@ -23,6 +24,7 @@ void GUI::ShowMenubar()
             ImGui::MenuItem("Demo Window", NULL, &child_demo);
             ImGui::MenuItem("Metrics", NULL, &child_metrics);
             ImGui::MenuItem("Stack Tool", NULL, &child_stack);
+            ImGui::MenuItem("Console", NULL, &child_console);
             if (ImGui::MenuItem("Exit"))
             {
                 state = false;
@@ -86,7 +88,7 @@ void GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
-    ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove);
+    ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     /// content-sidebar
     {
@@ -124,10 +126,30 @@ void GUI::ShowSidebar()
             {
                 bw.create("text");
             }
+            if (ImGui::Button("Text Input"))
+            {
+                bw.create("textinput");
+            }
+            if (ImGui::Button("<< Same Line"))
+            {
+                bw.create("sameline");
+            }
+            if (ImGui::Button("New Line"))
+            {
+                bw.create("newline");
+            }
+            if (ImGui::Button("Separator"))
+            {
+                bw.create("separator");
+            }
 
             if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
             {
                 state = false;
+            }
+            if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F9)))
+            {
+                child_console = not child_console;
             }
         }
     }
@@ -140,7 +162,7 @@ void GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
-    ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove);
+    ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     // pt_P = ImGui::GetWindowPos();
     // pt_S = ImGui::GetWindowSize();
     /// content-properties
@@ -196,6 +218,10 @@ void GUI::ShowProperties()
                     }
 
                     ImGui::InputText("Value", &bw.prop_text1);
+                    ImGui::NewLine();
+                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Locked",&selectobj->locked);
                     selectobj->value_s = bw.prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -226,14 +252,19 @@ void GUI::ShowProperties()
                     {
                         selectobj->value_b = true;
                     }
+                    ImGui::NewLine();
+                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Locked",&selectobj->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))) || (globaldelete))
                     {
                         selectobj->del();
                         if (selectproparray != 0)
                         {
                             selectproparray -= 1;
                         }
+                        globaldelete = false;
                     }
                 }
 
@@ -262,6 +293,36 @@ void GUI::ShowProperties()
                     }
 
                     ImGui::InputText("Value", &bw.prop_text1);
+                    ImGui::NewLine();
+                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    selectobj->value_s = bw.prop_text1;
+
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    {
+                        selectobj->del();
+                        if (selectproparray != 0)
+                        {
+                            selectproparray -= 1;
+                        }
+                    }
+                }
+                if (selectobj->type == "textinput")
+                {
+                    if (selectobj->propinit)
+                    {
+                        bw.prop_text1 = selectobj->value_s;
+                        bw.prop_text2 = selectobj->label;
+                    }
+
+                    ImGui::InputText("Label", &bw.prop_text2);
+                    ImGui::InputText("Value", &bw.prop_text1);
+                    ImGui::NewLine();
+                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    selectobj->label   = bw.prop_text2;
                     selectobj->value_s = bw.prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -326,4 +387,10 @@ void GUI::ShowOutputWorkspace()
                                           ImGuiInputTextFlags_ReadOnly);
             }
             ImGui::End();
+}
+
+void GUI::ShowConsole(bool* p_open, GUI* gui_)
+{
+    static Console console(gui_);
+    console.Draw("Console", p_open);
 }

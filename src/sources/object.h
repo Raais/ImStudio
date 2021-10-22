@@ -11,8 +11,11 @@ class Object
     bool              init            = false;
     bool              state           = true;
     bool              value_b         = false;
-    bool              moving          = false;
+    //bool              moving          = false;
     bool              propinit        = false;
+    bool              locked          = false;
+    bool              cond_1          = false;
+    std::string       label           = "Label";
     std::string       value_s         = {};
     ImVec2            pos             = ImVec2(100, 100);
     ImVec2            size            = {};
