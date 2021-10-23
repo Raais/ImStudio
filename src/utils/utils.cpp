@@ -126,6 +126,7 @@ void extra::ShowStyleEditorWindow(bool *child_sty)
     ImGui::End();
 }
 
+
 void extra::ShowColorExportWindow(bool *child_colexp)
 {
     if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize))

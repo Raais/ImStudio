@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
 
                 if (gui.child_metrics) ImGui::ShowMetricsWindow(&gui.child_metrics);
 
-                //if (gui.child_stack) ImGui::ShowStackToolWindow();
+                if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
 
                 if (gui.child_colexp) extra::ShowColorExportWindow(&gui.child_colexp);
 

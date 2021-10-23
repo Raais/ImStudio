@@ -16,9 +16,11 @@
 #include "imgui.h"
 #include "imgui_impl_osx.h"
 #import <Cocoa/Cocoa.h>
+#include <mach/mach_time.h>
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
+//  2021-09-21: Use mach_absolute_time as CFAbsoluteTimeGetCurrent can jump backwards.
 //  2021-08-17: Calling io.AddFocusEvent() on NSApplicationDidBecomeActiveNotification/NSApplicationDidResignActiveNotification events.
 //  2021-06-23: Inputs: Added a fix for shortcuts using CTRL key instead of CMD key.
 //  2021-04-19: Inputs: Added a fix for keys remaining stuck in pressed state when CMD-tabbing into different application.
@@ -37,7 +39,8 @@
 @class ImFocusObserver;
 
 // Data
-static CFAbsoluteTime g_Time = 0.0;
+static double         g_HostClockPeriod = 0.0;
+static double         g_Time = 0.0;
 static NSCursor*      g_MouseCursors[ImGuiMouseCursor_COUNT] = {};
 static bool           g_MouseCursorHidden = false;
 static bool           g_MouseJustPressed[ImGuiMouseButton_COUNT] = {};
@@ -51,6 +54,18 @@ static ImFocusObserver* g_FocusObserver = NULL;
 + (id)_windowResizeNorthSouthCursor;
 + (id)_windowResizeEastWestCursor;
 @end
+
+static void InitHostClockPeriod()
+{
+    struct mach_timebase_info info;
+    mach_timebase_info(&info);
+    g_HostClockPeriod = 1e-9 * ((double)info.denom / (double)info.numer); // Period is the reciprocal of frequency.
+}
+
+static double GetMachAbsoluteTimeInSeconds()
+{
+    return (double)mach_absolute_time() * g_HostClockPeriod;
+}
 
 static void resetKeys()
 {
@@ -116,13 +131,96 @@ bool ImGui_ImplOSX_Init()
     io.KeyMap[ImGuiKey_Space]           = 32;
     io.KeyMap[ImGuiKey_Enter]           = 13;
     io.KeyMap[ImGuiKey_Escape]          = 27;
+    io.KeyMap[ImGuiKey_Apostrophe]      = '\''; // '
+    io.KeyMap[ImGuiKey_Comma]           = ','; // ,
+    io.KeyMap[ImGuiKey_Minus]           = '-'; // -
+    io.KeyMap[ImGuiKey_Period]          = '.'; // .
+    io.KeyMap[ImGuiKey_Slash]           = '/'; // /
+    io.KeyMap[ImGuiKey_Semicolon]       = ';'; // ;
+    io.KeyMap[ImGuiKey_Equal]           = '='; // =
+    io.KeyMap[ImGuiKey_LeftBracket]     = '['; // [
+    io.KeyMap[ImGuiKey_Backslash]       = '\\'; // \ (this text inhibit multiline comment caused by backlash)
+    io.KeyMap[ImGuiKey_RightBracket]    = ']'; // ]
+    io.KeyMap[ImGuiKey_GraveAccent]     = '`'; // `
+    io.KeyMap[ImGuiKey_CapsLock]        = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_ScrollLock]      = NSScrollLockFunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_NumLock]         = NSClearLineFunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_PrintScreen]     = NSPrintScreenFunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_Pause]           = NSPauseFunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_KeyPad0]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad1]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad2]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad3]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad4]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad5]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad6]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad7]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad8]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPad9]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPadDecimal]   = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPadDivide]    = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPadMultiply]  = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPadSubtract]  = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_KeyPadAdd]       = 0; // FIXME: not implemented
     io.KeyMap[ImGuiKey_KeyPadEnter]     = 3;
+    io.KeyMap[ImGuiKey_KeyPadEqual]     = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_LeftShift]       = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_LeftControl]     = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_LeftAlt]         = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_LeftSuper]       = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_RightShift]      = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_RightControl]    = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_RightAlt]        = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_RightSuper]      = 0; // FIXME: not implemented
+    io.KeyMap[ImGuiKey_Menu]            = NSMenuFunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_0]               = '0';
+    io.KeyMap[ImGuiKey_1]               = '1';
+    io.KeyMap[ImGuiKey_2]               = '2';
+    io.KeyMap[ImGuiKey_3]               = '3';
+    io.KeyMap[ImGuiKey_4]               = '4';
+    io.KeyMap[ImGuiKey_5]               = '5';
+    io.KeyMap[ImGuiKey_6]               = '6';
+    io.KeyMap[ImGuiKey_7]               = '7';
+    io.KeyMap[ImGuiKey_8]               = '8';
+    io.KeyMap[ImGuiKey_9]               = '9';
     io.KeyMap[ImGuiKey_A]               = 'A';
+    io.KeyMap[ImGuiKey_B]               = 'B';
     io.KeyMap[ImGuiKey_C]               = 'C';
+    io.KeyMap[ImGuiKey_D]               = 'D';
+    io.KeyMap[ImGuiKey_E]               = 'E';
+    io.KeyMap[ImGuiKey_F]               = 'F';
+    io.KeyMap[ImGuiKey_G]               = 'G';
+    io.KeyMap[ImGuiKey_H]               = 'H';
+    io.KeyMap[ImGuiKey_I]               = 'I';
+    io.KeyMap[ImGuiKey_J]               = 'J';
+    io.KeyMap[ImGuiKey_K]               = 'K';
+    io.KeyMap[ImGuiKey_L]               = 'L';
+    io.KeyMap[ImGuiKey_M]               = 'M';
+    io.KeyMap[ImGuiKey_N]               = 'N';
+    io.KeyMap[ImGuiKey_O]               = 'O';
+    io.KeyMap[ImGuiKey_P]               = 'P';
+    io.KeyMap[ImGuiKey_Q]               = 'Q';
+    io.KeyMap[ImGuiKey_R]               = 'R';
+    io.KeyMap[ImGuiKey_S]               = 'S';
+    io.KeyMap[ImGuiKey_T]               = 'T';
+    io.KeyMap[ImGuiKey_U]               = 'U';
     io.KeyMap[ImGuiKey_V]               = 'V';
+    io.KeyMap[ImGuiKey_W]               = 'W';
     io.KeyMap[ImGuiKey_X]               = 'X';
     io.KeyMap[ImGuiKey_Y]               = 'Y';
     io.KeyMap[ImGuiKey_Z]               = 'Z';
+    io.KeyMap[ImGuiKey_F1]              = NSF1FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F2]              = NSF2FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F3]              = NSF3FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F4]              = NSF4FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F5]              = NSF5FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F6]              = NSF6FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F7]              = NSF7FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F8]              = NSF8FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F9]              = NSF9FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F10]             = NSF10FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F11]             = NSF11FunctionKey + offset_for_function_keys;
+    io.KeyMap[ImGuiKey_F12]             = NSF12FunctionKey + offset_for_function_keys;
 
     // Load cursors. Some of them are undocumented.
     g_MouseCursorHidden = false;
@@ -232,8 +330,11 @@ void ImGui_ImplOSX_NewFrame(NSView* view)
 
     // Setup time step
     if (g_Time == 0.0)
-        g_Time = CFAbsoluteTimeGetCurrent();
-    CFAbsoluteTime current_time = CFAbsoluteTimeGetCurrent();
+    {
+        InitHostClockPeriod();
+        g_Time = GetMachAbsoluteTimeInSeconds();
+    }
+    double current_time = GetMachAbsoluteTimeInSeconds();
     io.DeltaTime = (float)(current_time - g_Time);
     g_Time = current_time;
 

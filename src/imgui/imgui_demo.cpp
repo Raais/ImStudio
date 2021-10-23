@@ -1,4 +1,4 @@
-// dear imgui, v1.85 WIP
+// dear imgui, v1.85
 // (demo code)
 
 // Help:
@@ -294,10 +294,12 @@ void ImGui::ShowDemoWindow(bool* p_open)
 
     // Dear ImGui Apps (accessible from the "Tools" menu)
     static bool show_app_metrics = false;
+    static bool show_app_stack_tool = false;
     static bool show_app_style_editor = false;
     static bool show_app_about = false;
 
     if (show_app_metrics)       { ImGui::ShowMetricsWindow(&show_app_metrics); }
+    if (show_app_stack_tool)    { ImGui::ShowStackToolWindow(&show_app_stack_tool); }
     if (show_app_about)         { ImGui::ShowAboutWindow(&show_app_about); }
     if (show_app_style_editor)
     {
@@ -382,7 +384,10 @@ void ImGui::ShowDemoWindow(bool* p_open)
         //if (ImGui::MenuItem("MenuItem")) {} // You can also use MenuItem() inside a menu bar!
         if (ImGui::BeginMenu("Tools"))
         {
+#ifndef IMGUI_DISABLE_METRICS_WINDOW
             ImGui::MenuItem("Metrics/Debugger", NULL, &show_app_metrics);
+            ImGui::MenuItem("Stack Tool", NULL, &show_app_stack_tool);
+#endif
             ImGui::MenuItem("Style Editor", NULL, &show_app_style_editor);
             ImGui::MenuItem("About Dear ImGui", NULL, &show_app_about);
             ImGui::EndMenu();
@@ -2186,7 +2191,7 @@ static void ShowDemoWindowWidgets()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Querying Status (Edited/Active/Hovered etc.)"))
+    if (ImGui::TreeNode("Querying Item Status (Edited/Active/Hovered etc.)"))
     {
         // Select an item type
         const char* item_names[] =
@@ -2272,43 +2277,63 @@ static void ShowDemoWindowWidgets()
         if (item_disabled)
             ImGui::EndDisabled();
 
+        char buf[1] = "";
+        ImGui::InputText("unused", buf, IM_ARRAYSIZE(buf), ImGuiInputTextFlags_ReadOnly);
+        ImGui::SameLine();
+        HelpMarker("This widget is only here to be able to tab-out of the widgets above and see e.g. Deactivated() status.");
+
+        ImGui::TreePop();
+    }
+
+    if (ImGui::TreeNode("Querying Window Status (Focused/Hovered etc.)"))
+    {
         static bool embed_all_inside_a_child_window = false;
-        ImGui::Checkbox("Embed everything inside a child window (for additional testing)", &embed_all_inside_a_child_window);
+        ImGui::Checkbox("Embed everything inside a child window for testing _RootWindow flag.", &embed_all_inside_a_child_window);
         if (embed_all_inside_a_child_window)
             ImGui::BeginChild("outer_child", ImVec2(0, ImGui::GetFontSize() * 20.0f), true);
 
         // Testing IsWindowFocused() function with its various flags.
-        // Note that the ImGuiFocusedFlags_XXX flags can be combined.
         ImGui::BulletText(
             "IsWindowFocused() = %d\n"
             "IsWindowFocused(_ChildWindows) = %d\n"
+            "IsWindowFocused(_ChildWindows|_NoPopupHierarchy) = %d\n"
             "IsWindowFocused(_ChildWindows|_RootWindow) = %d\n"
+            "IsWindowFocused(_ChildWindows|_RootWindow|_NoPopupHierarchy) = %d\n"
             "IsWindowFocused(_RootWindow) = %d\n"
+            "IsWindowFocused(_RootWindow|_NoPopupHierarchy) = %d\n"
             "IsWindowFocused(_AnyWindow) = %d\n",
             ImGui::IsWindowFocused(),
             ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows),
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_NoPopupHierarchy),
             ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootWindow),
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows | ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_NoPopupHierarchy),
             ImGui::IsWindowFocused(ImGuiFocusedFlags_RootWindow),
+            ImGui::IsWindowFocused(ImGuiFocusedFlags_RootWindow | ImGuiFocusedFlags_NoPopupHierarchy),
             ImGui::IsWindowFocused(ImGuiFocusedFlags_AnyWindow));
 
         // Testing IsWindowHovered() function with its various flags.
-        // Note that the ImGuiHoveredFlags_XXX flags can be combined.
         ImGui::BulletText(
             "IsWindowHovered() = %d\n"
             "IsWindowHovered(_AllowWhenBlockedByPopup) = %d\n"
             "IsWindowHovered(_AllowWhenBlockedByActiveItem) = %d\n"
             "IsWindowHovered(_ChildWindows) = %d\n"
+            "IsWindowHovered(_ChildWindows|_NoPopupHierarchy) = %d\n"
             "IsWindowHovered(_ChildWindows|_RootWindow) = %d\n"
-            "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n"
+            "IsWindowHovered(_ChildWindows|_RootWindow|_NoPopupHierarchy) = %d\n"
             "IsWindowHovered(_RootWindow) = %d\n"
+            "IsWindowHovered(_RootWindow|_NoPopupHierarchy) = %d\n"
+            "IsWindowHovered(_ChildWindows|_AllowWhenBlockedByPopup) = %d\n"
             "IsWindowHovered(_AnyWindow) = %d\n",
             ImGui::IsWindowHovered(),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows),
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_NoPopupHierarchy),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow),
-            ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup),
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_NoPopupHierarchy),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow),
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_RootWindow | ImGuiHoveredFlags_NoPopupHierarchy),
+            ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByPopup),
             ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow));
 
         ImGui::BeginChild("child", ImVec2(0, 50), true);
@@ -2316,9 +2341,6 @@ static void ShowDemoWindowWidgets()
         ImGui::EndChild();
         if (embed_all_inside_a_child_window)
             ImGui::EndChild();
-
-        static char unused_str[] = "This widget is only here to be able to tab-out of the widgets above.";
-        ImGui::InputText("unused", unused_str, IM_ARRAYSIZE(unused_str), ImGuiInputTextFlags_ReadOnly);
 
         // Calling IsItemHovered() after begin returns the hovered status of the title bar.
         // This is useful in particular if you want to create a context menu associated to the title bar of a window.
@@ -5508,9 +5530,9 @@ static void ShowDemoWindowMisc()
         // Display Keyboard/Mouse state
         if (ImGui::TreeNode("Keyboard & Navigation State"))
         {
-            ImGui::Text("Keys down:");          for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyDown(i))        { ImGui::SameLine(); ImGui::Text("%d (0x%X) (%.02f secs)", i, i, io.KeysDownDuration[i]); }
-            ImGui::Text("Keys pressed:");       for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyPressed(i))     { ImGui::SameLine(); ImGui::Text("%d (0x%X)", i, i); }
-            ImGui::Text("Keys release:");       for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyReleased(i))    { ImGui::SameLine(); ImGui::Text("%d (0x%X)", i, i); }
+            ImGui::Text("Keys down:");          for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyDown(i))                { ImGui::SameLine(); ImGui::Text("\"%s\" %d (0x%X) (%.02f secs)", ImGui::GetKeyName(ImGui::FindImGuiKey(i)), i, i, io.KeysDownDuration[i]); }
+            ImGui::Text("Keys pressed:");       for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyPressed(i))             { ImGui::SameLine(); ImGui::Text("\"%s\" %d (0x%X)", ImGui::GetKeyName(ImGui::FindImGuiKey(i)), i, i); }
+            ImGui::Text("Keys release:");       for (int i = 0; i < IM_ARRAYSIZE(io.KeysDown); i++) if (ImGui::IsKeyReleased(i))            { ImGui::SameLine(); ImGui::Text("\"%s\" %d (0x%X)", ImGui::GetKeyName(ImGui::FindImGuiKey(i)), i, i); }
             ImGui::Text("Keys mods: %s%s%s%s", io.KeyCtrl ? "CTRL " : "", io.KeyShift ? "SHIFT " : "", io.KeyAlt ? "ALT " : "", io.KeySuper ? "SUPER " : "");
             ImGui::Text("Chars queue:");        for (int i = 0; i < io.InputQueueCharacters.Size; i++) { ImWchar c = io.InputQueueCharacters[i]; ImGui::SameLine();  ImGui::Text("\'%c\' (0x%04X)", (c > ' ' && c <= 255) ? (char)c : '?', c); } // FIXME: We should convert 'c' to UTF-8 here but the functions are not public.
 
@@ -5814,6 +5836,130 @@ void ImGui::ShowFontSelector(const char* label)
         "- If you need to add/remove fonts at runtime (e.g. for DPI change), do it before calling NewFrame().");
 }
 
+// [Internal] export colors style to current Log target
+static void ExportColors(ImGuiStyle* style_to_export, ImGuiStyle* ref_style, bool export_only_modified)
+{
+    IM_ASSERT(style_to_export != 0);
+    IM_ASSERT(ref_style != 0);
+
+    ImGui::LogText("ImVec4* colors = ImGui::GetStyle().Colors;" IM_NEWLINE);
+    for (auto i = 0; i < ImGuiCol_COUNT; i++)
+    {
+        const ImVec4& col = style_to_export->Colors[i];
+        const char* name = ImGui::GetStyleColorName(i);
+        if (!export_only_modified || memcmp(&col, &ref_style->Colors[i], sizeof(ImVec4)) != 0)
+            ImGui::LogText("colors[ImGuiCol_%s]%*s= ImVec4(%.2ff, %.2ff, %.2ff, %.2ff);" IM_NEWLINE, name, 23 - (int)strlen(name), "", col.x, col.y, col.z, col.w);
+    }
+}
+
+// [Internal] export one size float style to current Log target
+static void ExportSize_Float(const char* name, float* size_to_export, float* ref_size, bool export_only_modified)
+{
+    IM_ASSERT(name != 0);
+    IM_ASSERT(size_to_export != 0);
+    IM_ASSERT(ref_size != 0);
+
+    if (!export_only_modified || memcmp(size_to_export, ref_size, sizeof(float)) != 0)
+        ImGui::LogText("style.%s%*s= %.2ff;" IM_NEWLINE, name, 25 - (int)strlen(name), "", *size_to_export);
+}
+
+// [Internal] export one size ImVec2 style to current Log target
+static void ExportSize_ImVec2(const char* name, ImVec2* size_to_export, ImVec2* ref_size, bool export_only_modified)
+{
+    IM_ASSERT(name != 0);
+    IM_ASSERT(size_to_export != 0);
+    IM_ASSERT(ref_size != 0);
+
+    if (!export_only_modified || memcmp(size_to_export, ref_size, sizeof(ImVec2)) != 0)
+        ImGui::LogText("style.%s%*s= ImVec2(%.2ff, %.2ff);" IM_NEWLINE, name, 25 - (int)strlen(name), "", size_to_export->x, size_to_export->y);
+}
+
+// [Internal] export sizes style to current Log target
+static void ExportSizes(ImGuiStyle* style_to_export, ImGuiStyle* ref_style, bool export_only_modified)
+{
+    IM_ASSERT(style_to_export != 0);
+    IM_ASSERT(ref_style != 0);
+
+    ImGui::LogText("ImGuiStyle& style = ImGui::GetStyle();" IM_NEWLINE);
+
+    {
+        ImGui::LogText(IM_NEWLINE "// Main" IM_NEWLINE);
+
+        ExportSize_ImVec2("WindowPadding", &style_to_export->WindowPadding, &ref_style->WindowPadding, export_only_modified);
+        ExportSize_ImVec2("FramePadding", &style_to_export->FramePadding, &ref_style->FramePadding, export_only_modified);
+        ExportSize_ImVec2("ItemSpacing", &style_to_export->ItemSpacing, &ref_style->ItemSpacing, export_only_modified);
+        ExportSize_ImVec2("ItemInnerSpacing", &style_to_export->ItemInnerSpacing, &ref_style->ItemInnerSpacing, export_only_modified);
+        ExportSize_ImVec2("TouchExtraPadding", &style_to_export->TouchExtraPadding, &ref_style->TouchExtraPadding, export_only_modified);
+        ExportSize_Float("IndentSpacing", &style_to_export->IndentSpacing, &ref_style->IndentSpacing, export_only_modified);
+        ExportSize_Float("ScrollbarSize", &style_to_export->ScrollbarSize, &ref_style->ScrollbarSize, export_only_modified);
+        ExportSize_Float("GrabMinSize", &style_to_export->GrabMinSize, &ref_style->GrabMinSize, export_only_modified);
+    }
+
+    {
+        ImGui::LogText(IM_NEWLINE "// Borders" IM_NEWLINE);
+
+        ExportSize_Float("WindowBorderSize", &style_to_export->WindowBorderSize, &ref_style->WindowBorderSize, export_only_modified);
+        ExportSize_Float("ChildBorderSize", &style_to_export->ChildBorderSize, &ref_style->ChildBorderSize, export_only_modified);
+        ExportSize_Float("PopupBorderSize", &style_to_export->PopupBorderSize, &ref_style->PopupBorderSize, export_only_modified);
+        ExportSize_Float("FrameBorderSize", &style_to_export->FrameBorderSize, &ref_style->FrameBorderSize, export_only_modified);
+        ExportSize_Float("TabBorderSize", &style_to_export->TabBorderSize, &ref_style->TabBorderSize, export_only_modified);
+    }
+
+    {
+        ImGui::LogText(IM_NEWLINE "// Rounding" IM_NEWLINE);
+
+        ExportSize_Float("WindowRounding", &style_to_export->WindowRounding, &ref_style->WindowRounding, export_only_modified);
+        ExportSize_Float("ChildRounding", &style_to_export->ChildRounding, &ref_style->ChildRounding, export_only_modified);
+        ExportSize_Float("FrameRounding", &style_to_export->FrameRounding, &ref_style->FrameRounding, export_only_modified);
+        ExportSize_Float("PopupRounding", &style_to_export->PopupRounding, &ref_style->PopupRounding, export_only_modified);
+        ExportSize_Float("ScrollbarRounding", &style_to_export->ScrollbarRounding, &ref_style->ScrollbarRounding, export_only_modified);
+        ExportSize_Float("GrabRounding", &style_to_export->GrabRounding, &ref_style->GrabRounding, export_only_modified);
+        ExportSize_Float("TabRounding", &style_to_export->TabRounding, &ref_style->TabRounding, export_only_modified);
+    }
+
+    {
+        ImGui::LogText(IM_NEWLINE "// Alignment" IM_NEWLINE);
+
+        ExportSize_ImVec2("WindowTitleAlign", &style_to_export->WindowTitleAlign, &ref_style->WindowTitleAlign, export_only_modified);
+
+        // for this one we could just save ImGuiDir number, but its more redable to have ImGuiDir_ name
+        if (!export_only_modified || memcmp(&style_to_export->WindowMenuButtonPosition, &ref_style->WindowMenuButtonPosition, sizeof(ImGuiDir)) != 0)
+        {
+            const char* dirName = 0;
+            switch (style_to_export->WindowMenuButtonPosition)
+            {
+            case ImGuiDir_None: dirName = "ImGuiDir_None"; break;
+            case ImGuiDir_Left: dirName = "ImGuiDir_Left"; break;
+            case ImGuiDir_Right: dirName = "ImGuiDir_Right"; break;
+            };
+
+            ImGui::LogText("style->%s%*s= %s;" IM_NEWLINE, "WindowMenuButtonPosition", 25 - (int)strlen("WindowMenuButtonPosition"), "", dirName);
+        }
+
+        // for this one we could just save ImGuiDir number, but its more redable to have ImGuiDir_ name
+        if (!export_only_modified || memcmp(&style_to_export->ColorButtonPosition, &ref_style->ColorButtonPosition, sizeof(ImGuiDir)) != 0)
+        {
+            const char* dirName = 0;
+            switch (style_to_export->ColorButtonPosition)
+            {
+            case ImGuiDir_Left: dirName = "ImGuiDir_Left"; break;
+            case ImGuiDir_Right: dirName = "ImGuiDir_Right"; break;
+            };
+
+            ImGui::LogText("style->%s%*s= %s;" IM_NEWLINE, "ColorButtonPosition", 25 - (int)strlen("ColorButtonPosition"), "", dirName);
+        }
+
+        ExportSize_ImVec2("ButtonTextAlign", &style_to_export->ButtonTextAlign, &ref_style->ButtonTextAlign, export_only_modified);
+        ExportSize_ImVec2("SelectableTextAlign", &style_to_export->SelectableTextAlign, &ref_style->SelectableTextAlign, export_only_modified);
+    }
+
+    {
+        ImGui::LogText(IM_NEWLINE "// Safe Area Padding" IM_NEWLINE);
+
+        ExportSize_ImVec2("DisplaySafeAreaPadding", &style_to_export->DisplaySafeAreaPadding, &ref_style->DisplaySafeAreaPadding, export_only_modified);
+    }
+}
+
 // Demo helper function to select among default colors. See ShowStyleEditor() for more advanced options.
 // Here we use the simplified Combo() api that packs items into a single literal string.
 // Useful for quick combo boxes where the choices are known locally.
@@ -5876,6 +6022,30 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
 
     ImGui::Separator();
 
+    static int output_dest = 0;
+    static bool output_only_modified = true;
+    if (ImGui::Button("Export Sizes and Colors"))
+    {
+        if (output_dest == 0)
+            ImGui::LogToClipboard();
+        else
+            ImGui::LogToTTY();
+
+        ExportColors(&style, ref, output_only_modified);
+
+        ImGui::LogText(IM_NEWLINE);
+
+        ExportSizes(&style, ref, output_only_modified);
+
+        ImGui::LogFinish();
+    }
+    ImGui::SameLine(); ImGui::SetNextItemWidth(120); ImGui::Combo("##output_type_size_and_colors", &output_dest, "To Clipboard\0To TTY\0");
+    ImGui::SameLine(); ImGui::Checkbox("Only Modified##size_and_colors", &output_only_modified);
+    ImGui::SameLine();
+    HelpMarker("Export Sizes and Colors style. [ocornut/imgui #3849]");
+
+    ImGui::Separator();
+
     if (ImGui::BeginTabBar("##tabs", ImGuiTabBarFlags_None))
     {
         if (ImGui::BeginTabItem("Sizes"))
@@ -5923,23 +6093,17 @@ void ImGui::ShowStyleEditor(ImGuiStyle* ref)
 
         if (ImGui::BeginTabItem("Colors"))
         {
-            static int output_dest = 0;
-            static bool output_only_modified = true;
+            static int output_dest_colors = 0;
+            static bool output_only_modified_colors = true;
             if (ImGui::Button("Export"))
             {
-                if (output_dest == 0)
+                if (output_dest_colors == 0)
                     ImGui::LogToClipboard();
                 else
                     ImGui::LogToTTY();
-                ImGui::LogText("ImVec4* colors = ImGui::GetStyle().Colors;" IM_NEWLINE);
-                for (int i = 0; i < ImGuiCol_COUNT; i++)
-                {
-                    const ImVec4& col = style.Colors[i];
-                    const char* name = ImGui::GetStyleColorName(i);
-                    if (!output_only_modified || memcmp(&col, &ref->Colors[i], sizeof(ImVec4)) != 0)
-                        ImGui::LogText("colors[ImGuiCol_%s]%*s= ImVec4(%.2ff, %.2ff, %.2ff, %.2ff);" IM_NEWLINE,
-                            name, 23 - (int)strlen(name), "", col.x, col.y, col.z, col.w);
-                }
+
+                ExportColors(&style, ref, output_only_modified_colors);
+
                 ImGui::LogFinish();
             }
             ImGui::SameLine(); ImGui::SetNextItemWidth(120); ImGui::Combo("##output_type", &output_dest, "To Clipboard\0To TTY\0");
