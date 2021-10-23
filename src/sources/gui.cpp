@@ -514,7 +514,7 @@ void GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
-        ImGui::Text("Make sure to lock widgets before interacting with them.");
+        ImGui::TextDisabled("Make sure to lock widgets before interacting with them.");
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
