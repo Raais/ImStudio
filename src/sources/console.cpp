@@ -59,6 +59,7 @@
     void    Console::Draw(const char* title, bool* p_open)
     {
         ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
+        ImGui::SetNextWindowPos(ImVec2(gui_->vp_S.x/1.5,gui_->vp_S.x/4), ImGuiCond_FirstUseEver);
         if (!ImGui::Begin(title, p_open))
         {
             ImGui::End();
@@ -166,7 +167,7 @@
         ImGui::Separator();
 
         // Command-line
-        bool reclaim_focus = false;
+        static bool reclaim_focus = true;
         ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackHistory;
         if (ImGui::InputText("Input", InputBuf, IM_ARRAYSIZE(InputBuf), input_text_flags, &TextEditCallbackStub, (void*)this))
         {
@@ -182,6 +183,7 @@
         ImGui::SetItemDefaultFocus();
         if (reclaim_focus)
             ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
+        reclaim_focus = false;
 
         ImGui::End();
     }
