@@ -217,7 +217,7 @@ void GUI::ShowSidebar()
             }
 
             ImGui::Separator();
-            ImGui::Text("Colors");
+            ImGui::Text("Color Pickers");
             ImGui::Separator();
 
             if (ImGui::Button("Color 1"))
@@ -259,7 +259,7 @@ void GUI::ShowSidebar()
             ImGui::Separator();
             ImGui::Checkbox("Static Mode", &bw.staticlayout);
 
-            if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
+            if ((ImGui::GetIO().KeyAlt)&&(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
             {
                 state = false;
             }
