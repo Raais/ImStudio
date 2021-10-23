@@ -4,7 +4,7 @@
 #include "console.h"
 #include "gui.h"
 
-//ANCHOR MENUBAR.DEFINITION
+// ANCHOR MENUBAR.DEFINITION
 void GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
@@ -35,7 +35,7 @@ void GUI::ShowMenubar()
         /// menu-edit
         if (ImGui::BeginMenu("Edit"))
         {
-            if(ImGui::BeginMenu("Behavior"))
+            if (ImGui::BeginMenu("Behavior"))
             {
                 ImGui::MenuItem("Static Mode", NULL, &bw.staticlayout);
                 ImGui::SameLine();
@@ -43,7 +43,7 @@ void GUI::ShowMenubar()
 
                 ImGui::EndMenu();
             }
-            
+
             ImGui::EndMenu();
         }
 
@@ -82,7 +82,7 @@ void GUI::ShowMenubar()
     ImGui::End();
 }
 
-//ANCHOR SIDEBAR.DEFINITION
+// ANCHOR SIDEBAR.DEFINITION
 void GUI::ShowSidebar()
 {
     ImGui::SetNextWindowPos(sb_P);
@@ -93,6 +93,11 @@ void GUI::ShowSidebar()
     /// content-sidebar
     {
         {
+            ImGui::TextDisabled("NOTE");
+            ImGui::SameLine();
+            extra::HelpMarker("THESE ARE NOT THE ONLY WIDGETS IMGUI HAS!\nYou can find out more in the Dear ImGui "
+                              "Demo (Tools > Demo Window) and imgui/imgui_demo.cpp");
+            ImGui::Separator();
             ImGui::Text("Primitives");
             ImGui::Separator();
             if (ImGui::Button("Window"))
@@ -149,10 +154,10 @@ void GUI::ShowSidebar()
             {
                 bw.create("inputint");
             }
-            ImGui::SameLine(); extra::HelpMarker(
-                "You can apply arithmetic operators +,*,/ on numerical values.\n"
-                "  e.g. [ 100 ], input \'*2\', result becomes [ 200 ]\n"
-                "Use +- to subtract.");
+            ImGui::SameLine();
+            extra::HelpMarker("You can apply arithmetic operators +,*,/ on numerical values.\n"
+                              "  e.g. [ 100 ], input \'*2\', result becomes [ 200 ]\n"
+                              "Use +- to subtract.");
             if (ImGui::Button("Input Float"))
             {
                 bw.create("inputfloat");
@@ -165,9 +170,9 @@ void GUI::ShowSidebar()
             {
                 bw.create("inputscientific");
             }
-            ImGui::SameLine(); extra::HelpMarker(
-                "You can input value using the scientific notation,\n"
-                "  e.g. \"1e+8\" becomes \"100000000\".");
+            ImGui::SameLine();
+            extra::HelpMarker("You can input value using the scientific notation,\n"
+                              "  e.g. \"1e+8\" becomes \"100000000\".");
             if (ImGui::Button("Input Float3"))
             {
                 bw.create("inputfloat3");
@@ -176,10 +181,10 @@ void GUI::ShowSidebar()
             {
                 bw.create("dragint");
             }
-            ImGui::SameLine(); extra::HelpMarker(
-                "Click and drag to edit value.\n"
-                "Hold SHIFT/ALT for faster/slower edit.\n"
-                "Double-click or CTRL+click to input value.");
+            ImGui::SameLine();
+            extra::HelpMarker("Click and drag to edit value.\n"
+                              "Hold SHIFT/ALT for faster/slower edit.\n"
+                              "Double-click or CTRL+click to input value.");
             if (ImGui::Button("Drag Int %"))
             {
                 bw.create("dragint100");
@@ -196,7 +201,8 @@ void GUI::ShowSidebar()
             {
                 bw.create("sliderint");
             }
-            ImGui::SameLine(); extra::HelpMarker("CTRL+click to input value.");
+            ImGui::SameLine();
+            extra::HelpMarker("CTRL+click to input value.");
             if (ImGui::Button("Slider Float"))
             {
                 bw.create("sliderfloat");
@@ -226,8 +232,7 @@ void GUI::ShowSidebar()
             {
                 bw.create("color3");
             }
-            
-            
+
             ImGui::Separator();
             ImGui::Text("Others");
             ImGui::Separator();
@@ -236,7 +241,8 @@ void GUI::ShowSidebar()
             {
                 bw.create("child");
             }
-            ImGui::SameLine(); extra::HelpMarker("This is not an actual child window (ImGui::BeginChild) as "
+            ImGui::SameLine();
+            extra::HelpMarker("This is not an actual child window (ImGui::BeginChild) as "
                               "its behavior is not desired here.");
             if (ImGui::Button("<< Same Line"))
             {
@@ -251,7 +257,7 @@ void GUI::ShowSidebar()
                 bw.create("separator");
             }
             ImGui::Separator();
-            ImGui::Checkbox("Static Mode",&bw.staticlayout);
+            ImGui::Checkbox("Static Mode", &bw.staticlayout);
 
             if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Escape)))
             {
@@ -267,7 +273,7 @@ void GUI::ShowSidebar()
     ImGui::End();
 }
 
-//ANCHOR PROPERTIES.DEFINITION
+// ANCHOR PROPERTIES.DEFINITION
 void GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
@@ -331,7 +337,7 @@ void GUI::ShowProperties()
                     ImGui::NewLine();
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    ImGui::Checkbox("Locked", &selectobj->locked);
                     selectobj->value_s = bw.prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -365,9 +371,10 @@ void GUI::ShowProperties()
                     ImGui::NewLine();
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    ImGui::Checkbox("Locked", &selectobj->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))) || (globaldelete))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))) ||
+                        (globaldelete))
                     {
                         selectobj->del();
                         if (selectproparray != 0)
@@ -392,7 +399,7 @@ void GUI::ShowProperties()
                     ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    ImGui::Checkbox("Locked", &selectobj->locked);
                     selectobj->value_s = bw.prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -426,7 +433,7 @@ void GUI::ShowProperties()
                     ImGui::NewLine();
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    ImGui::Checkbox("Locked", &selectobj->locked);
                     selectobj->value_s = bw.prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -452,7 +459,7 @@ void GUI::ShowProperties()
                     ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
+                    ImGui::Checkbox("Locked", &selectobj->locked);
                     selectobj->label   = bw.prop_text2;
                     selectobj->value_s = bw.prop_text1;
 
@@ -477,8 +484,8 @@ void GUI::ShowProperties()
                     ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Locked",&selectobj->locked);
-                    selectobj->label   = bw.prop_text2;
+                    ImGui::Checkbox("Locked", &selectobj->locked);
+                    selectobj->label = bw.prop_text2;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
@@ -498,7 +505,7 @@ void GUI::ShowProperties()
     ImGui::End();
 }
 
-//ANCHOR VIEWPORT.DEFINITION
+// ANCHOR VIEWPORT.DEFINITION
 void GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
@@ -523,29 +530,28 @@ void GUI::ShowViewport(int gen_rand)
     ImGui::End();
 }
 
-//ANCHOR OUTPUTWKSP.DEFINITION
+// ANCHOR OUTPUTWKSP.DEFINITION
 void GUI::ShowOutputWorkspace()
 {
     ImGui::SetNextWindowPos(ot_P);
-            ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
-            ImGui::SetNextWindowSize(ot_S);
-            ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
-            {
-                static char text[1024 * 16] = "/*\n"
-                                              " GENERATED CODE\n"
-                                              " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
-                                              "*/\n\n"
-                                              "auto layout = You.DesignSomethingFunky();\n"
-                                              "ImStudio.GenerateCode(layout);";
+    ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
+    ImGui::SetNextWindowSize(ot_S);
+    ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
+    {
+        static char text[1024 * 16] = "/*\n"
+                                      " GENERATED CODE\n"
+                                      " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
+                                      "*/\n\n"
+                                      "auto layout = You.DesignSomethingFunky();\n"
+                                      "ImStudio.GenerateCode(layout);";
 
-                ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
-                                          ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64),
-                                          ImGuiInputTextFlags_ReadOnly);
-            }
-            ImGui::End();
+        ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
+                                  ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
+    }
+    ImGui::End();
 }
 
-void GUI::ShowConsole(bool* p_open, GUI* gui_)
+void GUI::ShowConsole(bool *p_open, GUI *gui_)
 {
     static Console console(gui_);
     console.Draw("Console", p_open);
