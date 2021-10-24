@@ -24,8 +24,8 @@ struct GUI
     ImVec2       pt_P                   = {};
     ImVec2       pt_S                   = {};
     int          selectid               = 0;
-    Object *     selectobj              = nullptr;
-    Object *     selectobjprev          = nullptr;
+    BaseObject *     selectobj              = nullptr;
+    BaseObject *     selectobjprev          = nullptr;
     int          selectproparray        = 0;
     bool         globaldelete           = false;
     void         ShowProperties()       ;

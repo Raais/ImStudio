@@ -2,7 +2,7 @@
 
 #include "../includes.h"
 
-class Object
+class BaseObject
 {
   public:
     int               id              = 0;
@@ -11,7 +11,6 @@ class Object
     bool              init            = false;
     bool              state           = true;
     bool              value_b         = false;
-    //bool              moving          = false;
     bool              propinit        = false;
     bool              locked          = false;
     bool              cond_1          = false;
@@ -20,6 +19,9 @@ class Object
     ImVec2            pos             = ImVec2(100, 100);
     ImVec2            size            = {};
     float             width           = 200;
+    void*           parent          = nullptr;
+    bool ischildwidget = false;
+    bool isChild = false;
     ImRect            child           = ImRect(ImVec2(500, 200), ImVec2(700, 400));
     ImVec2            child_grab1     = ImVec2(100, 100);
     ImVec2            child_grab2     = ImVec2(200, 200);
@@ -42,12 +44,26 @@ class Object
     float             col1[3]         = { 1.0f, 0.0f, 0.2f };
     float             col2[3]         = { 1.0f, 0.0f, 0.2f };
     float             col3[4]         = { 0.4f, 0.7f, 0.0f, 0.5f };
-
-    Object(int idvar_, std::string type_);
-
+    //BaseObject();
+    //BaseObject(int idvar_, std::string type_);
     void              draw(int *select, int gen_rand, bool staticlayout);
     void              del();
 
   private:
     void              highlight(int *select);
+};
+
+class Child
+{
+  public:
+    std::vector<BaseObject> objects = {};
+    void        drawall(int *select, int gen_rand, bool staticlayout);
+};
+
+class Object : public BaseObject
+{
+  public:
+    Child child_;
+
+    Object(int idvar_, std::string type_);
 };

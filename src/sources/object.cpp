@@ -1,6 +1,14 @@
 #include "../includes.h"
 #include "object.h"
 
+/*BaseObject::BaseObject(int idvar_, std::string type_)
+{ // class-object-constr
+    id         = idvar_;
+    type       = type_;
+    identifier = type_ + std::to_string(idvar_);
+    value_s    = type_ + std::to_string(idvar_);
+}*/
+
 Object::Object(int idvar_, std::string type_)
 { // class-object-constr
     id         = idvar_;
@@ -9,7 +17,7 @@ Object::Object(int idvar_, std::string type_)
     value_s    = type_ + std::to_string(idvar_);
 }
 
-void Object::draw(int *select, int gen_rand, bool staticlayout = false)
+void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
 {
     if (state)
     {
@@ -425,42 +433,8 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "child")
         {//TODO: Child behaviour switch
-            auto fg = ImGui::GetForegroundDrawList();
-
-            if (!init)
-            {
-                child_id1 = gen_rand;
-                child_id2 = gen_rand + 1;
-            }
-            extra::GrabButton(child_grab1, child_id1);
-            if ((!locked)&&(ImGui::IsItemActive()))
-            {
-                child_grab1 = extra::GetLocalCursor();
-                *select     = id;
-            }
-
-            extra::GrabButton(child_grab2, child_id2);
-            if ((!locked)&&(ImGui::IsItemActive()))
-            {
-                child_grab2 = extra::GetLocalCursor();
-                *select     = id;
-            }
-            child.Min.x = child_grab1.x + ImGui::GetWindowPos().x;
-            child.Min.y = child_grab1.y + ImGui::GetWindowPos().y;
-            child.Max.x = child_grab2.x + ImGui::GetWindowPos().x + 15;
-            child.Max.y = child_grab2.y + ImGui::GetWindowPos().y + 14;
-            // child.Min = child_grab1;
-            // child.Max = child_grab2;
-            if (id == *select)
-            {
-                fg->AddRect(child.Min, child.Max, IM_COL32(255, 255, 0, 255));
-            }
-            else
-            {
-                fg->AddRect(child.Min, child.Max, IM_COL32(170, 170, 170, 255));
-            }
-
-            init = true;
+            isChild = true;
+            std::cout << "child created" << isChild << std::endl;
         }
         if (type == "bullet")
         {
@@ -500,16 +474,35 @@ void Object::draw(int *select, int gen_rand, bool staticlayout = false)
     }
 }
 
-void Object::del()
+void BaseObject::del()
 {
     state = false;
 }
 
-void Object::highlight(int *select)
+void BaseObject::highlight(int *select)
 {
     if (id == *select)
     {
         ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
                                                 IM_COL32(255, 255, 0, 255));
     }
+}
+
+void        Child::drawall(int *select, int gen_rand, bool staticlayout)
+{
+    ImGui::BeginChild(89,ImVec2(400,400),true);
+    for (auto i = objects.begin(); i != objects.end(); ++i)
+            {
+                BaseObject &o = *i;
+                if (o.state == false)
+                {
+                    i = objects.erase(i);
+                    break;
+                }
+                else
+                {
+                    o.draw(select, gen_rand, staticlayout);
+                }
+            }
+    ImGui::EndChild();
 }

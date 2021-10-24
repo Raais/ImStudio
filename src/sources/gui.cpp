@@ -244,6 +244,10 @@ void GUI::ShowSidebar()
             ImGui::SameLine();
             extra::HelpMarker("This is not an actual child window (ImGui::BeginChild) as "
                               "its behavior is not desired here.");
+            if (ImGui::Button("EndChild"))
+            {
+                bw.addingtochild = false;
+            }
             if (ImGui::Button("<< Same Line"))
             {
                 bw.create("sameline");
@@ -259,7 +263,7 @@ void GUI::ShowSidebar()
             ImGui::Separator();
             ImGui::Checkbox("Static Mode", &bw.staticlayout);
 
-            if ((ImGui::GetIO().KeyAlt)&&(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
+            if ((ImGui::GetIO().KeyAlt) && (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
             {
                 state = false;
             }
@@ -286,6 +290,8 @@ void GUI::ShowProperties()
         {
             if (!bw.objects.empty())
             {
+                int allvecsize = 0;
+
                 const char *items[bw.objects.size()];
                 int         idarr[bw.objects.size()];
                 int         i = 0;
@@ -413,6 +419,12 @@ void GUI::ShowProperties()
                 }
                 if (selectobj->type == "child")
                 {
+
+                    /*if (selectobj->child_.objects.empty()))
+                    {
+                        ImGui::Text("child.objects.size() = %d",static_cast<Object*>(selectobj->parent)->child_.objects.size());
+                    }*/
+
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
                         selectobj->del();
@@ -514,12 +526,15 @@ void GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
+
+        ImGui::Text("addingtochild = %d", bw.addingtochild);
         ImGui::TextDisabled("Make sure to lock widgets before interacting with them.");
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
         {
             ImGui::Text("Selected = %s", selectobj->identifier.c_str());
+            ImGui::Text("ischild = %d", selectobj->isChild);
         }
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());
