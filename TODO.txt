@@ -1,0 +1,4 @@
+Actual child windows
+CLI mode - input layout file
+LT color scheme
+Window grid/canvas
