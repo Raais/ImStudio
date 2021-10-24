@@ -306,13 +306,10 @@ void GUI::ShowProperties()
                 const char *items[allvecsize];
                 int         idarr[allvecsize];
                 int         i = 0;
-            
-
-                for (auto it = bw.objects.begin(); it != bw.objects.end(); ++it)
+                for (Object &o : bw.objects)
                 {
-                    Object &o = *it;
-                    items[i]  = o.identifier.c_str();
-                    idarr[i]  = o.id;
+                    items[i] = o.identifier.c_str();
+                    idarr[i] = o.id;
                     if (o.id == selectid)
                     {
                         if (ImGui::IsMouseDown(0))
@@ -322,17 +319,14 @@ void GUI::ShowProperties()
                     }
                     i++;
                 }
-                for (auto it = bw.objects.begin(); it != bw.objects.end(); ++it)
+                for (Object &o : bw.objects)
                 {
-                    Object &o = *it;
-
                     if (!o.child_.objects.empty())
                     {
-                        for (auto it = o.child_.objects.begin(); it != o.child_.objects.end(); ++it)
+                        for (BaseObject &cw : o.child_.objects)
                         {
-                            BaseObject &cw = *it;
-                            items[i]       = cw.identifier.c_str();
-                            idarr[i]       = cw.id;
+                            items[i] = cw.identifier.c_str();
+                            idarr[i] = cw.id;
                             if (cw.id == selectid)
                             {
                                 if (ImGui::IsMouseDown(0))

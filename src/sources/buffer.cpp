@@ -79,6 +79,7 @@ void BufferWindow::create(std::string type_)
     {
         Object widget(idvar, type_);
         widget.parent = &widget;
+        if (type_ == "child"){widget.child_.objects.reserve(250);}
         objects.push_back(widget);
     }
     else
