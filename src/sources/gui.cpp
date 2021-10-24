@@ -291,10 +291,23 @@ void GUI::ShowProperties()
             if (!bw.objects.empty())
             {
                 int allvecsize = 0;
+                for (Object &o : bw.objects)
+                {
+                    allvecsize++;
+                    if (!o.child_.objects.empty())
+                    {
+                        for (BaseObject &cw : o.child_.objects)
+                        {
+                            allvecsize++;
+                        }
+                    }
+                }
 
-                const char *items[bw.objects.size()];
-                int         idarr[bw.objects.size()];
+                const char *items[allvecsize];
+                int         idarr[allvecsize];
                 int         i = 0;
+            
+
                 for (auto it = bw.objects.begin(); it != bw.objects.end(); ++it)
                 {
                     Object &o = *it;
@@ -304,10 +317,32 @@ void GUI::ShowProperties()
                     {
                         if (ImGui::IsMouseDown(0))
                         {
-                            selectproparray = i;
+                            selectproparray = i; // select prop from vp
                         }
                     }
                     i++;
+                }
+                for (auto it = bw.objects.begin(); it != bw.objects.end(); ++it)
+                {
+                    Object &o = *it;
+
+                    if (!o.child_.objects.empty())
+                    {
+                        for (auto it = o.child_.objects.begin(); it != o.child_.objects.end(); ++it)
+                        {
+                            BaseObject &cw = *it;
+                            items[i]       = cw.identifier.c_str();
+                            idarr[i]       = cw.id;
+                            if (cw.id == selectid)
+                            {
+                                if (ImGui::IsMouseDown(0))
+                                {
+                                    selectproparray = i; // select prop from vp
+                                }
+                            }
+                            i++;
+                        }
+                    }
                 }
 
                 ImGui::Combo("combo", &selectproparray, items, IM_ARRAYSIZE(items));
@@ -422,7 +457,8 @@ void GUI::ShowProperties()
 
                     /*if (selectobj->child_.objects.empty()))
                     {
-                        ImGui::Text("child.objects.size() = %d",static_cast<Object*>(selectobj->parent)->child_.objects.size());
+                        ImGui::Text("child.objects.size() =
+                    %d",static_cast<Object*>(selectobj->parent)->child_.objects.size());
                     }*/
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
