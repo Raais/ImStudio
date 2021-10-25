@@ -78,20 +78,12 @@ void BufferWindow::create(std::string type_)
     if(!addingtochild)
     {
         Object widget(idvar, type_);
-        widget.parent = &widget;
-        if (type_ == "child"){widget.child_.objects.reserve(250);}
         objects.push_back(widget);
     }
     else
     {
-        BaseObject childwidget;
+        BaseObject childwidget(idvar, type_);
         childwidget.parent = cur_child;
-        childwidget.ischildwidget = true;
-        childwidget.id         = idvar;
-        childwidget.type = type_;
-        childwidget.identifier = type_ + std::to_string(idvar);
-        childwidget.value_s = type_ + std::to_string(idvar);
         cur_child->child_.objects.push_back(childwidget);
-        std::cout << "CREATED childwidget" << std::endl;
     }
 }

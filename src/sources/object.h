@@ -45,7 +45,7 @@ class BaseObject
     float             col2[3]         = { 1.0f, 0.0f, 0.2f };
     float             col3[4]         = { 0.4f, 0.7f, 0.0f, 0.5f };
     //BaseObject();
-    //BaseObject(int idvar_, std::string type_);
+    BaseObject(int idvar_, std::string type_);
     void              draw(int *select, int gen_rand, bool staticlayout);
     void              del();
 

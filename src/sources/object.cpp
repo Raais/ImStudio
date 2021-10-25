@@ -1,20 +1,23 @@
 #include "../includes.h"
 #include "object.h"
 
-/*BaseObject::BaseObject(int idvar_, std::string type_)
-{ // class-object-constr
+BaseObject::BaseObject(int idvar_, std::string type_)
+{
+    ischildwidget = true;
     id         = idvar_;
-    type       = type_;
+    type = type_;
     identifier = type_ + std::to_string(idvar_);
-    value_s    = type_ + std::to_string(idvar_);
-}*/
+    value_s = type_ + std::to_string(idvar_);
+}
 
-Object::Object(int idvar_, std::string type_)
-{ // class-object-constr
+Object::Object(int idvar_, std::string type_) : BaseObject(idvar_, type_)
+{
+    if (type_ == "child") child_.objects.reserve(250);
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
     value_s    = type_ + std::to_string(idvar_);
+    parent     = this;
 }
 
 void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
