@@ -1,3 +1,4 @@
+//[https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp | Example App: Debug Console / ShowExampleAppConsole()]
 #pragma once
 
 #include "../includes.h"
@@ -18,25 +19,24 @@ struct Console
     GUI*                  gui_;
 
 
-    Console(GUI* _gui_);
-    ~Console();
+    Console               (GUI* _gui_);
+    ~Console              ();
 
     // Portable helpers
-    static int   Stricmp(const char* s1, const char* s2);
-    static int   Strnicmp(const char* s1, const char* s2, int n);
-    static char* Strdup(const char* s);
-    static void  Strtrim(char* s);
+    static int            Stricmp(const char* s1, const char* s2);
+    static int            Strnicmp(const char* s1, const char* s2, int n);
+    static char*          Strdup(const char* s);
+    static void           Strtrim(char* s);
 
-    void    ClearLog();
+    void                  ClearLog();
+        
+    void                  AddLog(const char* fmt, ...) IM_FMTARGS(2);
+        
+    void                  Draw(const char* title, bool* p_open);
+        
+    void                  ExecCommand(const char* command_line);
 
-    void    AddLog(const char* fmt, ...) IM_FMTARGS(2);
+    static int            TextEditCallbackStub(ImGuiInputTextCallbackData* data);
 
-    void    Draw(const char* title, bool* p_open);
-
-    void    ExecCommand(const char* command_line);
-
-    // In C++11 you'd be better off using lambdas for this sort of forwarding callbacks
-    static int TextEditCallbackStub(ImGuiInputTextCallbackData* data);
-
-    int     TextEditCallback(ImGuiInputTextCallbackData* data);
+    int                   TextEditCallback(ImGuiInputTextCallbackData* data);
 };

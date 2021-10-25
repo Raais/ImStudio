@@ -27,4 +27,4 @@ void HelpMarker(const char *desc);
 
 void metrics();
 
-} // namespace extra
+}
