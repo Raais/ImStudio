@@ -3,18 +3,18 @@
 
 BaseObject::BaseObject(){}
 
-BaseObject::BaseObject(int idvar_, std::string type_)
+BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
 {
     ischildwidget = true;
     id         = idvar_;
     type = type_;
-    identifier = type_ + std::to_string(idvar_);
+    identifier = "child" + std::to_string(parent_id_) + "::" + type_ + std::to_string(idvar_);
     value_s = type_ + std::to_string(idvar_);
 }
 
 Object::Object(int idvar_, std::string type_) : BaseObject()
 {
-    if (type_ == "child") {child.objects.reserve(250); open=true; child.id=idvar_;}
+    if (type_ == "child") {child.objects.reserve(250); child.open=true; child.id=idvar_;}
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -494,7 +494,7 @@ void BaseObject::highlight(int *select)
 
 void        Child::drawall(int *select, int gen_rand, bool staticlayout)
 {
-    //auto fg = ImGui::GetForegroundDrawList();
+    auto dl = ImGui::GetWindowDrawList();
 
     if (!init)
     {
@@ -502,13 +502,13 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
         grab2_id = gen_rand + 1;
     }
     
-    rect.Min.x = grab1.x;
-    rect.Min.y = grab1.y;
-    rect.Max.x = grab2.x + 15;
-    rect.Max.y = grab2.y + 14;
+    freerect.Min.x = grab1.x;
+    freerect.Min.y = grab1.y;
+    freerect.Max.x = grab2.x + 15;
+    freerect.Max.y = grab2.y + 14;
 
-    if(!staticlayout) ImGui::SetCursorPos(rect.Min);
-    ImGui::BeginChild(id,rect.GetSize(),true,ImGuiWindowFlags_NoFocusOnAppearing|ImGuiWindowFlags_NoBringToFrontOnFocus);
+    if(!staticlayout) ImGui::SetCursorPos(freerect.Min);
+    ImGui::BeginChild(id,freerect.GetSize(),true,ImGuiWindowFlags_NoFocusOnAppearing|ImGuiWindowFlags_NoBringToFrontOnFocus);
     for (auto i = objects.begin(); i != objects.end(); ++i)
             {
                 BaseObject &o = *i;
@@ -523,6 +523,7 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
                 }
             }
     ImGui::EndChild();
+    windowrect = ImRect(ImGui::GetItemRectMin(),ImGui::GetItemRectMax());
 
     if(extra::GrabButton(grab1, grab1_id))
     {
@@ -535,14 +536,20 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
         *select     = id;
     }
 
+    if (id == *select)
+    {
+        if(open)
+        {
+            dl->AddRect(windowrect.Min, windowrect.Max, IM_COL32(0, 255, 28, 255));
+        }
+        else
+        {
+            dl->AddRect(windowrect.Min, windowrect.Max, IM_COL32(255, 255, 0, 255));
+        }
+
+    }
+
+    
+
     init = true;
 }
-
-//void Child::highlight(int *select)
-//{
-//    if (id == *select)
-//    {
-//        ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
-//                                                IM_COL32(255, 255, 0, 255));
-//    }
-//}

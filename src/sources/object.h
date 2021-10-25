@@ -20,13 +20,12 @@ class BaseObject
     ImVec2                  size                    = {};
     float                   width                   = 200;
     void*                   parent                  = nullptr;
-    bool                    open                    = false;
     bool                    ischild                 = false;
     bool                    ischildwidget           = false;
     int                     item_current            = 0;
     
     BaseObject();
-    BaseObject              (int idvar_,            std::string type_);
+    BaseObject              (int idvar_,            std::string type_,      int parent_id_);
     void draw               (int *select,           int gen_rand,           bool staticlayout);
     void del                ();
 
@@ -54,9 +53,11 @@ class Child
 {
   public:
     int                     id                      = 0;
-    ImRect                  rect                    = {};
+    ImRect                  freerect                = {};
+    ImRect                  windowrect              = {};
     ImVec2                  size                    = {};
     ImVec2                  pos                     = {};
+    bool                    open                    = false;
     bool                    locked                  = false;
     std::vector<BaseObject> objects                 = {};
     void drawall            (int *select,           int gen_rand,           bool staticlayout);

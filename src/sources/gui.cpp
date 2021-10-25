@@ -250,7 +250,7 @@ void GUI::ShowSidebar()
                               "its behavior is not desired here.");
             if (ImGui::Button("EndChild"))
             {
-                bw.cur_child->open = false;
+                bw.cur_child->child.open = false;
             }
             if (ImGui::Button("<< Same Line"))
             {
@@ -462,6 +462,7 @@ void GUI::ShowProperties()
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
+                        bw.cur_child->child.open = false;
                         selectobj->del();
                         if (selectproparray != 0)
                         {

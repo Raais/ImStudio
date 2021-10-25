@@ -24,7 +24,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
             {
                 Object &o = *i;
 
-                if (o.open) childopen = true;
+                if (o.child.open) childopen = true;
                 else childopen = false;
 
                 if (o.state == false)
@@ -83,7 +83,7 @@ void BufferWindow::create(std::string type_)
     }
     else
     {
-        BaseObject childwidget(idvar, type_);
+        BaseObject childwidget(idvar, type_, cur_child->id);
         childwidget.parent = cur_child;
         cur_child->child.objects.push_back(childwidget);
     }
