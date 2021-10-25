@@ -43,6 +43,10 @@ void GUI::ShowMenubar()
 
                 ImGui::EndMenu();
             }
+            if (ImGui::MenuItem("Reset"))
+            {
+                bw.objects.clear();
+            }
 
             ImGui::EndMenu();
         }
@@ -246,7 +250,7 @@ void GUI::ShowSidebar()
                               "its behavior is not desired here.");
             if (ImGui::Button("EndChild"))
             {
-                bw.addingtochild = false;
+                bw.cur_child->open = false;
             }
             if (ImGui::Button("<< Same Line"))
             {
@@ -558,7 +562,7 @@ void GUI::ShowViewport(int gen_rand)
     /// content-viewport
     {
 
-        ImGui::Text("addingtochild = %d", bw.addingtochild);
+        ImGui::Text("childopen = %d", bw.childopen);
         ImGui::TextDisabled("Make sure to lock widgets before interacting with them.");
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);

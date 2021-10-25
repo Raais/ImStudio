@@ -20,8 +20,9 @@ class BaseObject
     ImVec2            size            = {};
     float             width           = 200;
     void*           parent          = nullptr;
-    bool ischildwidget = false;
+    bool              open            = false;
     bool ischild = false;
+    bool ischildwidget = false;
     ImVec2            child_grab1     = ImVec2(100, 100);
     ImVec2            child_grab2     = ImVec2(200, 200);
     int               child_id1       = 0;
@@ -55,14 +56,25 @@ class BaseObject
 class Child
 {
   public:
+    int id = 0;
+    ImRect rect = {};
+    ImVec2 size = {};
+    ImVec2 pos = {};
+    bool locked = false;
     std::vector<BaseObject> objects = {};
     void        drawall(int *select, int gen_rand, bool staticlayout);
+  private:
+    bool init = false;
+    ImVec2 grab1 = ImVec2(90, 90);
+    ImVec2 grab2 = ImVec2(200, 200);
+    int grab1_id = 0;
+    int grab2_id = 0;
+    //void              highlight(int *select);
 };
 
 class Object : public BaseObject
 {
   public:
     Child child;
-
     Object(int idvar_, std::string type_);
 };

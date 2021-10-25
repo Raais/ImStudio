@@ -21,7 +21,7 @@ class BufferWindow : public PropertyBuffer
     ImVec2      size  = ImVec2(1070, 680); // FIXME
     ImVec2      pos   = ImVec2(280, 120);  // FIXME
     int         idvar = 0;
-    bool        addingtochild = false;
+    bool        childopen = false;
     Object*     cur_child = nullptr;
 
     bool staticlayout = false;

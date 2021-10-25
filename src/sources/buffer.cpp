@@ -24,6 +24,9 @@ void BufferWindow::drawall(int *select, int gen_rand)
             {
                 Object &o = *i;
 
+                if (o.open) childopen = true;
+                else childopen = false;
+
                 if (o.state == false)
                 {
                     i = objects.erase(i);
@@ -31,14 +34,12 @@ void BufferWindow::drawall(int *select, int gen_rand)
                 }
                 else
                 {
-                    if(!o.ischild)
+                    if(o.type != "child")
                     {
                         o.draw(select, gen_rand, staticlayout);
                     }
                     else
                     {
-                        std::cout << "adding to child" << std::endl;
-                        addingtochild = true;
                         cur_child = &o;
                         o.child.drawall(select, gen_rand, staticlayout);
                     }
@@ -75,7 +76,7 @@ BaseObject *BufferWindow::getobj(int id)
 void BufferWindow::create(std::string type_)
 {
     idvar++;
-    if(!addingtochild)
+    if(!childopen)
     {
         Object widget(idvar, type_);
         objects.push_back(widget);

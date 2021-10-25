@@ -228,15 +228,20 @@ void extra::ShowColorExportWindow(bool *child_colexp)
     }
 }
 
-void extra::GrabButton(ImVec2 pos, int random_int)
+bool extra::GrabButton(ImVec2 pos, int random_int)
 {
+    bool active = false;
     ImGui::SetCursorPos(pos);
     ImGui::PushID(random_int);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.00f, 0.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
+    ImGui::BeginChild(random_int+9,ImVec2(20,20));
     ImGui::Button("  ");
+    active = ImGui::IsItemActive();
+    ImGui::EndChild();
     ImGui::PopStyleVar(2);
     ImGui::PopID();
+    return active;
 }
 
 void extra::HelpMarker(const char *desc)

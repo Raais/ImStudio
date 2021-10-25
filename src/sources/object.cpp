@@ -14,7 +14,7 @@ BaseObject::BaseObject(int idvar_, std::string type_)
 
 Object::Object(int idvar_, std::string type_) : BaseObject()
 {
-    if (type_ == "child") child.objects.reserve(250);
+    if (type_ == "child") {child.objects.reserve(250); open=true; child.id=idvar_;}
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -437,10 +437,8 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             highlight(select);
         }
         if (type == "child")
-        {//TODO: Child behaviour switch
-            ischild = true;
-            std::cout << "child created" << ischild << std::endl;
-            std::cout << parent << std::endl;
+        {
+            //ischild = true;
         }
         if (type == "bullet")
         {
@@ -496,7 +494,21 @@ void BaseObject::highlight(int *select)
 
 void        Child::drawall(int *select, int gen_rand, bool staticlayout)
 {
-    ImGui::BeginChild(89,ImVec2(400,400),true);
+    //auto fg = ImGui::GetForegroundDrawList();
+
+    if (!init)
+    {
+        grab1_id = gen_rand;
+        grab2_id = gen_rand + 1;
+    }
+    
+    rect.Min.x = grab1.x;
+    rect.Min.y = grab1.y;
+    rect.Max.x = grab2.x + 15;
+    rect.Max.y = grab2.y + 14;
+
+    if(!staticlayout) ImGui::SetCursorPos(rect.Min);
+    ImGui::BeginChild(id,rect.GetSize(),true,ImGuiWindowFlags_NoFocusOnAppearing|ImGuiWindowFlags_NoBringToFrontOnFocus);
     for (auto i = objects.begin(); i != objects.end(); ++i)
             {
                 BaseObject &o = *i;
@@ -511,4 +523,26 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
                 }
             }
     ImGui::EndChild();
+
+    if(extra::GrabButton(grab1, grab1_id))
+    {
+        grab1 = extra::GetLocalCursor();
+        *select     = id;
+    }
+    if(extra::GrabButton(grab2, grab2_id))
+    {
+        grab2 = extra::GetLocalCursor();
+        *select     = id;
+    }
+
+    init = true;
 }
+
+//void Child::highlight(int *select)
+//{
+//    if (id == *select)
+//    {
+//        ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
+//                                                IM_COL32(255, 255, 0, 255));
+//    }
+//}
