@@ -48,7 +48,7 @@ typedef DWORD (WINAPI *PFN_XInputGetState)(DWORD, XINPUT_STATE*);
 //  2020-01-14: Inputs: Added support for #define IMGUI_IMPL_WIN32_DISABLE_GAMEPAD/IMGUI_IMPL_WIN32_DISABLE_LINKING_XINPUT.
 //  2019-12-05: Inputs: Added support for ImGuiMouseCursor_NotAllowed mouse cursor.
 //  2019-05-11: Inputs: Don't filter value from WM_CHAR before calling AddInputCharacter().
-//  2019-01-17: Misc: Using GetForegroundWindow()+ischild() instead of GetActiveWindow() to be compatible with windows created in a different thread or parent.
+//  2019-01-17: Misc: Using GetForegroundWindow()+IsChild() instead of GetActiveWindow() to be compatible with windows created in a different thread or parent.
 //  2019-01-17: Inputs: Added support for mouse buttons 4 and 5 via WM_XBUTTON* messages.
 //  2019-01-15: Inputs: Added support for XInput gamepads (if ImGuiConfigFlags_NavEnableGamepad is set by user application).
 //  2018-11-30: Misc: Setting up io.BackendPlatformName so it can be displayed in the About Window.
@@ -316,9 +316,9 @@ static void ImGui_ImplWin32_UpdateMousePos()
     HWND focused_window = ::GetForegroundWindow();
     HWND hovered_window = bd->MouseHwnd;
     HWND mouse_window = NULL;
-    if (hovered_window && (hovered_window == bd->hWnd || ::ischild(hovered_window, bd->hWnd)))
+    if (hovered_window && (hovered_window == bd->hWnd || ::IsChild(hovered_window, bd->hWnd)))
         mouse_window = hovered_window;
-    else if (focused_window && (focused_window == bd->hWnd || ::ischild(focused_window, bd->hWnd)))
+    else if (focused_window && (focused_window == bd->hWnd || ::IsChild(focused_window, bd->hWnd)))
         mouse_window = focused_window;
     if (mouse_window == NULL)
         return;
