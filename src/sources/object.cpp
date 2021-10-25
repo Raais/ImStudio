@@ -1,6 +1,8 @@
 #include "../includes.h"
 #include "object.h"
 
+BaseObject::BaseObject(){}
+
 BaseObject::BaseObject(int idvar_, std::string type_)
 {
     ischildwidget = true;
@@ -10,9 +12,9 @@ BaseObject::BaseObject(int idvar_, std::string type_)
     value_s = type_ + std::to_string(idvar_);
 }
 
-Object::Object(int idvar_, std::string type_) : BaseObject(idvar_, type_)
+Object::Object(int idvar_, std::string type_) : BaseObject()
 {
-    if (type_ == "child") child_.objects.reserve(250);
+    if (type_ == "child") child.objects.reserve(250);
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -436,8 +438,9 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "child")
         {//TODO: Child behaviour switch
-            isChild = true;
-            std::cout << "child created" << isChild << std::endl;
+            ischild = true;
+            std::cout << "child created" << ischild << std::endl;
+            std::cout << parent << std::endl;
         }
         if (type == "bullet")
         {

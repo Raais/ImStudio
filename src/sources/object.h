@@ -21,8 +21,7 @@ class BaseObject
     float             width           = 200;
     void*           parent          = nullptr;
     bool ischildwidget = false;
-    bool isChild = false;
-    ImRect            child           = ImRect(ImVec2(500, 200), ImVec2(700, 400));
+    bool ischild = false;
     ImVec2            child_grab1     = ImVec2(100, 100);
     ImVec2            child_grab2     = ImVec2(200, 200);
     int               child_id1       = 0;
@@ -44,8 +43,8 @@ class BaseObject
     float             col1[3]         = { 1.0f, 0.0f, 0.2f };
     float             col2[3]         = { 1.0f, 0.0f, 0.2f };
     float             col3[4]         = { 0.4f, 0.7f, 0.0f, 0.5f };
-    //BaseObject();
-    BaseObject(int idvar_, std::string type_);
+    BaseObject();
+    BaseObject(int idvar_, std::string type_);// for child objects only
     void              draw(int *select, int gen_rand, bool staticlayout);
     void              del();
 
@@ -63,7 +62,7 @@ class Child
 class Object : public BaseObject
 {
   public:
-    Child child_;
+    Child child;
 
     Object(int idvar_, std::string type_);
 };

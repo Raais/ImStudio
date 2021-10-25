@@ -31,7 +31,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
                 }
                 else
                 {
-                    if(!o.isChild)
+                    if(!o.ischild)
                     {
                         o.draw(select, gen_rand, staticlayout);
                     }
@@ -40,7 +40,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
                         std::cout << "adding to child" << std::endl;
                         addingtochild = true;
                         cur_child = &o;
-                        o.child_.drawall(select, gen_rand, staticlayout);
+                        o.child.drawall(select, gen_rand, staticlayout);
                     }
                     
                 }
@@ -58,9 +58,9 @@ BaseObject *BufferWindow::getobj(int id)
         {
             return &o;
         }
-        if (!o.child_.objects.empty())
+        if (!o.child.objects.empty())
         {
-            for (BaseObject &cw : o.child_.objects)
+            for (BaseObject &cw : o.child.objects)
             {
                 if (cw.id == id)
                 {
@@ -84,6 +84,6 @@ void BufferWindow::create(std::string type_)
     {
         BaseObject childwidget(idvar, type_);
         childwidget.parent = cur_child;
-        cur_child->child_.objects.push_back(childwidget);
+        cur_child->child.objects.push_back(childwidget);
     }
 }

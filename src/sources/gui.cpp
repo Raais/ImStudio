@@ -294,9 +294,9 @@ void GUI::ShowProperties()
                 for (Object &o : bw.objects)
                 {
                     allvecsize++;
-                    if (!o.child_.objects.empty())
+                    if (!o.child.objects.empty())
                     {
-                        for (BaseObject &cw : o.child_.objects)
+                        for (BaseObject &cw : o.child.objects)
                         {
                             allvecsize++;
                         }
@@ -321,9 +321,9 @@ void GUI::ShowProperties()
                 }
                 for (Object &o : bw.objects)
                 {
-                    if (!o.child_.objects.empty())
+                    if (!o.child.objects.empty())
                     {
-                        for (BaseObject &cw : o.child_.objects)
+                        for (BaseObject &cw : o.child.objects)
                         {
                             items[i] = cw.identifier.c_str();
                             idarr[i] = cw.id;
@@ -367,6 +367,7 @@ void GUI::ShowProperties()
                     {
                         bw.prop_text1 = selectobj->value_s;
                     }
+                    ImGui::Text("ischildwidget = %d", selectobj->ischildwidget);
 
                     ImGui::InputText("Value", &bw.prop_text1);
                     ImGui::NewLine();
@@ -449,10 +450,10 @@ void GUI::ShowProperties()
                 if (selectobj->type == "child")
                 {
 
-                    /*if (selectobj->child_.objects.empty()))
+                    /*if (selectobj->child.objects.empty()))
                     {
                         ImGui::Text("child.objects.size() =
-                    %d",static_cast<Object*>(selectobj->parent)->child_.objects.size());
+                    %d",static_cast<Object*>(selectobj->parent)->child.objects.size());
                     }*/
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
@@ -564,7 +565,7 @@ void GUI::ShowViewport(int gen_rand)
         if (!bw.objects.empty())
         {
             ImGui::Text("Selected = %s", selectobj->identifier.c_str());
-            ImGui::Text("ischild = %d", selectobj->isChild);
+            ImGui::Text("ischild = %d", selectobj->ischild);
         }
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());
