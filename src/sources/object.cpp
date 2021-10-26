@@ -487,8 +487,12 @@ void BaseObject::highlight(int *select)
 {
     if (id == *select)
     {
-        ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(),
-                                                IM_COL32(255, 255, 0, 255));
+        ImRect itemrect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
+        itemrect.Min.x -= 5;
+        itemrect.Min.y -= 5;
+        itemrect.Max.x += 5;
+        itemrect.Max.y += 5;
+        ImGui::GetForegroundDrawList()->AddRect(itemrect.Min, itemrect.Max, IM_COL32(255, 255, 0, 255));
     }
 }
 

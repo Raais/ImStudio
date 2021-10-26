@@ -20,7 +20,7 @@ void GUI::ShowMenubar()
         if (ImGui::BeginMenu("Debug"))
         {
             ImGui::MenuItem("Settings", NULL, &child_debug);
-            ImGui::MenuItem("Style Editor", NULL, &child_sty);
+            ImGui::MenuItem("Style Editor", NULL, &child_style);
             ImGui::MenuItem("Demo Window", NULL, &child_demo);
             ImGui::MenuItem("Metrics", NULL, &child_metrics);
             ImGui::MenuItem("Stack Tool", NULL, &child_stack);
@@ -54,7 +54,7 @@ void GUI::ShowMenubar()
         /// menu-tools
         if (ImGui::BeginMenu("Tools"))
         {
-            ImGui::MenuItem("Color Export", NULL, &child_colexp);
+            ImGui::MenuItem("Color Export", NULL, &child_color);
             ImGui::EndMenu();
         }
 
@@ -321,6 +321,14 @@ void GUI::ShowProperties()
                             selectproparray = i; // select prop from vp
                         }
                     }
+                    if (o.id == bw.idvar)
+                    {
+                        if (o.selectinit == true)
+                        {
+                            selectproparray = i;
+                            o.selectinit = false;
+                        }
+                    }
                     i++;
                 }
                 for (Object &o : bw.objects)
@@ -350,7 +358,7 @@ void GUI::ShowProperties()
                     selectobj = bw.getobj(selectid);
                 }
                 else
-                { // combo select
+                { // combo select if (newest) else {selectid = newest}
                     selectobj = bw.getobj(idarr[selectproparray]);
                     selectid  = selectobj->id;
                 }

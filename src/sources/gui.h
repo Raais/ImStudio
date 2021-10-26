@@ -45,9 +45,9 @@ struct GUI
     static void         ShowConsole                 (bool* p_open, GUI* gui_);
 
     bool                child_debug                 = false;
-    bool                child_sty                   = false;
+    bool                child_style                 = false;
     bool                child_demo                  = false;
     bool                child_metrics               = false;
-    bool                child_colexp                = false;
+    bool                child_color                 = false;
     bool                child_stack                 = false;
 };

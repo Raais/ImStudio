@@ -78,10 +78,15 @@ void extra::glfwSetWindowCenter(GLFWwindow *window)
 
 ImVec2 extra::GetLocalCursor()
 {
-    ImGuiIO &     io     = ImGui::GetIO();
-    ImGuiContext &g      = *ImGui::GetCurrentContext();
-    ImGuiWindow * w      = g.CurrentWindow;
-    ImVec2        cursor = ImVec2(io.MousePos.x - w->Pos.x, io.MousePos.y - w->Pos.y);
+    ImGuiIO &     io         = ImGui::GetIO();
+    ImGuiContext &g          = *ImGui::GetCurrentContext();
+    ImGuiWindow * w          = g.CurrentWindow;
+    ImVec2        cursor     = ImVec2(io.MousePos.x - w->Pos.x, io.MousePos.y - w->Pos.y);
+    ImRect        itemrect   = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
+    float         itemwidth  = itemrect.Max.x - itemrect.Min.x;
+    float         itemheight = itemrect.Max.y - itemrect.Min.y;
+    cursor.x                -= itemwidth / 2;
+    cursor.y                -= itemheight / 2;
     return cursor;
 }
 
@@ -126,19 +131,18 @@ void extra::ShowStyleEditorWindow(bool *child_sty)
     ImGui::End();
 }
 
-
 void extra::ShowColorExportWindow(bool *child_colexp)
 {
     if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
     {
         static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
 
-        static bool alpha_preview      = true;
-        static bool alpha_half_preview = true;
-        static bool drag_and_drop      = true;
-        static bool options_menu       = true;
-        static bool hdr                = false;
-        ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) |
+        static bool         alpha_preview      = true;
+        static bool         alpha_half_preview = true;
+        static bool         drag_and_drop      = true;
+        static bool         options_menu       = true;
+        static bool         hdr                = false;
+        ImGuiColorEditFlags misc_flags         = (hdr ? ImGuiColorEditFlags_HDR : 0) |
                                          (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) |
                                          (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf
                                                              : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) |
@@ -149,7 +153,8 @@ void extra::ShowColorExportWindow(bool *child_colexp)
         HelpMarker("Click on the color square to open a color picker.\n"
                    "CTRL+click on individual component to input value.\n");
         ImGui::ColorEdit3("MyColor##1", (float *)&color, misc_flags);
-        ImGui::SameLine();HelpMarker("Right click me to export colors with your preferred format.");
+        ImGui::SameLine();
+        HelpMarker("Right click me to export colors with your preferred format.");
 
         ImGui::Text("Color widget HSV with Alpha:");
         ImGui::ColorEdit4("MyColor##2", (float *)&color, ImGuiColorEditFlags_DisplayHSV | misc_flags);
@@ -157,7 +162,6 @@ void extra::ShowColorExportWindow(bool *child_colexp)
         ImGui::Text("Color widget with Float Display:");
         ImGui::ColorEdit4("MyColor##2f", (float *)&color, ImGuiColorEditFlags_Float | misc_flags);
 
-        
         ImGui::Text("Color picker:");
         static bool   alpha        = true;
         static bool   alpha_bar    = true;
@@ -235,7 +239,7 @@ bool extra::GrabButton(ImVec2 pos, int random_int)
     ImGui::PushID(random_int);
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0.00f, 0.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 0);
-    ImGui::BeginChild(random_int+9,ImVec2(20,20));
+    ImGui::BeginChild(random_int + 9, ImVec2(20, 20));
     ImGui::Button("  ");
     active = ImGui::IsItemActive();
     ImGui::EndChild();

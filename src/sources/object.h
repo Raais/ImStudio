@@ -12,6 +12,7 @@ class BaseObject
     bool                    state                   = true;
     bool                    value_b                 = false;
     bool                    propinit                = false;
+    bool                    selectinit              = true;
     bool                    locked                  = false;
     bool                    cond_1                  = false;
     std::string             label                   = "Label";
