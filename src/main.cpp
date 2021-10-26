@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
             }
             { // create-children
 
-                if (gui.child_sty) extra::ShowStyleEditorWindow(&gui.child_sty);
+                if (gui.child_style) extra::ShowStyleEditorWindow(&gui.child_style);
 
                 if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);
 
@@ -162,7 +162,7 @@ int main(int argc, char *argv[])
 
                 if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
 
-                if (gui.child_colexp) extra::ShowColorExportWindow(&gui.child_colexp);
+                if (gui.child_color) extra::ShowColorExportWindow(&gui.child_color);
 
                 if (gui.child_console) gui.ShowConsole(&gui.child_console,&gui);
             }

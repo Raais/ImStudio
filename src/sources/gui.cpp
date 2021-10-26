@@ -20,7 +20,7 @@ void GUI::ShowMenubar()
         if (ImGui::BeginMenu("Debug"))
         {
             ImGui::MenuItem("Settings", NULL, &child_debug);
-            ImGui::MenuItem("Style Editor", NULL, &child_sty);
+            ImGui::MenuItem("Style Editor", NULL, &child_style);
             ImGui::MenuItem("Demo Window", NULL, &child_demo);
             ImGui::MenuItem("Metrics", NULL, &child_metrics);
             ImGui::MenuItem("Stack Tool", NULL, &child_stack);
@@ -43,6 +43,10 @@ void GUI::ShowMenubar()
 
                 ImGui::EndMenu();
             }
+            if (ImGui::MenuItem("Reset"))
+            {
+                bw.objects.clear();
+            }
 
             ImGui::EndMenu();
         }
@@ -50,7 +54,7 @@ void GUI::ShowMenubar()
         /// menu-tools
         if (ImGui::BeginMenu("Tools"))
         {
-            ImGui::MenuItem("Color Export", NULL, &child_colexp);
+            ImGui::MenuItem("Color Export", NULL, &child_color);
             ImGui::EndMenu();
         }
 
@@ -244,6 +248,10 @@ void GUI::ShowSidebar()
             ImGui::SameLine();
             extra::HelpMarker("This is not an actual child window (ImGui::BeginChild) as "
                               "its behavior is not desired here.");
+            if (ImGui::Button("EndChild"))
+            {
+                bw.cur_child->child.open = false;
+            }
             if (ImGui::Button("<< Same Line"))
             {
                 bw.create("sameline");
@@ -259,7 +267,7 @@ void GUI::ShowSidebar()
             ImGui::Separator();
             ImGui::Checkbox("Static Mode", &bw.staticlayout);
 
-            if ((ImGui::GetIO().KeyAlt)&&(ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
+            if ((ImGui::GetIO().KeyAlt) && (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
             {
                 state = false;
             }
@@ -286,22 +294,61 @@ void GUI::ShowProperties()
         {
             if (!bw.objects.empty())
             {
-                const char *items[bw.objects.size()];
-                int         idarr[bw.objects.size()];
-                int         i = 0;
-                for (auto it = bw.objects.begin(); it != bw.objects.end(); ++it)
+                int allvecsize = 0;
+                for (Object &o : bw.objects)
                 {
-                    Object &o = *it;
-                    items[i]  = o.identifier.c_str();
-                    idarr[i]  = o.id;
+                    allvecsize++;
+                    if (!o.child.objects.empty())
+                    {
+                        for (BaseObject &cw : o.child.objects)
+                        {
+                            allvecsize++;
+                        }
+                    }
+                }
+
+                const char *items[allvecsize];
+                int         idarr[allvecsize];
+                int         i = 0;
+                for (Object &o : bw.objects)
+                {
+                    items[i] = o.identifier.c_str();
+                    idarr[i] = o.id;
                     if (o.id == selectid)
                     {
                         if (ImGui::IsMouseDown(0))
                         {
+                            selectproparray = i; // select prop from vp
+                        }
+                    }
+                    if (o.id == bw.idvar)
+                    {
+                        if (o.selectinit == true)
+                        {
                             selectproparray = i;
+                            o.selectinit = false;
                         }
                     }
                     i++;
+                }
+                for (Object &o : bw.objects)
+                {
+                    if (!o.child.objects.empty())
+                    {
+                        for (BaseObject &cw : o.child.objects)
+                        {
+                            items[i] = cw.identifier.c_str();
+                            idarr[i] = cw.id;
+                            if (cw.id == selectid)
+                            {
+                                if (ImGui::IsMouseDown(0))
+                                {
+                                    selectproparray = i; // select prop from vp
+                                }
+                            }
+                            i++;
+                        }
+                    }
                 }
 
                 ImGui::Combo("combo", &selectproparray, items, IM_ARRAYSIZE(items));
@@ -311,7 +358,7 @@ void GUI::ShowProperties()
                     selectobj = bw.getobj(selectid);
                 }
                 else
-                { // combo select
+                { // combo select if (newest) else {selectid = newest}
                     selectobj = bw.getobj(idarr[selectproparray]);
                     selectid  = selectobj->id;
                 }
@@ -332,6 +379,7 @@ void GUI::ShowProperties()
                     {
                         bw.prop_text1 = selectobj->value_s;
                     }
+                    ImGui::Text("ischildwidget = %d", selectobj->ischildwidget);
 
                     ImGui::InputText("Value", &bw.prop_text1);
                     ImGui::NewLine();
@@ -413,8 +461,16 @@ void GUI::ShowProperties()
                 }
                 if (selectobj->type == "child")
                 {
+
+                    /*if (selectobj->child.objects.empty()))
+                    {
+                        ImGui::Text("child.objects.size() =
+                    %d",static_cast<Object*>(selectobj->parent)->child.objects.size());
+                    }*/
+
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
+                        bw.cur_child->child.open = false;
                         selectobj->del();
                         if (selectproparray != 0)
                         {
@@ -514,12 +570,15 @@ void GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
+
+        ImGui::Text("childopen = %d", bw.childopen);
         ImGui::TextDisabled("Make sure to lock widgets before interacting with them.");
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
         {
             ImGui::Text("Selected = %s", selectobj->identifier.c_str());
+            ImGui::Text("ischild = %d", selectobj->ischild);
         }
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());

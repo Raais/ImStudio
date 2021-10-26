@@ -21,10 +21,10 @@ void ShowStyleEditorWindow(bool *child_sty);
 
 void ShowColorExportWindow(bool *child_colexp);
 
-void GrabButton(ImVec2 pos, int random_int);
+bool GrabButton(ImVec2 pos, int random_int);
 
 void HelpMarker(const char *desc);
 
 void metrics();
 
-} // namespace extra
+}

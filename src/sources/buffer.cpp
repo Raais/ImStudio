@@ -24,6 +24,9 @@ void BufferWindow::drawall(int *select, int gen_rand)
             {
                 Object &o = *i;
 
+                if (o.child.open) childopen = true;
+                else childopen = false;
+
                 if (o.state == false)
                 {
                     i = objects.erase(i);
@@ -31,7 +34,16 @@ void BufferWindow::drawall(int *select, int gen_rand)
                 }
                 else
                 {
-                    o.draw(select, gen_rand, staticlayout);
+                    if(o.type != "child")
+                    {
+                        o.draw(select, gen_rand, staticlayout);
+                    }
+                    else
+                    {
+                        cur_child = &o;
+                        o.child.drawall(select, gen_rand, staticlayout);
+                    }
+                    
                 }
             }
         }
@@ -39,13 +51,23 @@ void BufferWindow::drawall(int *select, int gen_rand)
     }
 }
 
-Object *BufferWindow::getobj(int id)
+BaseObject *BufferWindow::getobj(int id)
 {
     for (Object &o : objects)
     {
         if (o.id == id)
         {
             return &o;
+        }
+        if (!o.child.objects.empty())
+        {
+            for (BaseObject &cw : o.child.objects)
+            {
+                if (cw.id == id)
+                {
+                    return &cw;
+                }
+            }
         }
     }
     return nullptr;
@@ -54,6 +76,15 @@ Object *BufferWindow::getobj(int id)
 void BufferWindow::create(std::string type_)
 {
     idvar++;
-    Object widget(idvar, type_);
-    objects.push_back(widget);
+    if(!childopen)
+    {
+        Object widget(idvar, type_);
+        objects.push_back(widget);
+    }
+    else
+    {
+        BaseObject childwidget(idvar, type_, cur_child->id);
+        childwidget.parent = cur_child;
+        cur_child->child.objects.push_back(childwidget);
+    }
 }
