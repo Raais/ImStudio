@@ -22,14 +22,15 @@ class BufferWindow : public PropertyBuffer
     ImVec2              pos                      = ImVec2(280, 120);  // FIXME
     int                 idvar                    = 0;
     bool                childopen                = false;
-    Object*             cur_child                = nullptr;
+    Object*             current_child            = nullptr;
 
     bool                staticlayout             = false;
 
     std::vector<Object> objects                  = {};
 
     void                drawall                  (int *select, int gen_rand);
-    BaseObject *        getobj                   (int id);
+    Object *            getobj                   (int id);
+    BaseObject *        getbaseobj               (int id);
     bool                AnySelected              (Object *selected_);
     std::string         gettype                  (int id);
     void                create                   (std::string type_);

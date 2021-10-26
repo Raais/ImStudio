@@ -35,7 +35,8 @@ UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
-CXXFLAGS += -g -Wall -Wformat -fsanitize=address
+CXXFLAGS += -g -Wall -Wformat
+#CXXFLAGS += -fsanitize=address
 LIBS =
 
 ##---------------------------------------------------------------------

@@ -500,7 +500,7 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
 {
     auto dl = ImGui::GetWindowDrawList();
 
-    if (!init)
+    if (!grabinit)
     {
         grab1_id = gen_rand;
         grab2_id = gen_rand + 1;
@@ -555,5 +555,5 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
 
     
 
-    init = true;
+    grabinit = true;
 }

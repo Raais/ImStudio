@@ -58,17 +58,18 @@ class Child
     ImRect                  windowrect              = {};
     ImVec2                  size                    = {};
     ImVec2                  pos                     = {};
-    bool                    open                    = false;
+    bool                    open                    = true;
     bool                    locked                  = false;
+    bool                    init                    = false;
     std::vector<BaseObject> objects                 = {};
     void drawall            (int *select,           int gen_rand,           bool staticlayout);
   
   private:
-    bool                    init                    = false;
     ImVec2                  grab1                   = ImVec2(90, 90);
     ImVec2                  grab2                   = ImVec2(200, 200);
     int                     grab1_id                = 0;
     int                     grab2_id                = 0;
+    bool                    grabinit                = false;
 };
 
 class Object : public BaseObject
