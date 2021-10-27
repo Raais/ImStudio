@@ -17,11 +17,9 @@ class BufferWindow : public PropertyBuffer
   public:
     int                 id                       = 0;
     bool                state                    = false;
-    std::string         name                     = "window_0";
     ImVec2              size                     = ImVec2(1070, 680); // FIXME
     ImVec2              pos                      = ImVec2(280, 120);  // FIXME
     int                 idvar                    = 0;
-    bool                childopen                = false;
     Object*             current_child            = nullptr;
 
     bool                staticlayout             = false;

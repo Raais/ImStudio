@@ -261,6 +261,24 @@ void extra::HelpMarker(const char *desc)
     }
 }
 
+void extra::TextCentered(std::string text, int type = 0)
+{
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto textWidth   = ImGui::CalcTextSize(text.c_str()).x;
+
+    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+    switch (type)
+    {
+    case 0:
+        ImGui::Text(text.c_str());
+        break;
+    
+    case 1:
+        ImGui::TextDisabled(text.c_str());
+        break;
+    }
+}
+
 void extra::metrics()
 { // ugly debug stuff
 

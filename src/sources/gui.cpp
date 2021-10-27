@@ -9,6 +9,7 @@ void GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
     ImGui::SetNextWindowSize(mb_S);
+    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Menubar", NULL,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                      ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -45,7 +46,7 @@ void GUI::ShowMenubar()
             }
             if (ImGui::MenuItem("Reset"))
             {
-                bw.childopen = false;
+                if(bw.current_child) bw.current_child = nullptr;
                 bw.objects.clear();
             }
 
@@ -85,6 +86,7 @@ void GUI::ShowMenubar()
     }
 
     ImGui::End();
+    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR SIDEBAR.DEFINITION
@@ -93,6 +95,8 @@ void GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
+    ImGui::PushStyleColor(ImGuiCol_TextDisabled,ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,ImVec2(4.00f, 5.00f));
     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     /// content-sidebar
@@ -241,17 +245,30 @@ void GUI::ShowSidebar()
             ImGui::Separator();
             ImGui::Text("Others");
             ImGui::Separator();
-
-            if (bw.childopen) {ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));}
-            if (ImGui::Button("Child"))
+            if(bw.current_child){if(bw.current_child->child.open)
             {
-                bw.create("child");
+                ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
+                ImGui::Button("Child");//does nothing
             }
-            if (bw.childopen) {ImGui::PopStyleColor(1);}
+            else //child closed
+            {
+                if (ImGui::Button("Child"))
+                {
+                    bw.create("child");
+                }
+            }}
+            else //no child
+            {
+                if (ImGui::Button("Child"))
+                {
+                    bw.create("child");
+                }
+            }
+            if(bw.current_child){if(bw.current_child->child.open){ImGui::PopStyleColor(1);}}
             ImGui::SameLine();
             extra::HelpMarker("Green = Open (Ready to add items). Calling EndChild will close it, and you can't add items to"
             " it unless you manually re-open it.");
-            if (ImGui::Button("EndChild"))
+            if ((ImGui::Button("EndChild")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C))))
             {
                 bw.current_child->child.open = false;
             }
@@ -282,6 +299,8 @@ void GUI::ShowSidebar()
     }
 
     ImGui::End();
+    ImGui::PopStyleVar(1);
+    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR PROPERTIES.DEFINITION
@@ -289,6 +308,7 @@ void GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
+    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     // pt_P = ImGui::GetWindowPos();
     // pt_S = ImGui::GetWindowSize();
@@ -476,13 +496,11 @@ void GUI::ShowProperties()
                     {
                         bw.current_child = bw.getobj(selectobj->id);
                         bw.current_child->child.open = true;
-                        bw.childopen = true;
                     }
-                    if ((ImGui::Button("Close")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C))))
+                    if (ImGui::Button("Close"))
                     {
                         bw.current_child = bw.getobj(selectobj->id);
                         bw.current_child->child.open = false;
-                        bw.childopen = false;
                     }
 
                     ImGui::Text("child.open = %d",bw.getobj(selectobj->id)->child.open);
@@ -584,6 +602,7 @@ void GUI::ShowProperties()
     }
 
     ImGui::End();
+    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR VIEWPORT.DEFINITION
@@ -591,17 +610,20 @@ void GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
+    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(1.00f, 1.00f, 1.00f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(0.224f, 0.224f, 0.224f, 1.000f));
     ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     /// content-viewport
-    {
-
-        ImGui::Text("childopen = %d", bw.childopen);
+    {    
+        extra::TextCentered("Make sure to lock widgets before interacting with them.",1);
+        ImGui::SameLine(); ImGui::SetCursorPosX(ImGui::GetWindowWidth()-65);
+        ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
+        ImGui::SetCursorPos(ImVec2(0,5));
         if(bw.current_child){
             ImGui::Text("cur child name = %d",bw.current_child->id);
+            ImGui::Text("child.open = %d", bw.current_child->child.open);
         }
-        
-        ImGui::TextDisabled("Make sure to lock widgets before interacting with them.");
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
         ImGui::Text("itemcur: %d", selectproparray);
         if (!bw.objects.empty())
@@ -616,6 +638,7 @@ void GUI::ShowViewport(int gen_rand)
     }
 
     ImGui::End();
+    ImGui::PopStyleColor(2);
 }
 
 // ANCHOR OUTPUTWKSP.DEFINITION

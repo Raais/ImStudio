@@ -529,16 +529,27 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
     ImGui::EndChild();
     windowrect = ImRect(ImGui::GetItemRectMin(),ImGui::GetItemRectMax());
 
-    if(extra::GrabButton(grab1, grab1_id))
+    if(open) ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
+    if(!staticlayout)
     {
-        grab1 = extra::GetLocalCursor();
-        *select     = id;
+        if(extra::GrabButton(grab1, grab1_id))
+        {
+            grab1 = extra::GetLocalCursor();
+            *select     = id;
+        }
+    
+        if(extra::GrabButton(grab2, grab2_id))
+        {
+            grab2 = extra::GetLocalCursor();
+            *select     = id;
+        }
     }
-    if(extra::GrabButton(grab2, grab2_id))
-    {
-        grab2 = extra::GetLocalCursor();
-        *select     = id;
-    }
+    if(open) ImGui::PopStyleColor(1);
+
+    windowrect.Min.x -= 5;
+    windowrect.Min.y -= 5;
+    windowrect.Max.x += 5;
+    windowrect.Max.y += 5;
 
     if (id == *select)
     {

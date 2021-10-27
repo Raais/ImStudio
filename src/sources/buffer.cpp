@@ -14,12 +14,13 @@ void BufferWindow::drawall(int *select, int gen_rand)
     {
         ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
         ImGui::SetNextWindowSize(size, ImGuiCond_Once);
-        ImGui::Begin(name.c_str(), &state);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(0.08f, 0.09f, 0.09f, 1.00f));
+        ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.26f, 0.59f, 0.98f, 0.40f));
+        ImGui::PushStyleColor(ImGuiCol_Border,ImVec4(0.86f, 0.86f, 0.86f, 0.50f));
+        ImGui::Begin("buffer", &state);
         size = ImGui::GetWindowSize();
         pos  = ImGui::GetWindowPos();
         {
-
-            extra::metrics();
             for (auto i = objects.begin(); i != objects.end(); ++i)
             {
                 Object &o = *i;
@@ -46,6 +47,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
             }
         }
         ImGui::End();
+        ImGui::PopStyleColor(3);
     }
 }
 

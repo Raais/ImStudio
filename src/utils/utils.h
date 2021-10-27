@@ -25,6 +25,8 @@ bool GrabButton(ImVec2 pos, int random_int);
 
 void HelpMarker(const char *desc);
 
+void TextCentered(std::string text, int type);
+
 void metrics();
 
 }

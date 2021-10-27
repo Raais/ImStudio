@@ -92,10 +92,15 @@ int main(int argc, char *argv[])
     style.ItemSpacing    = ImVec2(15.00f, 4.00f);
     style.GrabMinSize    = 20.00f;
     style.WindowRounding = 8.00f;
-    style.FrameRounding  = 12.00f;
+    style.FrameBorderSize          = 1.00f;
+    style.FrameRounding            = 4.00f;
     style.GrabRounding   = 12.00f;
 
-    // ImVec4 *colors = style.Colors; // TODO Redo color scheme
+    ImVec4* colors = ImGui::GetStyle().Colors;
+    colors[ImGuiCol_Text]                   = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_WindowBg]               = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
+    colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
+    colors[ImGuiCol_Button]                 = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
 
     //-----------------------------------------------------------------------------
 
@@ -138,7 +143,7 @@ int main(int argc, char *argv[])
             { // create-main
                 // create-sidebar
                 gui.sb_P = ImVec2(0, gui.mb_S.y);
-                gui.sb_S = ImVec2(w_w / 12, w_h - gui.mb_S.y);
+                gui.sb_S = ImVec2(w_w / 11, w_h - gui.mb_S.y);
                 if (gui.sidebar) gui.ShowSidebar();
 
                 // create-properties
