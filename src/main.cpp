@@ -143,7 +143,7 @@ int main(int argc, char *argv[])
             { // create-main
                 // create-sidebar
                 gui.sb_P = ImVec2(0, gui.mb_S.y);
-                gui.sb_S = ImVec2(w_w / 11, w_h - gui.mb_S.y);
+                gui.sb_S = ImVec2(200, w_h - gui.mb_S.y);
                 if (gui.sidebar) gui.ShowSidebar();
 
                 // create-properties
