@@ -19,15 +19,6 @@ int main(int argc, char *argv[])
     int  w_h      = 600;
     bool resizing = false;
 
-    std::vector<std::string> args(argv, argv + argc);
-
-    for (size_t i = 1; i < args.size(); ++i)
-    {
-        if (args[i] == "-x")
-        {
-        }
-    }
-
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -70,7 +61,6 @@ int main(int argc, char *argv[])
 
     glfwMakeContextCurrent(glwindow);
     glfwSwapInterval(1); // Enable vsync
-    // extra::glfwSetWindowCenter(glwindow);
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -79,8 +69,8 @@ int main(int argc, char *argv[])
     ImGui_ImplGlfw_InitForOpenGL(glwindow, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    //-----------------------------------------------------------------------------
-    // ANCHOR STYLES & SETTINGS
+//-----------------------------------------------------------------------------
+// ANCHOR STYLES & SETTINGS
 
     // io.Fonts->Build();
     io.IniFilename = NULL;
@@ -102,20 +92,15 @@ int main(int argc, char *argv[])
     colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
     colors[ImGuiCol_Button]                 = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
     
-
-
-
-    //-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
     GUI gui;
-
     gui.bw.objects.reserve(250);
+    
+//-----------------------------------------------------------------------------
+    std::mt19937 rng(time(NULL)); //MT-PRNG
+//-----------------------------------------------------------------------------
 
-    //-----------------------------------------------------------------------------
-
-    std::mt19937 rng(time(NULL));
-
-    //-----------------------------------------------------------------------------
 // SECTION MAIN LOOP
 
     while ((!glfwWindowShouldClose(glwindow)) && (gui.state))
