@@ -36,7 +36,8 @@ LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
 CXXFLAGS += -g -Wall -Wformat
-#CXXFLAGS += -fsanitize=address
+CXXFLAGS += -std=c++11
+CXXFLAGS += -fsanitize=address
 LIBS =
 
 ##---------------------------------------------------------------------

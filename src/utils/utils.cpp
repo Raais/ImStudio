@@ -250,6 +250,7 @@ bool extra::GrabButton(ImVec2 pos, int random_int)
 
 void extra::HelpMarker(const char *desc)
 {
+    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.92f, 0.92f, 0.92f, 1.00f));
     ImGui::TextDisabled("(?)");
     if (ImGui::IsItemHovered())
     {
@@ -259,6 +260,7 @@ void extra::HelpMarker(const char *desc)
         ImGui::PopTextWrapPos();
         ImGui::EndTooltip();
     }
+    ImGui::PopStyleColor(1);
 }
 
 void extra::TextCentered(std::string text, int type = 0)

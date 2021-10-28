@@ -16,6 +16,7 @@ struct Console
     ImGuiTextFilter       Filter;
     bool                  AutoScroll;
     bool                  ScrollToBottom;
+    bool                  StdoutMode;
     GUI*                  gui_;
 
 

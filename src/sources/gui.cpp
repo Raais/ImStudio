@@ -95,6 +95,7 @@ void GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
+    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_TextDisabled,ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,ImVec2(4.00f, 5.00f));
     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
@@ -104,7 +105,7 @@ void GUI::ShowSidebar()
         {
             ImGui::TextDisabled("NOTE");
             ImGui::SameLine();
-            extra::HelpMarker("THESE ARE NOT THE ONLY WIDGETS IMGUI HAS!\nYou can find out more in the Dear ImGui "
+            extra::HelpMarker("THESE ARE NOT THE ONLY WIDGETS IMGUI PROVIDES!\nYou can find out more in the Dear ImGui "
                               "Demo (Tools > Demo Window) and imgui/imgui_demo.cpp");
             ImGui::Separator();
             ImGui::Text("Primitives");
@@ -113,7 +114,7 @@ void GUI::ShowSidebar()
             {
                 bw.state = true;
             }
-            if ((ImGui::Button("Button")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_B))))
+            if (ImGui::Button("Button"))
             {
                 bw.create("button");
             }
@@ -268,7 +269,7 @@ void GUI::ShowSidebar()
             ImGui::SameLine();
             extra::HelpMarker("Green = Open (Ready to add items). Calling EndChild will close it, and you can't add items to"
             " it unless you manually re-open it.");
-            if ((ImGui::Button("EndChild")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C))))
+            if (ImGui::Button("EndChild"))
             {
                 bw.current_child->child.open = false;
             }
@@ -300,7 +301,7 @@ void GUI::ShowSidebar()
 
     ImGui::End();
     ImGui::PopStyleVar(1);
-    ImGui::PopStyleColor(1);
+    ImGui::PopStyleColor(2);
 }
 
 // ANCHOR PROPERTIES.DEFINITION
@@ -394,12 +395,7 @@ void GUI::ShowProperties()
                     selectid  = selectobj->id;
                 }
 
-                if (!selectobjprev)
-                {
-                    selectobjprev = selectobj;
-                }
-
-                if (selectobj->id != selectobjprev->id)
+                if (selectobj->id != previd)
                 {
                     bw.resetpropbuffer();
                 }
@@ -596,7 +592,7 @@ void GUI::ShowProperties()
                     }
                 }
                 selectobj->propinit = true;
-                selectobjprev       = selectobj;
+                previd       = selectobj->id;
             }
         }
     }
@@ -610,14 +606,13 @@ void GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
-    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(1.00f, 1.00f, 1.00f, 1.00f));
     ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(0.224f, 0.224f, 0.224f, 1.000f));
     ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     /// content-viewport
     {    
         extra::TextCentered("Make sure to lock widgets before interacting with them.",1);
-        ImGui::SameLine(); ImGui::SetCursorPosX(ImGui::GetWindowWidth()-65);
+        ImGui::SameLine(); ImGui::SetCursorPosX(ImGui::GetWindowWidth()-70);
         ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
         ImGui::SetCursorPos(ImVec2(0,5));
         if(bw.current_child){
@@ -634,11 +629,11 @@ void GUI::ShowViewport(int gen_rand)
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());
 
-        extra::metrics();
+        //extra::metrics();
     }
 
     ImGui::End();
-    ImGui::PopStyleColor(2);
+    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR OUTPUTWKSP.DEFINITION
