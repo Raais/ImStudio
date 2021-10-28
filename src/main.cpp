@@ -97,10 +97,13 @@ int main(int argc, char *argv[])
     style.GrabRounding   = 12.00f;
 
     ImVec4* colors = ImGui::GetStyle().Colors;
-    colors[ImGuiCol_Text]                   = ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+    colors[ImGuiCol_Text]                   = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
     colors[ImGuiCol_WindowBg]               = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
     colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
     colors[ImGuiCol_Button]                 = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
+    
+
+
 
     //-----------------------------------------------------------------------------
 
@@ -143,7 +146,7 @@ int main(int argc, char *argv[])
             { // create-main
                 // create-sidebar
                 gui.sb_P = ImVec2(0, gui.mb_S.y);
-                gui.sb_S = ImVec2(200, w_h - gui.mb_S.y);
+                gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
                 if (gui.sidebar) gui.ShowSidebar();
 
                 // create-properties
@@ -158,7 +161,6 @@ int main(int argc, char *argv[])
 
             }
             { // create-children
-
                 if (gui.child_style) extra::ShowStyleEditorWindow(&gui.child_style);
 
                 if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);

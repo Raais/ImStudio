@@ -18,9 +18,11 @@
         Commands.push_back("BUTTON");
         Commands.push_back("DELETELAST");
         Commands.push_back("DEMO");
+        Commands.push_back("STDOUT");
         Commands.push_back("EXIT");
         AutoScroll = true;
         ScrollToBottom = false;
+        StdoutMode = false;
         AddLog("Welcome to ImStudio!");
         gui_ = _gui_;
     }
@@ -60,6 +62,7 @@
     {
         ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
         ImGui::SetNextWindowPos(ImVec2(gui_->vp_S.x/1.5,gui_->vp_S.x/4), ImGuiCond_FirstUseEver);
+        ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
         if (!ImGui::Begin(title, p_open))
         {
             ImGui::End();
@@ -186,6 +189,7 @@
         reclaim_focus = false;
 
         ImGui::End();
+        ImGui::PopStyleColor(1);
     }
 
     //ANCHOR EXECCOMMAND
@@ -242,13 +246,24 @@
         {
             gui_->child_demo = not gui_->child_demo;
         }
+        else if (Stricmp(command_line, "STDOUT") == 0)
+        {
+            StdoutMode = not StdoutMode;
+        }
         else if (Stricmp(command_line, "EXIT") == 0)
         {
             gui_->state = false;
         }
         else
         {
-            AddLog("Unknown command: '%s'\n", command_line);
+            if (!StdoutMode)
+            {
+                AddLog("Unknown command: '%s'\n", command_line);
+            }
+            else
+            {
+                std::cout << command_line << std::endl;
+            }
         }
 
         // On command input, we scroll to bottom even if AutoScroll==false
