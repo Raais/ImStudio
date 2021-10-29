@@ -411,7 +411,9 @@ void GUI::ShowProperties()
                     selectobj->value_s = bw.prop_text1;
                     ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
+                    if (selectobj->center_h) ImGui::BeginDisabled(true);
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
+                    if (selectobj->center_h) ImGui::EndDisabled();
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selectobj->locked);
                     ImGui::NewLine();
