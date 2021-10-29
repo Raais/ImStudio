@@ -232,6 +232,17 @@ void extra::ShowColorExportWindow(bool *child_colexp)
     }
 }
 
+bool extra::IsItemActiveAlt(ImVec2 pos, int id)
+{
+    bool active = false;
+    ImGui::SetCursorPos(pos);
+    ImGui::PushID(id);
+    ImGui::InvisibleButton(" ", ImGui::GetItemRectSize());
+    ImGui::PopID();
+    active = ImGui::IsItemActive();
+    return active;
+}
+
 bool extra::GrabButton(ImVec2 pos, int random_int)
 {
     bool active = false;
@@ -261,6 +272,51 @@ void extra::HelpMarker(const char *desc)
         ImGui::EndTooltip();
     }
     ImGui::PopStyleColor(1);
+}
+
+std::string extra::QueryLastItem()
+{
+    char ret[999];
+    std::sprintf(ret,
+        "IsItemFocused() = %d\n"
+        "IsItemHovered() = %d\n"
+        "IsItemHovered(_AllowWhenBlockedByPopup) = %d\n"
+        "IsItemHovered(_AllowWhenBlockedByActiveItem) = %d\n"
+        "IsItemHovered(_AllowWhenOverlapped) = %d\n"
+        "IsItemHovered(_AllowWhenDisabled) = %d\n"
+        "IsItemHovered(_RectOnly) = %d\n"
+        "IsItemActive() = %d\n"
+        "IsItemEdited() = %d\n"
+        "IsItemActivated() = %d\n"
+        "IsItemDeactivated() = %d\n"
+        "IsItemDeactivatedAfterEdit() = %d\n"
+        "IsItemVisible() = %d\n"
+        "IsItemClicked() = %d\n"
+        "IsItemToggledOpen() = %d\n"
+        "GetItemRectMin() = (%.1f, %.1f)\n"
+        "GetItemRectMax() = (%.1f, %.1f)\n"
+        "GetItemRectSize() = (%.1f, %.1f)",
+        ImGui::IsItemFocused(),
+        ImGui::IsItemHovered(),
+        ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup),
+        ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem),
+        ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenOverlapped),
+        ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled),
+        ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly),
+        ImGui::IsItemActive(),
+        ImGui::IsItemEdited(),
+        ImGui::IsItemActivated(),
+        ImGui::IsItemDeactivated(),
+        ImGui::IsItemDeactivatedAfterEdit(),
+        ImGui::IsItemVisible(),
+        ImGui::IsItemClicked(),
+        ImGui::IsItemToggledOpen(),
+        ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y,
+        ImGui::GetItemRectMax().x, ImGui::GetItemRectMax().y,
+        ImGui::GetItemRectSize().x, ImGui::GetItemRectSize().y
+    );
+    std::string rets(ret);
+    return rets;
 }
 
 void extra::TextCentered(std::string text, int type = 0)

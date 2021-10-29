@@ -14,7 +14,7 @@ class BaseObject
     bool                    propinit                = false;
     bool                    selectinit              = true;
     bool                    locked                  = false;
-    bool                    cond_1                  = false;
+    bool                    cond_1                  = true;
     std::string             label                   = "Label";
     std::string             value_s                 = {};
     ImVec2                  pos                     = ImVec2(100, 100);
@@ -25,7 +25,7 @@ class BaseObject
     bool                    ischildwidget           = false;
     int                     item_current            = 0;
     
-    BaseObject();
+    BaseObject              ();
     BaseObject              (int idvar_,            std::string type_,      int parent_id_);
     void draw               (int *select,           int gen_rand,           bool staticlayout);
     void del                ();
@@ -47,6 +47,9 @@ class BaseObject
     float                   col1[3]                 = { 1.0f, 0.0f, 0.2f };
     float                   col2[3]                 = { 1.0f, 0.0f, 0.2f };
     float                   col3[4]                 = { 0.4f, 0.7f, 0.0f, 0.5f };
+    bool                    animate                 = true;
+    float                   progress                = 0.0f;
+    float                   progress_dir            = 1.0f;
     void highlight          (int *select);
 };
 
@@ -62,7 +65,7 @@ class Child
     bool                    locked                  = false;
     bool                    init                    = false;
     std::vector<BaseObject> objects                 = {};
-    void drawall            (int *select,           int gen_rand,           bool staticlayout);
+    void drawall            (int *select, int gen_rand, bool staticlayout, bool query, std::string *queryout);
   
   private:
     ImVec2                  grab1                   = ImVec2(90, 90);

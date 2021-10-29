@@ -1,20 +1,28 @@
 #include "../includes.h"
 #include "object.h"
 
-BaseObject::BaseObject(){}
+BaseObject::BaseObject()
+{
+    //default
+}
 
 BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
 {
     ischildwidget = true;
-    id         = idvar_;
-    type = type_;
-    identifier = "child" + std::to_string(parent_id_) + "::" + type_ + std::to_string(idvar_);
-    value_s = type_ + std::to_string(idvar_);
+    id            = idvar_;
+    type          = type_;
+    identifier    = "child" + std::to_string(parent_id_) + "::" + type_ + std::to_string(idvar_);
+    value_s       = type_ + std::to_string(idvar_);
 }
 
 Object::Object(int idvar_, std::string type_) : BaseObject()
 {
-    if (type_ == "child") {child.objects.reserve(250); child.open=true; child.id=idvar_;}
+    if (type_ == "child")
+    {
+        child.objects.reserve(250);
+        child.open = true;
+        child.id   = idvar_;
+    }
     id         = idvar_;
     type       = type_;
     identifier = type_ + std::to_string(idvar_);
@@ -28,13 +36,25 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
     {
         if (type == "button")
         {
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::Button(value_s.c_str());
+            if (cond_1) // auto resize
+            {
+                ImGui::Button(value_s.c_str());
+                size = ImGui::GetItemRectSize();
+            }
+            else // manual
+            {
+                ImGui::Button(value_s.c_str(), size);
+            }
+
+            if (size.x < ImGui::CalcTextSize(value_s.c_str()).x)
+                size.x = ImGui::CalcTextSize(value_s.c_str()).x;
 
             ImGui::PopID();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -43,13 +63,14 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "checkbox")
         {
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::Checkbox(label.c_str(), &value_b);
 
             ImGui::PopID();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -58,13 +79,14 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "radio")
         {
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::RadioButton(label.c_str(), &value_b);
 
             ImGui::PopID();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -75,18 +97,22 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         {
 
             ImGui::PushID(id);
-            if(!staticlayout) ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::Text(value_s.c_str());
-            if(!staticlayout)
+            if (!staticlayout)
             {
                 ImVec2 textsize = ImGui::CalcTextSize(value_s.c_str());
-                if(textsize.x <= 0){textsize.x = 1;}
+                if (textsize.x <= 0)
+                {
+                    textsize.x = 1;
+                }
                 ImGui::SetCursorPos(pos);
                 ImGui::InvisibleButton("", textsize);
             }
-            
+
             ImGui::PopID();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -97,12 +123,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         {
             ImGui::PushID(id);
             ImGui::PushItemWidth(width);
-            if(!staticlayout) ImGui::SetCursorPos(pos);
-            ImGui::InputText(label.c_str(),&value_s);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
+            ImGui::InputText(label.c_str(), &value_s);
 
             ImGui::PopItemWidth();
             ImGui::PopID();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -112,7 +139,8 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "arrow")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::ArrowButton("##left", ImGuiDir_Left);
@@ -121,7 +149,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -131,15 +159,16 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "combo")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            const char *items[]      = {"Never", "Gonna", "Give", "You", "Up"};
+            const char *items[] = {"Never", "Gonna", "Give", "You", "Up"};
             ImGui::Combo(label.c_str(), &item_current, items, IM_ARRAYSIZE(items));
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -149,15 +178,16 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "listbox")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            const char *items[]      = {"Never", "Gonna", "Give", "You", "Up"};
+            const char *items[] = {"Never", "Gonna", "Give", "You", "Up"};
             ImGui::ListBox(label.c_str(), &item_current, items, IM_ARRAYSIZE(items));
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -167,14 +197,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "inputint")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputInt(label.c_str(),&ii0);
+            ImGui::InputInt(label.c_str(), &ii0);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -184,14 +215,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "inputfloat")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputFloat(label.c_str(),&fi0,0.01f, 1.0f, "%.3f");
+            ImGui::InputFloat(label.c_str(), &fi0, 0.01f, 1.0f, "%.3f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -201,14 +233,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "inputdouble")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputDouble(label.c_str(),&di0,0.01f, 1.0f, "%.8f");
+            ImGui::InputDouble(label.c_str(), &di0, 0.01f, 1.0f, "%.8f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -218,14 +251,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "inputscientific")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::InputFloat(label.c_str(), &fi1, 0.0f, 0.0f, "%e");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -235,14 +269,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "inputfloat3")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::InputFloat3(label.c_str(), vec4a);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -252,14 +287,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "dragint")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::DragInt(label.c_str(), &id1, 1);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -269,14 +305,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "dragint100")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::DragInt(label.c_str(), &id2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -286,14 +323,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "dragfloat")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::DragFloat(label.c_str(), &fd1, 0.005f);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -303,14 +341,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "dragfloatsmall")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::DragFloat(label.c_str(), &fd2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -320,14 +359,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "sliderint")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::SliderInt(label.c_str(), &is1, -1, 3);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -337,14 +377,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "sliderfloat")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::SliderFloat(label.c_str(), &fs1, 0.0f, 1.0f, "ratio = %.3f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -354,14 +395,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "sliderfloatlog")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::SliderFloat(label.c_str(), &fs2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -371,14 +413,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "sliderangle")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::SliderAngle(label.c_str(), &angle);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -388,14 +431,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "color1")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::ColorEdit3(label.c_str(), col1,ImGuiColorEditFlags_NoInputs);
+            ImGui::ColorEdit3(label.c_str(), col1, ImGuiColorEditFlags_NoInputs);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -405,14 +449,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "color2")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::ColorEdit3(label.c_str(), col2);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -422,14 +467,15 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         if (type == "color3")
         {
             ImGui::PushItemWidth(width);
-            if(!staticlayout)ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::ColorEdit4(label.c_str(), col3);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked)&&(ImGui::IsItemActive()))
+            if ((!locked) && (ImGui::IsItemActive()))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -438,17 +484,18 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "child")
         {
-            //ischild = true;
+            // ischild = true;
         }
         if (type == "bullet")
         {
-            if(!staticlayout) ImGui::SetCursorPos(pos);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
             ImGui::Bullet();
 
             ImGui::PopID();
-            if((!locked)&&((ImGui::IsItemActive())&&(ImGui::IsMouseDown(0))))
+            if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
@@ -457,23 +504,58 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "sameline")
         {
-            if(staticlayout) ImGui::SameLine();
+            if (staticlayout)
+                ImGui::SameLine();
         }
         if (type == "newline")
         {
-            if(staticlayout) ImGui::NewLine();
+            if (staticlayout)
+                ImGui::NewLine();
         }
         if (type == "separator")
         {
-            if(staticlayout) ImGui::Separator();
+            if (staticlayout)
+                ImGui::Separator();
         }
         if (type == "begingroup")
         {
-            //if(staticlayout) ImGui::BeginGroup();
+            // if(staticlayout) ImGui::BeginGroup();
         }
         if (type == "endgroup")
         {
-            //if(staticlayout) ImGui::EndGroup();
+            // if(staticlayout) ImGui::EndGroup();
+        }
+        if (type == "progressbar")
+        {
+            if (animate)
+            {
+                progress += progress_dir * 0.4f * ImGui::GetIO().DeltaTime;
+                if (progress >= +1.1f)
+                {
+                    progress = +1.1f;
+                    progress_dir *= -1.0f;
+                }
+                if (progress <= -0.1f)
+                {
+                    progress = -0.1f;
+                    progress_dir *= -1.0f;
+                }
+            }
+            ImGui::PushItemWidth(width);
+            if (!staticlayout)
+                ImGui::SetCursorPos(pos);
+            ImGui::PushID(id);
+
+            ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+
+            ImGui::PopID();
+            ImGui::PopItemWidth();
+            if ((!locked) && (extra::IsItemActiveAlt(pos, id)))
+            {
+                pos     = extra::GetLocalCursor();
+                *select = id;
+            }
+            highlight(select);
         }
     }
 }
@@ -496,7 +578,7 @@ void BaseObject::highlight(int *select)
     }
 }
 
-void        Child::drawall(int *select, int gen_rand, bool staticlayout)
+void Child::drawall(int *select, int gen_rand, bool staticlayout, bool query, std::string *queryout)
 {
     auto dl = ImGui::GetWindowDrawList();
 
@@ -505,46 +587,52 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
         grab1_id = gen_rand;
         grab2_id = gen_rand + 1;
     }
-    
+
     freerect.Min.x = grab1.x;
     freerect.Min.y = grab1.y;
     freerect.Max.x = grab2.x + 15;
     freerect.Max.y = grab2.y + 14;
 
-    if(!staticlayout) ImGui::SetCursorPos(freerect.Min);
-    ImGui::BeginChild(id,freerect.GetSize(),true,ImGuiWindowFlags_NoFocusOnAppearing|ImGuiWindowFlags_NoBringToFrontOnFocus);
+    if (!staticlayout)
+        ImGui::SetCursorPos(freerect.Min);
+    ImGui::BeginChild(id, freerect.GetSize(), true,
+                      ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus);
     for (auto i = objects.begin(); i != objects.end(); ++i)
-            {
-                BaseObject &o = *i;
-                if (o.state == false)
-                {
-                    i = objects.erase(i);
-                    break;
-                }
-                else
-                {
-                    o.draw(select, gen_rand, staticlayout);
-                }
-            }
-    ImGui::EndChild();
-    windowrect = ImRect(ImGui::GetItemRectMin(),ImGui::GetItemRectMax());
-
-    if(open) ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
-    if(!staticlayout)
     {
-        if(extra::GrabButton(grab1, grab1_id))
+        BaseObject &o = *i;
+        if (o.state == false)
         {
-            grab1 = extra::GetLocalCursor();
-            *select     = id;
+            i = objects.erase(i);
+            break;
         }
-    
-        if(extra::GrabButton(grab2, grab2_id))
+        else
         {
-            grab2 = extra::GetLocalCursor();
-            *select     = id;
+            o.draw(select, gen_rand, staticlayout);
+            if (query)
+                *queryout = extra::QueryLastItem();
         }
     }
-    if(open) ImGui::PopStyleColor(1);
+    ImGui::EndChild();
+    windowrect = ImRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax());
+
+    if (open)
+        ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
+    if (!staticlayout)
+    {
+        if (extra::GrabButton(grab1, grab1_id))
+        {
+            grab1   = extra::GetLocalCursor();
+            *select = id;
+        }
+
+        if (extra::GrabButton(grab2, grab2_id))
+        {
+            grab2   = extra::GetLocalCursor();
+            *select = id;
+        }
+    }
+    if (open)
+        ImGui::PopStyleColor(1);
 
     windowrect.Min.x -= 5;
     windowrect.Min.y -= 5;
@@ -553,7 +641,7 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
 
     if (id == *select)
     {
-        if(open)
+        if (open)
         {
             dl->AddRect(windowrect.Min, windowrect.Max, IM_COL32(0, 255, 28, 255));
         }
@@ -561,10 +649,7 @@ void        Child::drawall(int *select, int gen_rand, bool staticlayout)
         {
             dl->AddRect(windowrect.Min, windowrect.Max, IM_COL32(255, 255, 0, 255));
         }
-
     }
-
-    
 
     grabinit = true;
 }
