@@ -6,3 +6,4 @@ Wider highlight rect ✅
 Select without offset ✅kinda
 Transform controls / cursor
 Select on creation ✅
+Groups
