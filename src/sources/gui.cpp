@@ -18,14 +18,9 @@ void GUI::ShowMenubar()
     if (ImGui::BeginMenuBar())
     {
         /// menu-debug
-        if (ImGui::BeginMenu("Debug"))
+        if (ImGui::BeginMenu("File"))
         {
-            ImGui::MenuItem("Settings", NULL, &child_debug);
-            ImGui::MenuItem("Style Editor", NULL, &child_style);
-            ImGui::MenuItem("Demo Window", NULL, &child_demo);
-            ImGui::MenuItem("Metrics", NULL, &child_metrics);
-            ImGui::MenuItem("Stack Tool", NULL, &child_stack);
-            ImGui::MenuItem("Console", NULL, &child_console);
+        
             if (ImGui::MenuItem("Exit"))
             {
                 state = false;
@@ -56,6 +51,11 @@ void GUI::ShowMenubar()
         /// menu-tools
         if (ImGui::BeginMenu("Tools"))
         {
+            ImGui::MenuItem("Style Editor", NULL, &child_style);
+            ImGui::MenuItem("Demo Window", NULL, &child_demo);
+            ImGui::MenuItem("Console", NULL, &child_console);
+            ImGui::MenuItem("Metrics", NULL, &child_metrics);
+            ImGui::MenuItem("Stack Tool", NULL, &child_stack);
             ImGui::MenuItem("Color Export", NULL, &child_color);
             ImGui::EndMenu();
         }

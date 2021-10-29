@@ -578,7 +578,7 @@ void BaseObject::highlight(int *select)
     }
 }
 
-void Child::drawall(int *select, int gen_rand, bool staticlayout, bool query, std::string *queryout)
+void Child::drawall(int *select, int gen_rand, bool staticlayout)
 {
     auto dl = ImGui::GetWindowDrawList();
 
@@ -608,8 +608,6 @@ void Child::drawall(int *select, int gen_rand, bool staticlayout, bool query, st
         else
         {
             o.draw(select, gen_rand, staticlayout);
-            if (query)
-                *queryout = extra::QueryLastItem();
         }
     }
     ImGui::EndChild();

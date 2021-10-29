@@ -16,7 +16,6 @@ void           ShowColorExportWindow          (bool *child_colexp);
 bool           IsItemActiveAlt                (ImVec2 pos, int id);
 bool           GrabButton                     (ImVec2 pos, int random_int);
 void           HelpMarker                     (const char *desc);
-std::string    QueryLastItem                  ();
 void           TextCentered                   (std::string text, int type);
 void           metrics                        ();
 

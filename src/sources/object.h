@@ -65,7 +65,7 @@ class Child
     bool                    locked                  = false;
     bool                    init                    = false;
     std::vector<BaseObject> objects                 = {};
-    void drawall            (int *select, int gen_rand, bool staticlayout, bool query, std::string *queryout);
+    void drawall            (int *select, int gen_rand, bool staticlayout);
   
   private:
     ImVec2                  grab1                   = ImVec2(90, 90);

@@ -23,8 +23,6 @@ class BufferWindow : public PropertyBuffer
     Object*             current_child            = nullptr;
 
     bool                staticlayout             = false;
-    bool                query                    = false;
-    std::string         queryout                 = {};
 
     std::vector<Object> objects                  = {};
 

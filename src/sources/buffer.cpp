@@ -35,7 +35,6 @@ void BufferWindow::drawall(int *select, int gen_rand)
                     if (o.type != "child")
                     {
                         o.draw(select, gen_rand, staticlayout);
-                        if (query) queryout = extra::QueryLastItem();
                     }
                     else
                     {
@@ -45,7 +44,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
                             o.child.init  = true;
                         }
 
-                        o.child.drawall(select, gen_rand, staticlayout, query, &queryout);
+                        o.child.drawall(select, gen_rand, staticlayout);
                     }
                 }
             }
