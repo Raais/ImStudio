@@ -3,7 +3,7 @@
 
 BaseObject::BaseObject()
 {
-    //default
+    // default
 }
 
 BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
@@ -40,7 +40,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            if (cond_1) // auto resize
+            if (autoresize) // auto resize
             {
                 ImGui::Button(value_s.c_str());
                 size = ImGui::GetItemRectSize();
@@ -59,6 +59,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "checkbox")
@@ -75,6 +79,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "radio")
@@ -90,6 +98,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -117,6 +129,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "textinput")
@@ -133,6 +149,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -154,6 +174,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "combo")
@@ -172,6 +196,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -192,6 +220,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "inputint")
@@ -209,6 +241,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -228,6 +264,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "inputdouble")
@@ -245,6 +285,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -264,6 +308,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "inputfloat3")
@@ -281,6 +329,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -300,6 +352,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "dragint100")
@@ -317,6 +373,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -336,6 +396,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "dragfloatsmall")
@@ -353,6 +417,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -372,6 +440,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "sliderfloat")
@@ -389,6 +461,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -408,6 +484,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "sliderangle")
@@ -425,6 +505,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -444,6 +528,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "color2")
@@ -462,6 +550,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 pos     = extra::GetLocalCursor();
                 *select = id;
             }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
+            }
             highlight(select);
         }
         if (type == "color3")
@@ -479,6 +571,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }
@@ -554,6 +650,10 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             {
                 pos     = extra::GetLocalCursor();
                 *select = id;
+            }
+            if ((!staticlayout) && (center_h))
+            {
+                pos.x = extra::CenterHorizontal();
             }
             highlight(select);
         }

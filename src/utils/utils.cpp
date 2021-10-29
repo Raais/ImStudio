@@ -274,6 +274,14 @@ void extra::HelpMarker(const char *desc)
     ImGui::PopStyleColor(1);
 }
 
+float extra::CenterHorizontal()
+{
+    auto windowWidth = ImGui::GetWindowSize().x;
+    auto itemWidth   = ImGui::GetItemRectSize().x;
+    float PosX = ((windowWidth - itemWidth) * 0.5f);
+    return PosX;
+}
+
 void extra::TextCentered(std::string text, int type = 0)
 {
     auto windowWidth = ImGui::GetWindowSize().x;

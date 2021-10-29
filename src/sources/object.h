@@ -14,7 +14,8 @@ class BaseObject
     bool                    propinit                = false;
     bool                    selectinit              = true;
     bool                    locked                  = false;
-    bool                    cond_1                  = true;
+    bool                    center_h                = false;
+    bool                    autoresize              = true;
     std::string             label                   = "Label";
     std::string             value_s                 = {};
     ImVec2                  pos                     = ImVec2(100, 100);

@@ -410,15 +410,16 @@ void GUI::ShowProperties()
                     ImGui::InputText("Value", &bw.prop_text1);
                     selectobj->value_s = bw.prop_text1;
                     ImGui::NewLine();
+                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selectobj->locked);
                     ImGui::NewLine();
-                    ImGui::Checkbox("Auto Resize", &selectobj->cond_1);
-                    if (selectobj->cond_1) ImGui::BeginDisabled(true);
+                    ImGui::Checkbox("Auto Resize", &selectobj->autoresize);
+                    if (selectobj->autoresize) ImGui::BeginDisabled(true);
                     ImGui::InputFloat("Size X", &selectobj->size.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Size Y", &selectobj->size.y, 1.0f, 10.0f, "%.3f");
-                    if (selectobj->cond_1) ImGui::EndDisabled();
+                    if (selectobj->autoresize) ImGui::EndDisabled();
                     
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
