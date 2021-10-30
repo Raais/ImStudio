@@ -95,8 +95,8 @@ void GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
-    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
-    ImGui::PushStyleColor(ImGuiCol_TextDisabled,ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
+    //ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
+    //ImGui::PushStyleColor(ImGuiCol_TextDisabled,ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,ImVec2(4.00f, 5.00f));
     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
@@ -245,6 +245,7 @@ void GUI::ShowSidebar()
             {
                 ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
                 ImGui::Button("Child");//does nothing
+                ImGui::PopStyleColor(1);
             }
             else //child closed
             {
@@ -260,7 +261,6 @@ void GUI::ShowSidebar()
                     bw.create("child");
                 }
             }
-            if(bw.current_child){if(bw.current_child->child.open){ImGui::PopStyleColor(1);}}
             ImGui::SameLine();
             extra::HelpMarker("Green = Open (Ready to add items). Calling EndChild will close it, and you can't add items to"
             " it unless you manually re-open it.");
@@ -300,7 +300,7 @@ void GUI::ShowSidebar()
 
     ImGui::End();
     ImGui::PopStyleVar(1);
-    ImGui::PopStyleColor(2);
+    //ImGui::PopStyleColor(2);
 }
 
 // ANCHOR PROPERTIES.DEFINITION
@@ -510,12 +510,6 @@ void GUI::ShowProperties()
 
                     ImGui::Text("child.open = %d",bw.getobj(selectobj->id)->child.open);
                     
-                    /*if (selectobj->child.objects.empty()))
-                    {
-                        ImGui::Text("child.objects.size() =
-                    %d",static_cast<Object*>(selectobj->parent)->child.objects.size());
-                    }*/
-
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
                         bw.current_child->child.open = false;

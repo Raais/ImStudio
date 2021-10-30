@@ -690,7 +690,7 @@ void BaseObject::highlight(int *select)
     }
 }
 
-void Child::drawall(int *select, int gen_rand, bool staticlayout)
+void ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
 {
     static auto dl = ImGui::GetWindowDrawList();
 

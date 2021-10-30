@@ -3,7 +3,7 @@
 #include "../includes.h"
 #include "object.h"
 
-class PropertyBuffer
+class PropertyBuffer //replace with statics?
 {
   public:
     std::string         prop_text1               = "change me";

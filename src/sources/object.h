@@ -47,7 +47,7 @@ class BaseObject
     void highlight          (int *select);
 };
 
-class Child
+class ContainerChild
 {
   public:
     int                     id                      = 0;                    // Unique ID
@@ -77,6 +77,6 @@ class Object : public BaseObject
     /*
     BaseObject{}
     */
-    Child                   child;
+    ContainerChild          child;
     Object                  (int idvar_, std::string type_);
 };
