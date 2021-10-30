@@ -9,7 +9,7 @@ void GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
     ImGui::SetNextWindowSize(mb_S);
-    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Menubar", NULL,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                      ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -20,7 +20,7 @@ void GUI::ShowMenubar()
         /// menu-debug
         if (ImGui::BeginMenu("File"))
         {
-        
+
             if (ImGui::MenuItem("Exit"))
             {
                 state = false;
@@ -41,7 +41,8 @@ void GUI::ShowMenubar()
             }
             if (ImGui::MenuItem("Reset"))
             {
-                if(bw.current_child) bw.current_child = nullptr;
+                if (bw.current_child)
+                    bw.current_child = nullptr;
                 bw.objects.clear();
             }
 
@@ -95,9 +96,9 @@ void GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
-    //ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
-    //ImGui::PushStyleColor(ImGuiCol_TextDisabled,ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
-    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing,ImVec2(4.00f, 5.00f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
+    ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
+    ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.00f, 5.00f));
     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
     /// content-sidebar
@@ -241,20 +242,23 @@ void GUI::ShowSidebar()
             ImGui::Separator();
             ImGui::Text("Others");
             ImGui::Separator();
-            if(bw.current_child){if(bw.current_child->child.open)
+            if (bw.current_child)
             {
-                ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
-                ImGui::Button("BeginChild");//does nothing
-                ImGui::PopStyleColor(1);
-            }
-            else //child closed
-            {
-                if (ImGui::Button("BeginChild"))
+                if (bw.current_child->child.open)
                 {
-                    bw.create("child");
+                    ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
+                    ImGui::Button("BeginChild"); // does nothing
+                    ImGui::PopStyleColor(1);
                 }
-            }}
-            else //no child
+                else // child closed
+                {
+                    if (ImGui::Button("BeginChild"))
+                    {
+                        bw.create("child");
+                    }
+                }
+            }
+            else // no child
             {
                 if (ImGui::Button("BeginChild"))
                 {
@@ -262,8 +266,9 @@ void GUI::ShowSidebar()
                 }
             }
             ImGui::SameLine();
-            extra::HelpMarker("Green = Open (Ready to add items). Calling EndChild will close it, and you can't add items to"
-            " it unless you manually re-open it.");
+            extra::HelpMarker(
+                "Green = Open (Ready to add items). Calling EndChild will close it, and you can't add items to"
+                " it unless you manually re-open it.");
             if (ImGui::Button("EndChild"))
             {
                 bw.current_child->child.open = false;
@@ -275,8 +280,9 @@ void GUI::ShowSidebar()
             }
             ImGui::EndDisabled();
             ImGui::SameLine();
-            extra::HelpMarker("Groups are not a feature of ImStudio currently, but you can probably get away with a child (without borders)"
-            " to reproduce similar behavior.");
+            extra::HelpMarker("Groups are not a feature of ImStudio currently, but you can probably get away with a "
+                              "child (without borders)"
+                              " to reproduce similar behavior.");
             if (ImGui::Button("<< Same Line"))
             {
                 bw.create("sameline");
@@ -309,7 +315,7 @@ void GUI::ShowSidebar()
 
     ImGui::End();
     ImGui::PopStyleVar(1);
-    //ImGui::PopStyleColor(2);
+    ImGui::PopStyleColor(2);
 }
 
 // ANCHOR PROPERTIES.DEFINITION
@@ -317,17 +323,14 @@ void GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
-    ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-    // pt_P = ImGui::GetWindowPos();
-    // pt_S = ImGui::GetWindowSize();
-    /// content-properties
     {
         {
             if (!bw.objects.empty())
             {
                 int allvecsize = 0;
-                for (Object &o : bw.objects)
+                for (Object &o : bw.objects) // Calc total objects created in all vectors [bw.objects+all(child.objects)]
                 {
                     allvecsize++;
                     if (!o.child.objects.empty())
@@ -339,51 +342,52 @@ void GUI::ShowProperties()
                     }
                 }
 
-                const char *items[allvecsize];
-                int         idarr[allvecsize];
+                const char *items[allvecsize]; // contains identifiers ex: child1::button2
+                int         idarr[allvecsize]; // contains id associated with ^
                 int         i = 0;
-                for (Object &o : bw.objects)
+                for (Object &o : bw.objects) // Fill both arrays with contents from bw.objects [Object]
                 {
                     items[i] = o.identifier.c_str();
                     idarr[i] = o.id;
-                    if (o.id == selectid)
+                    if (o.id == selectid) // 1. if last select/drag in bw
                     {
                         if (ImGui::IsMouseDown(0))
                         {
-                            selectproparray = i; // select prop from vp
+                            selectproparray = i; // 2. select prop from bw
                         }
                     }
-                    if (o.id == bw.idvar)
+                    if (o.id == bw.idvar) // 1. o is last created item
                     {
                         if (o.selectinit == true)
                         {
-                            selectproparray = i;
-                            o.selectinit = false;
+                            selectproparray = i; // select last created item
+                            o.selectinit    = false;
                         }
                     }
                     i++;
                 }
-                for (Object &o : bw.objects)
+                for (Object &o : bw.objects) // cpy-grp
                 {
                     if (!o.child.objects.empty())
                     {
-                        for (BaseObject &cw : o.child.objects)
+                        for (BaseObject &cw :
+                             o.child.objects) // Fill both arrays with contents from child.objects [BaseObject]
                         {
                             items[i] = cw.identifier.c_str();
                             idarr[i] = cw.id;
-                            if (cw.id == selectid)
+                            if (cw.id == selectid) // 1. if last select/drag in bw
                             {
                                 if (ImGui::IsMouseDown(0))
                                 {
-                                    selectproparray = i; // select prop from vp
+                                    selectproparray = i; // 2. select prop from bw
                                 }
                             }
-                            if (cw.id == bw.idvar)
+                            if (cw.id == bw.idvar) // 1. o is last created item
                             {
                                 if (cw.selectinit == true)
                                 {
-                                    selectproparray = i;
-                                    cw.selectinit = false;
+                                    selectproparray = i; // select last created item
+                                    cw.selectinit   = false;
                                 }
                             }
                             i++;
@@ -394,7 +398,7 @@ void GUI::ShowProperties()
                 ImGui::Combo("combo", &selectproparray, items, IM_ARRAYSIZE(items));
 
                 if (ImGui::IsMouseDown(0))
-                { // viewport select
+                { // bw select
                     selectobj = bw.getbaseobj(selectid);
                 }
                 else
@@ -405,7 +409,7 @@ void GUI::ShowProperties()
 
                 if (selectobj->id != previd)
                 {
-                    bw.resetpropbuffer();
+                    bw.resetpropbuffer();//clear prop buffer so text input value is not transferred from object to object
                 }
 
                 if (selectobj->type == "button")
@@ -420,18 +424,21 @@ void GUI::ShowProperties()
                     selectobj->value_s = bw.prop_text1;
                     ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    if (selectobj->center_h) ImGui::BeginDisabled(true);
+                    if (selectobj->center_h)
+                        ImGui::BeginDisabled(true);
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    if (selectobj->center_h) ImGui::EndDisabled();
+                    if (selectobj->center_h)
+                        ImGui::EndDisabled();
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selectobj->locked);
                     ImGui::NewLine();
                     ImGui::Checkbox("Auto Resize", &selectobj->autoresize);
-                    if (selectobj->autoresize) ImGui::BeginDisabled(true);
+                    if (selectobj->autoresize)
+                        ImGui::BeginDisabled(true);
                     ImGui::InputFloat("Size X", &selectobj->size.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Size Y", &selectobj->size.y, 1.0f, 10.0f, "%.3f");
-                    if (selectobj->autoresize) ImGui::EndDisabled();
-                    
+                    if (selectobj->autoresize)
+                        ImGui::EndDisabled();
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
@@ -508,17 +515,17 @@ void GUI::ShowProperties()
                 {
                     if ((ImGui::Button("Open")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O))))
                     {
-                        bw.current_child = bw.getobj(selectobj->id);
+                        bw.current_child             = bw.getobj(selectobj->id);
                         bw.current_child->child.open = true;
                     }
                     if (ImGui::Button("Close"))
                     {
-                        bw.current_child = bw.getobj(selectobj->id);
+                        bw.current_child             = bw.getobj(selectobj->id);
                         bw.current_child->child.open = false;
                     }
 
-                    ImGui::Text("child.open = %d",bw.getobj(selectobj->id)->child.open);
-                    
+                    ImGui::Text("child.open = %d", bw.getobj(selectobj->id)->child.open);
+
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
                         bw.current_child->child.open = false;
@@ -604,7 +611,7 @@ void GUI::ShowProperties()
                     }
                 }
                 selectobj->propinit = true;
-                previd       = selectobj->id;
+                previd              = selectobj->id;
             }
         }
     }
@@ -618,17 +625,19 @@ void GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg,ImVec4(0.224f, 0.224f, 0.224f, 1.000f));
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.224f, 0.224f, 0.224f, 1.000f));
     ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     /// content-viewport
-    {    
-        extra::TextCentered("Make sure to lock widgets before interacting with them.",1);
-        ImGui::SameLine(); ImGui::SetCursorPosX(ImGui::GetWindowWidth()-70);
+    {
+        extra::TextCentered("Make sure to lock widgets before interacting with them.", 1);
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 70);
         ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
-        ImGui::SetCursorPos(ImVec2(0,5));
-        if(bw.current_child){
-            ImGui::Text("cur child name = %d",bw.current_child->id);
+        ImGui::SetCursorPos(ImVec2(0, 5));
+        if (bw.current_child)
+        {
+            ImGui::Text("cur child name = %d", bw.current_child->id);
             ImGui::Text("child.open = %d", bw.current_child->child.open);
         }
         ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
@@ -641,7 +650,7 @@ void GUI::ShowViewport(int gen_rand)
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());
 
-        //extra::metrics();
+        // extra::metrics();
     }
 
     ImGui::End();
