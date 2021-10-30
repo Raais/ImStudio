@@ -1,9 +1,3 @@
-Actual child windows ✅
+Generator
 CLI mode - input layout file
-LT color scheme
 Window grid/canvas
-Wider highlight rect ✅
-Select without offset ✅kinda
-Transform controls / cursor
-Select on creation ✅
-Groups
