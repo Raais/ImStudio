@@ -2,12 +2,6 @@
 #include "buffer.h"
 #include "object.h"
 
-void PropertyBuffer::resetpropbuffer()
-{
-    prop_text1 = "change me";
-    prop_text2 = "change me";
-}
-
 void BufferWindow::drawall(int *select, int gen_rand)
 {
     if (state)

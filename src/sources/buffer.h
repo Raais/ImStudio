@@ -3,16 +3,7 @@
 #include "../includes.h"
 #include "object.h"
 
-class PropertyBuffer //replace with statics?
-{
-  public:
-    std::string             prop_text1              = "change me";          //
-    std::string             prop_text2              = "change me";          //
-    bool                    prop_bool1              = false;                //
-    void                    resetpropbuffer();
-};
-
-class BufferWindow : public PropertyBuffer
+class BufferWindow
 {
   public:
     int                     id                      = 0;                    //

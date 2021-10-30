@@ -329,6 +329,7 @@ void GUI::ShowProperties()
         {
             if (!bw.objects.empty())
             {
+                //SECTION CREATE PROPARRAY
                 int allvecsize = 0;
                 for (Object &o : bw.objects) // Calc total objects created in all vectors [bw.objects+all(child.objects)]
                 {
@@ -394,6 +395,7 @@ void GUI::ShowProperties()
                         }
                     }
                 }
+                //!SECTION CREATE PROPARRAY
 
                 ImGui::Combo("combo", &selectproparray, items, IM_ARRAYSIZE(items));
 
@@ -407,21 +409,31 @@ void GUI::ShowProperties()
                     selectid  = selectobj->id;
                 }
 
+                /////////PROP BUFFER/////////
+                static std::string prop_text1   = "change me";
+                static std::string prop_text2   = "change me";
+                static bool        prop_bool1   = false;
+                /////////////////////////////
+
                 if (selectobj->id != previd)
                 {
-                    bw.resetpropbuffer();//clear prop buffer so text input value is not transferred from object to object
+                    //reset prop buffer so text input value is not transferred from object to object
+                    prop_text1 = "change me";
+                    prop_text2 = "change me";
+                    prop_bool1 = false;
+                    //bw.resetpropbuffer();
                 }
 
                 if (selectobj->type == "button")
                 {
                     if (selectobj->propinit)
                     {
-                        bw.prop_text1 = selectobj->value_s;
+                        prop_text1 = selectobj->value_s;
                     }
                     ImGui::Text("ischildwidget = %d", selectobj->ischildwidget);
 
-                    ImGui::InputText("Value", &bw.prop_text1);
-                    selectobj->value_s = bw.prop_text1;
+                    ImGui::InputText("Value", &prop_text1);
+                    selectobj->value_s = prop_text1;
                     ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
                     if (selectobj->center_h)
@@ -492,7 +504,7 @@ void GUI::ShowProperties()
                 {
                     if (selectobj->propinit)
                     {
-                        bw.prop_text1 = selectobj->value_s;
+                        prop_text1 = selectobj->value_s;
                     }
 
                     ImGui::NewLine();
@@ -500,7 +512,7 @@ void GUI::ShowProperties()
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Locked", &selectobj->locked);
-                    selectobj->value_s = bw.prop_text1;
+                    selectobj->value_s = prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
@@ -540,15 +552,15 @@ void GUI::ShowProperties()
                 {
                     if (selectobj->propinit)
                     {
-                        bw.prop_text1 = selectobj->value_s;
+                        prop_text1 = selectobj->value_s;
                     }
 
-                    ImGui::InputText("Value", &bw.prop_text1);
+                    ImGui::InputText("Value", &prop_text1);
                     ImGui::NewLine();
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Locked", &selectobj->locked);
-                    selectobj->value_s = bw.prop_text1;
+                    selectobj->value_s = prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
@@ -563,19 +575,19 @@ void GUI::ShowProperties()
                 {
                     if (selectobj->propinit)
                     {
-                        bw.prop_text1 = selectobj->value_s;
-                        bw.prop_text2 = selectobj->label;
+                        prop_text1 = selectobj->value_s;
+                        prop_text2 = selectobj->label;
                     }
 
-                    ImGui::InputText("Label", &bw.prop_text2);
-                    ImGui::InputText("Value", &bw.prop_text1);
+                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Value", &prop_text1);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Locked", &selectobj->locked);
-                    selectobj->label   = bw.prop_text2;
-                    selectobj->value_s = bw.prop_text1;
+                    selectobj->label   = prop_text2;
+                    selectobj->value_s = prop_text1;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
@@ -590,16 +602,16 @@ void GUI::ShowProperties()
                 {
                     if (selectobj->propinit)
                     {
-                        bw.prop_text2 = selectobj->label;
+                        prop_text2 = selectobj->label;
                     }
 
-                    ImGui::InputText("Label", &bw.prop_text2);
+                    ImGui::InputText("Label", &prop_text2);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Locked", &selectobj->locked);
-                    selectobj->label = bw.prop_text2;
+                    selectobj->label = prop_text2;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
