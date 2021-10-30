@@ -5,31 +5,7 @@
 
 class Object;
 
-struct InputStatics
-{
-  //replace with statics?
-  int                       ii0                     = 123;
-  float                     fi0                     = 0.001f;
-  double                    di0                     = 999999.00000001;
-  float                     fi1                     = 1.e10f;
-  float                     vec4a[4]                = { 0.10f, 0.20f, 0.30f, 0.44f };
-  int                       id1                     = 50;
-  int                       id2                     = 42;
-  float                     fd1                     = 1.00f;
-  float                     fd2                     = 0.0067f;
-  int                       is1                     = 0;
-  float                     fs1                     = 0.123f;
-  float                     fs2                     = 0.0f;
-  float                     angle                   = 0.0f;
-  float                     col1[3]                 = { 1.0f, 0.0f, 0.2f };
-  float                     col2[3]                 = { 1.0f, 0.0f, 0.2f };
-  float                     col3[4]                 = { 0.4f, 0.7f, 0.0f, 0.5f };
-  bool                      animate                 = true;
-  float                     progress                = 0.0f;
-  float                     progress_dir            = 1.0f;
-};
-
-class BaseObject : private InputStatics
+class BaseObject
 {
   public:
     int                     id                      = 0;                    //Unique ID
@@ -47,7 +23,8 @@ class BaseObject : private InputStatics
 
     bool                    locked                  = false;                //--
     bool                    center_h                = false;                //  | Properties
-    bool                    autoresize              = true;                 //--
+    bool                    autoresize              = true;                 //  |
+    bool                    animate                 = true;                 //--
 
     std::string             label                   = "Label";              //--
     std::string             value_s                 = {};                   //  | Widget values/contents

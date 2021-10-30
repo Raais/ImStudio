@@ -223,12 +223,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputint")
         {
+            static int i0 = 123;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputInt(label.c_str(), &ii0);
+            ImGui::InputInt(label.c_str(), &i0);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -245,12 +246,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputfloat")
         {
+            static float f0 = 0.001f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputFloat(label.c_str(), &fi0, 0.01f, 1.0f, "%.3f");
+            ImGui::InputFloat(label.c_str(), &f0, 0.01f, 1.0f, "%.3f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -267,12 +269,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputdouble")
         {
+            static double d0 = 999999.00000001;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputDouble(label.c_str(), &di0, 0.01f, 1.0f, "%.8f");
+            ImGui::InputDouble(label.c_str(), &d0, 0.01f, 1.0f, "%.8f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -289,12 +292,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputscientific")
         {
+            static float f1 = 1.e10f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::InputFloat(label.c_str(), &fi1, 0.0f, 0.0f, "%e");
+            ImGui::InputFloat(label.c_str(), &f1, 0.0f, 0.0f, "%e");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -311,6 +315,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputfloat3")
         {
+            static float vec4a[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -333,12 +338,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "dragint")
         {
+            static int i1 = 50;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::DragInt(label.c_str(), &id1, 1);
+            ImGui::DragInt(label.c_str(), &i1, 1);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -355,12 +361,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "dragint100")
         {
+            static int i2 = 42;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::DragInt(label.c_str(), &id2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
+            ImGui::DragInt(label.c_str(), &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -377,12 +384,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "dragfloat")
         {
+            static float f1 = 1.00f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::DragFloat(label.c_str(), &fd1, 0.005f);
+            ImGui::DragFloat(label.c_str(), &f1, 0.005f);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -399,12 +407,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "dragfloatsmall")
         {
+            static float f2 = 0.0067f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::DragFloat(label.c_str(), &fd2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
+            ImGui::DragFloat(label.c_str(), &f2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -421,12 +430,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "sliderint")
         {
+            static int i1 = 0;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::SliderInt(label.c_str(), &is1, -1, 3);
+            ImGui::SliderInt(label.c_str(), &i1, -1, 3);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -443,12 +453,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "sliderfloat")
         {
+            static float f1 = 0.123f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::SliderFloat(label.c_str(), &fs1, 0.0f, 1.0f, "ratio = %.3f");
+            ImGui::SliderFloat(label.c_str(), &f1, 0.0f, 1.0f, "ratio = %.3f");
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -465,12 +476,13 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "sliderfloatlog")
         {
+            static float f2 = 0.0f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::SliderFloat(label.c_str(), &fs2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
+            ImGui::SliderFloat(label.c_str(), &f2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
 
             ImGui::PopID();
             ImGui::PopItemWidth();
@@ -487,6 +499,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "sliderangle")
         {
+            static float angle = 0.0f;
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -509,6 +522,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color1")
         {
+            static float col1[3] = { 1.0f, 0.0f, 0.2f };
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -531,6 +545,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color2")
         {
+            static float col2[3] = { 1.0f, 0.0f, 0.2f };
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -553,6 +568,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color3")
         {
+            static float col3[4] = { 0.4f, 0.7f, 0.0f, 0.5f };
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -618,6 +634,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "progressbar")
         {
+            static float progress = 0.0f, progress_dir = 1.0f;
             if (animate)
             {
                 progress += progress_dir * 0.4f * ImGui::GetIO().DeltaTime;
