@@ -1,11 +1,6 @@
 #include "../includes.h"
 #include "object.h"
 
-BaseObject::BaseObject()
-{
-    // default
-}
-
 BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
 {
     ischildwidget = true;
