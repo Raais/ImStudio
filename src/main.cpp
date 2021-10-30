@@ -117,6 +117,9 @@ int main(int argc, char *argv[])
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::SetNextWindowBgAlpha(0.00f);
 
+#define TEST
+
+#ifdef MAIN
 // SECTION GUI
 
         // window-menubar
@@ -166,6 +169,25 @@ int main(int argc, char *argv[])
         if (gui.wksp_output) gui.ShowOutputWorkspace();
 
 //! SECTION GUI End
+#endif
+
+#ifdef TEST
+
+        ImGui::Begin("window");
+        {
+            ImGui::SetCursorPos(ImVec2(100,100));
+            ImGui::BeginGroup();
+            ImGui::Button("1");
+            ImGui::Button("2");
+            ImGui::SetCursorPos(ImVec2(150,150));
+            ImGui::Button("3");
+            ImGui::Button("4");
+            ImGui::EndGroup();
+            ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255));
+        }
+        ImGui::End();
+
+#endif
 
         ImGui::Render();
         int display_w, display_h;
