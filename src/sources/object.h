@@ -70,13 +70,12 @@ class ContainerChild
     bool                    grabinit                = false;                //--
 };
 
-//Object can now store either a single BaseObject or a vector of BaseObjects (child.objects)
+//Object can now store either a single BaseObject or a vector of BaseObjects
 class Object : public BaseObject
 {
   public:
-    /*
-    BaseObject{}
-    */
+  //BaseObject{}
     ContainerChild          child;
+  //ContainerGroup          group;
     Object                  (int idvar_, std::string type_);
 };

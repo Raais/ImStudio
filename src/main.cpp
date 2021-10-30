@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::SetNextWindowBgAlpha(0.00f);
 
-#define TEST
+#define MAIN
 
 #ifdef MAIN
 // SECTION GUI

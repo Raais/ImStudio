@@ -244,19 +244,19 @@ void GUI::ShowSidebar()
             if(bw.current_child){if(bw.current_child->child.open)
             {
                 ImGui::PushStyleColor(ImGuiCol_Button,ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
-                ImGui::Button("Child");//does nothing
+                ImGui::Button("BeginChild");//does nothing
                 ImGui::PopStyleColor(1);
             }
             else //child closed
             {
-                if (ImGui::Button("Child"))
+                if (ImGui::Button("BeginChild"))
                 {
                     bw.create("child");
                 }
             }}
             else //no child
             {
-                if (ImGui::Button("Child"))
+                if (ImGui::Button("BeginChild"))
                 {
                     bw.create("child");
                 }
@@ -268,6 +268,15 @@ void GUI::ShowSidebar()
             {
                 bw.current_child->child.open = false;
             }
+            ImGui::BeginDisabled(true);
+            if (ImGui::Button("BeginGroup"))
+            {
+                //
+            }
+            ImGui::EndDisabled();
+            ImGui::SameLine();
+            extra::HelpMarker("Groups are not a feature of ImStudio currently, but you can probably get away with a child (without borders)"
+            " to reproduce similar behavior.");
             if (ImGui::Button("<< Same Line"))
             {
                 bw.create("sameline");
