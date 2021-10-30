@@ -73,24 +73,25 @@ int main(int argc, char *argv[])
 // ANCHOR STYLES & SETTINGS
 
     // io.Fonts->Build();
-    io.IniFilename = NULL;
-    ImVec4 bg      = ImVec4(0.123f, 0.123f, 0.123, 1.00f); // Main bg color
+    io.IniFilename              = NULL;
+    ImVec4 bg                   = ImVec4(0.123f, 0.123f, 0.123, 1.00f); // Main bg color
 
     ImGuiStyle &style = ImGui::GetStyle();
 
-    style.WindowPadding  = ImVec2(12.00f, 8.00f);
-    style.ItemSpacing    = ImVec2(15.00f, 4.00f);
-    style.GrabMinSize    = 20.00f;
-    style.WindowRounding = 8.00f;
-    style.FrameBorderSize          = 1.00f;
-    style.FrameRounding            = 4.00f;
-    style.GrabRounding   = 12.00f;
+    style.WindowPadding         = ImVec2(12.00f, 8.00f);
+    style.ItemSpacing           = ImVec2(15.00f, 4.00f);
+    style.GrabMinSize           = 20.00f;
+    style.WindowRounding        = 8.00f;
+    style.FrameBorderSize       = 1.00f;
+    style.FrameRounding         = 4.00f;
+    style.GrabRounding          = 12.00f;
 
     ImVec4* colors = ImGui::GetStyle().Colors;
-    colors[ImGuiCol_Text]                   = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
-    colors[ImGuiCol_WindowBg]               = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
-    colors[ImGuiCol_Border]                 = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
-    colors[ImGuiCol_Button]                 = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
+    
+    colors[ImGuiCol_Text]       = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
+    colors[ImGuiCol_WindowBg]   = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
+    colors[ImGuiCol_Border]     = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
+    colors[ImGuiCol_Button]     = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
     
 //-----------------------------------------------------------------------------
 
@@ -173,17 +174,9 @@ int main(int argc, char *argv[])
 
 #ifdef TEST
 
-        ImGui::Begin("window");
+        ImGui::Begin("test_window");
         {
-            ImGui::SetCursorPos(ImVec2(100,100));
-            ImGui::BeginGroup();
-            ImGui::Button("1");
-            ImGui::Button("2");
-            ImGui::SetCursorPos(ImVec2(150,150));
-            ImGui::Button("3");
-            ImGui::Button("4");
-            ImGui::EndGroup();
-            ImGui::GetForegroundDrawList()->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32(255, 255, 0, 255));
+
         }
         ImGui::End();
 
