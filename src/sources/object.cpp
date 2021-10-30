@@ -86,7 +86,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
                 ImGui::SetCursorPos(pos);
             ImGui::PushID(id);
 
-            ImGui::RadioButton(label.c_str(), &value_b);
+            ImGui::RadioButton(label.c_str(), value_b);
 
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
@@ -707,7 +707,7 @@ void ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
 
     if (!staticlayout)
         ImGui::SetCursorPos(freerect.Min);
-    ImGui::BeginChild(id, freerect.GetSize(), true,
+    ImGui::BeginChild(id, freerect.GetSize(), border,
                       ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoBringToFrontOnFocus);
     for (auto i = objects.begin(); i != objects.end(); ++i)
     {
@@ -729,6 +729,7 @@ void ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
     if (!staticlayout)
     {
+        if(!locked){
         if (extra::GrabButton(grab1, grab1_id))
         {
             grab1   = extra::GetLocalCursor();
@@ -739,7 +740,7 @@ void ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
         {
             grab2   = extra::GetLocalCursor();
             *select = id;
-        }
+        }}
     }
     if (open)
         ImGui::PopStyleColor(1);

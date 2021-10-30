@@ -47,9 +47,8 @@ class BaseObject
     void highlight          (int *select);
 };
 
-class ContainerChild
+struct ContainerChild
 {
-  public:
     int                     id                      = 0;                    // Unique ID
 
     ImRect                  freerect                = {};                   // Buffer rect ctrld by grabs
@@ -57,17 +56,17 @@ class ContainerChild
 
     bool                    open                    = true;                 //--
     bool                    locked                  = false;                //  | Properties
+    bool                    border                  = true;                 //  |
     bool                    init                    = false;                //--
-    
-    std::vector<BaseObject> objects                 = {};
-    void drawall            (int *select,           int gen_rand,           bool staticlayout);
-  
-  private:
+
     int                     grab1_id                = 0;                    //--
     int                     grab2_id                = 0;                    //  | ugly
     ImVec2                  grab1                   = ImVec2(90, 90);       //  | storage
     ImVec2                  grab2                   = ImVec2(200, 200);     //  | stuff
     bool                    grabinit                = false;                //--
+    
+    std::vector<BaseObject> objects                 = {};
+    void drawall            (int *select,           int gen_rand,           bool staticlayout);  
 };
 
 //Object can now store either a single BaseObject or a vector of BaseObjects

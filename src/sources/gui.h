@@ -28,7 +28,6 @@ struct GUI
     int                     previd                     = 0;                    // Previous object
     BaseObject *            selectobj                  = nullptr;              // Pointer to access
     int                     selectproparray            = 0;                    // Selected from prop array
-    bool                    globaldelete               = false;                //FIXME
     void                    ShowProperties();      
 
     bool                    viewport                   = true;                 // Viewport State
@@ -45,7 +44,6 @@ struct GUI
     bool                    child_console              = false;                // Show Console
     static void             ShowConsole                (bool* p_open, GUI* gui_);
 
-    bool                    child_debug                = false;                // Show Debug
     bool                    child_style                = false;                // Show Style Editor
     bool                    child_demo                 = false;                // Show Demo Window
     bool                    child_metrics              = false;                // Show Metrics Window

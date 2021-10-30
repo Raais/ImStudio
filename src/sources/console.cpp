@@ -240,7 +240,7 @@
         }
         else if (Stricmp(command_line, "DELETELAST") == 0)
         {
-            gui_->globaldelete = true;//FIXME
+            //gui_->globaldelete = true;//FIXME
         }
         else if (Stricmp(command_line, "DEMO") == 0)
         {
