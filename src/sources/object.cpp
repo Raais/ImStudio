@@ -315,7 +315,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "inputfloat3")
         {
-            static float vec4a[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
+            static float vec4a[4] = {0.10f, 0.20f, 0.30f, 0.44f};
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -522,7 +522,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color1")
         {
-            static float col1[3] = { 1.0f, 0.0f, 0.2f };
+            static float col1[3] = {1.0f, 0.0f, 0.2f};
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -545,7 +545,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color2")
         {
-            static float col2[3] = { 1.0f, 0.0f, 0.2f };
+            static float col2[3] = {1.0f, 0.0f, 0.2f};
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -568,7 +568,7 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
         }
         if (type == "color3")
         {
-            static float col3[4] = { 0.4f, 0.7f, 0.0f, 0.5f };
+            static float col3[4] = {0.4f, 0.7f, 0.0f, 0.5f};
             ImGui::PushItemWidth(width);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
@@ -692,7 +692,7 @@ void BaseObject::highlight(int *select)
 
 void Child::drawall(int *select, int gen_rand, bool staticlayout)
 {
-    auto dl = ImGui::GetWindowDrawList();
+    static auto dl = ImGui::GetWindowDrawList();
 
     if (!grabinit)
     {
