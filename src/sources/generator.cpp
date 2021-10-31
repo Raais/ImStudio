@@ -265,10 +265,78 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         bfs += fmt::format("\tImGui::SliderAngle(\"{}\", &angle{});\n",obj.label,obj.id);
         bfs += "\tImGui::PopItemWidth();\n\n";
     }
-    
-    
-    
 
+    if (obj.type == "color1")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        //static float col1[3] = {1.0f, 0.0f, 0.2f};
+        //ImGui::ColorEdit3(label.c_str(), col1, ImGuiColorEditFlags_NoInputs);
+        bfs += fmt::format("\tstatic float col1{0}[3] = {{1.0f, 0.0f, 0.2f}};\n",obj.id);
+        bfs += fmt::format("\tImGui::ColorEdit3(\"{}\", col1{}, ImGuiColorEditFlags_NoInputs);\n\n",obj.label,obj.id);
+    }
+
+    if (obj.type == "color2")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float col2[3] = {1.0f, 0.0f, 0.2f};
+        //ImGui::ColorEdit3(label.c_str(), col2);
+        bfs += fmt::format("\tstatic float col2{0}[3] = {{1.0f, 0.0f, 0.2f}};\n",obj.id);
+        bfs += fmt::format("\tImGui::ColorEdit3(\"{}\", col2{});\n\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "color3")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float col3[4] = {0.4f, 0.7f, 0.0f, 0.5f};
+        //ImGui::ColorEdit4(label.c_str(), col3);
+        bfs += fmt::format("\tstatic float col3{0}[4] = {{0.4f, 0.7f, 0.0f, 0.5f}};\n",obj.id);
+        bfs += fmt::format("\tImGui::ColorEdit4(\"{}\", col3{});\n\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "sameline")
+    {
+        if (staticlayout) {
+        bfs += "\tImGui::SameLine()\n\n";
+        }
+    }
+
+    if (obj.type == "newline")
+    {
+        if (staticlayout) {
+        bfs += "\tImGui::NewLine()\n\n";
+        }
+    }
+
+    if (obj.type == "separator")
+    {
+        if (staticlayout) {
+        bfs += "\tImGui::Separator()\n\n";
+        }
+    }
+
+    if (obj.type == "progressbar")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float progress = 0.0f;
+        //ImGui::ProgressBar(progress, ImVec2(0.0f, 0.0f));
+        bfs += fmt::format("\tstatic float progress{} = 0.0f;\n",obj.id);
+        bfs += fmt::format("\tImGui::ProgressBar(progress{}, ImVec2(0.0f, 0.0f));\n",obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+    
     str->append(bfs);
     
 }

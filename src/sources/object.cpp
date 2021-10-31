@@ -624,14 +624,6 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
             if (staticlayout)
                 ImGui::Separator();
         }
-        if (type == "begingroup")
-        {
-            // if(staticlayout) ImGui::BeginGroup();
-        }
-        if (type == "endgroup")
-        {
-            // if(staticlayout) ImGui::EndGroup();
-        }
         if (type == "progressbar")
         {
             static float progress = 0.0f, progress_dir = 1.0f;

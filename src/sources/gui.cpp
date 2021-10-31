@@ -1117,6 +1117,8 @@ void GUI::ShowProperties()
 
                     ImGui::InputText("Label", &prop_text2);
                     ImGui::NewLine();
+                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
                     ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
@@ -1142,6 +1144,8 @@ void GUI::ShowProperties()
                     ImGui::NewLine();
 
                     ImGui::InputText("Label", &prop_text2);
+                    ImGui::NewLine();
+                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
                     ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
