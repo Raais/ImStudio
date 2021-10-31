@@ -14,6 +14,7 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         }
         bfs += fmt::format("\tImGui::Button(\"{}\", ImVec2({},{})); ",obj.value_s, obj.size.x, obj.size.y);
         bfs += "//remove size argument (ImVec2) to auto-resize\n\n";
+        
     }
 
     if (obj.type == "radio")
@@ -21,7 +22,8 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         if (!staticlayout) {
         bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
         }
-        bfs += fmt::format("\tImGui::RadioButton(\"{}\", {});\n\n",obj.label, obj.value_b);
+        bfs += fmt::format("\tstatic bool r1{} = false;\n",obj.id);
+        bfs += fmt::format("\tImGui::RadioButton(\"{}\", r1{});\n\n",obj.label, obj.id);
     }
 
     if (obj.type == "checkbox")
@@ -29,7 +31,8 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         if (!staticlayout) {
         bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
         }
-        bfs += fmt::format("\tImGui::Checkbox(\"{}\", {});\n\n",obj.label, obj.value_b);
+        bfs += fmt::format("\tstatic bool c1{} = false;\n",obj.id);
+        bfs += fmt::format("\tImGui::Checkbox(\"{}\", &c1{});\n\n",obj.label, obj.id);
     }
 
     if (obj.type == "text")

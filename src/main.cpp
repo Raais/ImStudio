@@ -166,13 +166,6 @@ int main(int argc, char *argv[])
 
 #ifdef TEST
 
-/*
-GENERATED CODE
-*/
-
-
-
-
 
 #endif
 
