@@ -1,3 +1,0 @@
-Generator
-CLI mode - input layout file
-Window grid/canvas

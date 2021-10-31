@@ -83,6 +83,192 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         bfs += "\tImGui::PopItemWidth();\n\n";
     }
 
+    if (obj.type == "textinput")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({}); ",obj.width);
+        bfs += "//NOTE: (Push/Pop)ItemWidth is optional\n";
+        //static char str0[128] = "Hello, world!";
+        //ImGui::InputText("input text", str0, IM_ARRAYSIZE(str0));
+        bfs += fmt::format("\tstatic char str{}[128] = \"{}\";\n",obj.id,obj.value_s);
+        bfs += fmt::format("\tImGui::InputText(\"{0}\", str{1}, IM_ARRAYSIZE(str{1}));\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "inputint")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static int i0 = 123;
+        //ImGui::InputInt("input int", &i0);
+        bfs += fmt::format("\tstatic int i{} = 123;\n",obj.id);
+        bfs += fmt::format("\tImGui::InputInt(\"{}\", &i{});\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "inputfloat")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f0 = 0.001f;
+        //ImGui::InputFloat("input float", &f0, 0.01f, 1.0f, "%.3f");
+        bfs += fmt::format("\tstatic float f{} = 0.001f;\n",obj.id);
+        bfs += fmt::format("\tImGui::InputFloat(\"{}\", &f{}, 0.01f, 1.0f, \"%.3f\");\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "inputdouble")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static double d0 = 999999.00000001;
+        //ImGui::InputDouble("input double", &d0, 0.01f, 1.0f, "%.8f");
+        bfs += fmt::format("\tstatic double d{} = 999999.00000001;\n",obj.id);
+        bfs += fmt::format("\tImGui::InputDouble(\"{}\", &d{}, 0.01f, 1.0f, \"%.8f\");\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "inputscientific")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f1 = 1.e10f;
+        //ImGui::InputFloat("input scientific", &f1, 0.0f, 0.0f, "%e");
+        bfs += fmt::format("\tstatic float f{} = 1.e10f;\n",obj.id);
+        bfs += fmt::format("\tImGui::InputFloat(\"{}\", &f{}, 0.0f, 0.0f, \"%e\");\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "inputfloat3")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float vec4a[4] = { 0.10f, 0.20f, 0.30f, 0.44f };
+        //ImGui::InputFloat3("input float3", vec4a);
+        bfs += fmt::format("\tstatic float vec4a{}[4] = {{ 0.10f, 0.20f, 0.30f, 0.44f }};\n",obj.id);
+        bfs += fmt::format("\tImGui::InputFloat3(\"{}\", vec4a{});\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "dragint")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static int i1 = 50;
+        //ImGui::DragInt("drag int", &i1, 1);
+        bfs += fmt::format("\tstatic int i1{0} = 50;\n",obj.id);
+        bfs += fmt::format("\tImGui::DragInt(\"{}\", &i1{}, 1);\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "dragint100")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static int i2 = 42;
+        //ImGui::DragInt("drag int 0..100", &i2, 1, 0, 100, "%d%%", ImGuiSliderFlags_AlwaysClamp);
+        bfs += fmt::format("\tstatic int i2{0} = 42;\n",obj.id);
+        bfs += fmt::format("\tImGui::DragInt(\"{}\", &i2{}, 1, 0, 100, \"%d%%\", ImGuiSliderFlags_AlwaysClamp);\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "dragfloat")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f1 = 1.00f;
+        //ImGui::DragFloat("drag float", &f1, 0.005f);
+        bfs += fmt::format("\tstatic float f1{0} = 1.00f;\n",obj.id);
+        bfs += fmt::format("\tImGui::DragFloat(\"{}\", &f1{}, 0.005f);\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "dragfloatsmall")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f2 = 0.0067f;
+        //ImGui::DragFloat("drag small float", &f2, 0.0001f, 0.0f, 0.0f, "%.06f ns");
+        bfs += fmt::format("\tstatic float f2{0} = 0.0067f;\n",obj.id);
+        bfs += fmt::format("\tImGui::DragFloat(\"{}\", &f2{}, 0.0001f, 0.0f, 0.0f, \"%.06f ns\");\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "sliderint")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static int i1 = 0;
+        //ImGui::SliderInt("slider int", &i1, -1, 3);
+        bfs += fmt::format("\tstatic int i1{0} = 0;\n",obj.id);
+        bfs += fmt::format("\tImGui::SliderInt(\"{}\", &i1{}, -1, 3);\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "sliderfloat")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f1 = 0.123f;
+        //ImGui::SliderFloat("slider float", &f1, 0.0f, 1.0f, "ratio = %.3f");
+        bfs += fmt::format("\tstatic float f1{0} = 0.123f;\n",obj.id);
+        bfs += fmt::format("\tImGui::SliderFloat(\"{}\", &f1{}, 0.0f, 1.0f, \"ratio = %.3f\");\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "sliderfloatlog")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float f2 = 0.0f;
+        //ImGui::SliderFloat("slider float (log)", &f2, -10.0f, 10.0f, "%.4f", ImGuiSliderFlags_Logarithmic);
+        bfs += fmt::format("\tstatic float f2{0} = 0.0f;\n",obj.id);
+        bfs += fmt::format("\tImGui::SliderFloat(\"{}\", &f2{}, -10.0f, 10.0f, \"%.4f\", ImGuiSliderFlags_Logarithmic);\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "sliderangle")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        //static float angle = 0.0f;
+        //ImGui::SliderAngle("slider angle", &angle);
+        bfs += fmt::format("\tstatic float angle{0} = 0.0f;\n",obj.id);
+        bfs += fmt::format("\tImGui::SliderAngle(\"{}\", &angle{});\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+    
+    
+    
+
     str->append(bfs);
     
 }
