@@ -311,8 +311,8 @@ void GUI::ShowSidebar()
         }
         ImGui::EndDisabled();
         ImGui::SameLine(); extra::HelpMarker
-        ("Groups are not a feature of ImStudio currently, but you can probably get "
-        "away with a child (without borders) to reproduce similar behavior.");
+        ("Groups are not a feature of ImStudio, but you can probably use "
+         "a child (without borders) to reproduce similar behavior.");
 
         if (ImGui::Button("<< Same Line"))
         {
