@@ -170,25 +170,6 @@ int main(int argc, char *argv[])
 GENERATED CODE
 */
 
-static bool window = true;
-ImGui::SetNextWindowSize(ImVec2(1070,680), ImGuiCond_Once);
-if (ImGui::Begin("window_name", &window))
-{
-
-	ImGui::SetCursorPos(ImVec2(499.5,108.5));
-	ImGui::Button("change me", ImVec2(71,19)); //remove size argument (ImVec2) to auto-resize
-
-	ImGui::SetCursorPos(ImVec2(513.5,323.5));
-	ImGui::Button("cool!", ImVec2(43,19)); //remove size argument (ImVec2) to auto-resize
-
-	ImGui::SetCursorPos(ImVec2(499.5,499.5));
-	ImGui::Button("change me", ImVec2(71,19)); //remove size argument (ImVec2) to auto-resize
-
-
-	ImGui::End();
-}
-
-
 
 
 

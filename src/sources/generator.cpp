@@ -16,8 +16,75 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
         bfs += "//remove size argument (ImVec2) to auto-resize\n\n";
     }
 
-    str->append(bfs);
+    if (obj.type == "radio")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::RadioButton(\"{}\", {});\n\n",obj.label, obj.value_b);
+    }
 
+    if (obj.type == "checkbox")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::Checkbox(\"{}\", {});\n\n",obj.label, obj.value_b);
+    }
+
+    if (obj.type == "text")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::Text(\"{}\");\n\n",obj.value_s);
+    }
+
+    if (obj.type == "bullet")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += "\tImGui::Bullet();\n\n";
+        
+    }
+
+    if (obj.type == "arrow")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += "\tImGui::ArrowButton(\"##left\", ImGuiDir_Left);\n";
+        bfs += "\tImGui::SameLine();\n";
+        bfs += "\tImGui::ArrowButton(\"##right\", ImGuiDir_Right);\n\n";
+    }
+
+    if (obj.type == "combo")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        bfs += fmt::format("\tstatic int item_current{} = 0;\n",obj.id);
+        bfs += fmt::format("\tconst char *items{}[] = {{\"Never\", \"Gonna\", \"Give\", \"You\", \"Up\"}};\n",obj.id);
+        bfs += fmt::format("\tImGui::Combo(\"{0}\", &item_current{1}, items{1}, IM_ARRAYSIZE(items{1}));\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    if (obj.type == "listbox")
+    {
+        if (!staticlayout) {
+        bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
+        }
+        bfs += fmt::format("\tImGui::PushItemWidth({});\n",obj.width);
+        bfs += fmt::format("\tstatic int item_current{} = 0;\n",obj.id);
+        bfs += fmt::format("\tconst char *items{}[] = {{\"Never\", \"Gonna\", \"Give\", \"You\", \"Up\"}};\n",obj.id);
+        bfs += fmt::format("\tImGui::ListBox(\"{0}\", &item_current{1}, items{1}, IM_ARRAYSIZE(items{1}));\n",obj.label,obj.id);
+        bfs += "\tImGui::PopItemWidth();\n\n";
+    }
+
+    str->append(bfs);
+    
 }
 
 void ImStudio::GenerateCode(BufferWindow* bw)
