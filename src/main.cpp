@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
 {
     int  w_w      = 900;
     int  w_h      = 600;
-    bool resizing = false;
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -51,13 +50,6 @@ int main(int argc, char *argv[])
         return 1;
 
     glfwGetWindowSize(glwindow, &w_w, &w_h);
-
-    glfwSetWindowUserPointer(glwindow, &resizing);
-
-    glfwSetWindowSizeCallback(glwindow, [](GLFWwindow *window, int width, int height) {
-        bool *resizing = static_cast<bool *>(glfwGetWindowUserPointer(window));
-        *resizing      = true;
-    });
 
     glfwMakeContextCurrent(glwindow);
     glfwSwapInterval(1); // Enable vsync
@@ -174,11 +166,32 @@ int main(int argc, char *argv[])
 
 #ifdef TEST
 
-        ImGui::Begin("test_window");
-        {
+/*
+GENERATED CODE
+*/
 
-        }
-        ImGui::End();
+static bool window = true;
+ImGui::SetNextWindowSize(ImVec2(1070,680), ImGuiCond_Once);
+if (ImGui::Begin("window_name", &window))
+{
+
+	ImGui::SetCursorPos(ImVec2(499.5,108.5));
+	ImGui::Button("change me", ImVec2(71,19)); //remove size argument (ImVec2) to auto-resize
+
+	ImGui::SetCursorPos(ImVec2(513.5,323.5));
+	ImGui::Button("cool!", ImVec2(43,19)); //remove size argument (ImVec2) to auto-resize
+
+	ImGui::SetCursorPos(ImVec2(499.5,499.5));
+	ImGui::Button("change me", ImVec2(71,19)); //remove size argument (ImVec2) to auto-resize
+
+
+	ImGui::End();
+}
+
+
+
+
+
 
 #endif
 
