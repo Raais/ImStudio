@@ -1,10 +1,11 @@
 #
 # Cross Platform Makefile
-# Compatible with MSYS2/MINGW, Ubuntu and Mac OS X
+# Compatible with Linux, Mac OS X and MSYS2/MINGW.
 #
 # You will need GLFW (http://www.glfw.org):
 # Linux:
-#   sudo apt-get libglfw libglfw-dev
+#   sudo apt-get libglfw3 libglfw3-dev
+#	sudo pacman -S glfw
 # Mac OS X:
 #   brew install glfw
 # MSYS2:
@@ -17,6 +18,7 @@
 EXE = ImStudio
 SRC_DIR = src
 IMGUI_DIR = $(SRC_DIR)/third-party/imgui
+FMT_DIR = $(SRC_DIR)/third-party/fmt
 
 #ImGui Core
 SOURCES = $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
@@ -25,7 +27,7 @@ SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui
 #ImGui Extras
 SOURCES += $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp
 #fmt
-SOURCES += $(SRC_DIR)/third-party/fmt/src/format.cc
+SOURCES += $(FMT_DIR)/src/format.cc
 
 #ImStudio
 SOURCES += $(SRC_DIR)/main.cpp
@@ -36,7 +38,7 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(FMT_DIR)/include
 CXXFLAGS += -g -Wall -Wformat
 CXXFLAGS += -std=c++11
 CXXFLAGS += -fsanitize=address
@@ -94,7 +96,7 @@ endif
 %.o:$(IMGUI_DIR)/misc/cpp/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(SRC_DIR)/third-party/fmt/src/%.cc
+%.o:$(FMT_DIR)/src/%.cc
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(SRC_DIR)/%.cpp
