@@ -16,7 +16,7 @@
 
 EXE = ImStudio
 SRC_DIR = src
-IMGUI_DIR = $(SRC_DIR)/imgui
+IMGUI_DIR = $(SRC_DIR)/third-party/imgui
 
 #ImGui Core
 SOURCES = $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp
@@ -24,6 +24,8 @@ SOURCES = $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 #ImGui Extras
 SOURCES += $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp
+#fmt
+SOURCES += $(SRC_DIR)/third-party/fmt/src/format.cc
 
 #ImStudio
 SOURCES += $(SRC_DIR)/main.cpp
@@ -90,6 +92,9 @@ endif
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMGUI_DIR)/misc/cpp/%.cpp
+	$(CXX) $(CXXFLAGS) -c -o $@ $<
+
+%.o:$(SRC_DIR)/third-party/fmt/src/%.cc
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(SRC_DIR)/%.cpp

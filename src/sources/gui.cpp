@@ -2,6 +2,7 @@
 #include "object.h"
 #include "buffer.h"
 #include "console.h"
+#include "generator.h"
 #include "gui.h"
 
 // ANCHOR MENUBAR.DEFINITION
@@ -1301,15 +1302,18 @@ void GUI::ShowOutputWorkspace()
     ImGui::SetNextWindowSize(ot_S);
     ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
     {
-        static char text[1024 * 16] = "/*\n"
-                                      " GENERATED CODE\n"
-                                      " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
-                                      "*/\n\n"
-                                      "auto layout = You.DesignSomethingFunky();\n"
-                                      "ImStudio.GenerateCode(layout);";
+        ImStudio::GenerateCode(&bw);
 
-        ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
-                                  ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
+        //static char text[1024 * 16] = "/*\n"
+        //                              " GENERATED CODE\n"
+        //                              " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
+        //                              "*/\n\n"
+        //                              "auto layout = You.DesignSomethingFunky();\n"
+        //                              "ImStudio.GenerateCode(layout);";
+
+        //ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
+        //                          ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
+        
     }
     ImGui::End();
 }

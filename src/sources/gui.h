@@ -7,7 +7,6 @@
 
 struct GUI
 {
-    int                     id                         = 0;                    // Unique ID
     bool                    state                      = true;                 // Alive
     bool                    wksp_create                = true;                 // Workspace "Create"
 

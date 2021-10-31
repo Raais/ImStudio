@@ -12,9 +12,10 @@
 #include <memory>
 #include <stdexcept>
 
-#include "imgui/imgui.h"
-#include "imgui/backends/imgui_impl_glfw.h"
-#include "imgui/backends/imgui_impl_opengl3.h"
-#include "imgui/misc/cpp/imgui_stdlib.h"
-#include "imgui/imgui_internal.h"
+#include "third-party/imgui/imgui.h"
+#include "third-party/imgui/backends/imgui_impl_glfw.h"
+#include "third-party/imgui/backends/imgui_impl_opengl3.h"
+#include "third-party/imgui/misc/cpp/imgui_stdlib.h"
+#include "third-party/imgui/imgui_internal.h"
+#include "third-party/fmt/include/fmt/format.h"
 #include "utils/utils.h"
