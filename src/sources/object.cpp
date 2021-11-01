@@ -1,7 +1,7 @@
 #include "../includes.h"
 #include "object.h"
 
-BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
+ImStudio::BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
 {
     ischildwidget = true;
     id            = idvar_;
@@ -10,7 +10,7 @@ BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for chi
     value_s       = type_ + std::to_string(idvar_);
 }
 
-Object::Object(int idvar_, std::string type_) : BaseObject()
+ImStudio::Object::Object(int idvar_, std::string type_) : BaseObject()
 {
     if (type_ == "child")
     {
@@ -25,7 +25,7 @@ Object::Object(int idvar_, std::string type_) : BaseObject()
     parent     = this;
 }
 
-void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
+void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
 {
     if (state)
     {
@@ -664,12 +664,12 @@ void BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
     }
 }
 
-void BaseObject::del()
+void ImStudio::BaseObject::del()
 {
     state = false;
 }
 
-void BaseObject::highlight(int *select)
+void ImStudio::BaseObject::highlight(int *select)
 {
     if (id == *select)
     {
@@ -682,7 +682,7 @@ void BaseObject::highlight(int *select)
     }
 }
 
-void ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
+void ImStudio::ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
 {
     static auto dl = ImGui::GetWindowDrawList();
 

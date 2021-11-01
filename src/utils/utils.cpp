@@ -90,40 +90,6 @@ ImVec2 extra::GetLocalCursor()
     return cursor;
 }
 
-ImVec2 extra::GetStaticCursor()
-{
-    ImGuiContext &g      = *ImGui::GetCurrentContext();
-    ImGuiWindow * w      = g.CurrentWindow;
-    ImVec2        cursor = ImVec2(ImGui::GetCursorPosX() - w->Pos.x, ImGui::GetCursorPosY() - w->Pos.y);
-    return cursor;
-}
-
-ImVec2 extra::GetWindowSRatio()
-{ // AKA scale factor
-    ImGuiWindow *  w     = ImGui::GetCurrentWindow();
-    ImGuiViewport *v     = ImGui::GetMainViewport();
-    ImVec2         ratio = ImVec2(v->Size.x / w->Size.x, v->Size.y / w->Size.y);
-    return ratio;
-}
-
-ImVec2 extra::GetWindowPRatio()
-{ // AKA scale factor
-    ImGuiWindow *  w     = ImGui::GetCurrentWindow();
-    ImGuiViewport *v     = ImGui::GetMainViewport();
-    ImVec2         ratio = ImVec2(v->Size.x / w->Pos.x, v->Size.y / w->Pos.y);
-    return ratio;
-}
-
-ImVec2 extra::GetLastItemPos()
-{ // Dangerous. FramePadding has to be 4x3
-    ImGuiContext &g            = *ImGui::GetCurrentContext();
-    ImGuiWindow * w            = ImGui::GetCurrentWindow();
-    ImRect        r            = g.LastItemData.Rect;
-    ImVec2        FramePadding = ImGui::GetStyle().FramePadding;
-    ImVec2        pos          = ImVec2(r.Max.x - w->Pos.x - 71, r.Max.y - w->Pos.y - 19);
-    return pos;
-}
-
 void extra::ShowStyleEditorWindow(bool *child_sty)
 {
     ImGui::Begin("Style Editor", child_sty, ImGuiWindowFlags_AlwaysAutoResize);
@@ -298,30 +264,4 @@ void extra::TextCentered(std::string text, int type = 0)
         ImGui::TextDisabled(text.c_str());
         break;
     }
-}
-
-void extra::metrics()
-{ // ugly debug stuff
-
-    ImGuiIO &      io      = ImGui::GetIO();
-    ImGuiWindow *  window  = ImGui::GetCurrentWindowRead();
-    ImGuiViewport *vw      = ImGui::GetMainViewport();
-    ImGuiContext & g       = *ImGui::GetCurrentContext();
-    ImVec2         padding = ImGui::GetStyle().WindowPadding;
-    ImGui::Text("%gx%g", vw->Size.x, vw->Size.y);
-    // ImGui::Text("%f%",(window->Size.x/vw->Size.x)*100);
-    ImGui::Text("name: %s", window->Name);
-    ImGui::Text("IMsize: %g,%g", window->Size.x, window->Size.y);
-    ImGui::Text("IMpos: %g,%g", window->Pos.x, window->Pos.y);
-    ImGui::Text("padding: %gx%g", padding.x, padding.y);
-    ImGui::Text("static cursor: (%g,%g)", extra::GetStaticCursor().x, extra::GetStaticCursor().y);
-    ImGui::Text("global cursor: (%g,%g)", ImGui::GetCursorPosX, ImGui::GetCursorPosY);
-    ImGui::Text("mousepos: (%g,%g)", io.MousePos.x, io.MousePos.y);
-    ImGui::Text("local cursor: (%g,%g)", extra::GetLocalCursor().x, extra::GetLocalCursor().y);
-
-    ImGui::Text("global cursor: (%g,%g)", ImGui::GetCursorPosX, ImGui::GetCursorPosY);
-    ImGui::Text("screen cursor: (%g,%g)", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
-    ImGui::Text("ratioS:: %f,%f", extra::GetWindowSRatio().x, GetWindowSRatio().y);
-    ImGui::Text("ratioP:: %f,%f", extra::GetWindowPRatio().x, GetWindowPRatio().y);
-    ImGui::Text("frame padding: %gx%g", ImGui::GetStyle().FramePadding.x, ImGui::GetStyle().FramePadding.y);
 }

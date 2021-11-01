@@ -2,7 +2,7 @@
 #include "buffer.h"
 #include "object.h"
 
-void BufferWindow::drawall(int *select, int gen_rand)
+void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
 {
     if (state)
     {
@@ -48,7 +48,7 @@ void BufferWindow::drawall(int *select, int gen_rand)
     }
 }
 
-Object *BufferWindow::getobj(int id)
+ImStudio::Object *ImStudio::BufferWindow::getobj(int id)
 {
     for (Object &o : objects)
     {
@@ -60,7 +60,7 @@ Object *BufferWindow::getobj(int id)
     return nullptr;
 }
 
-BaseObject *BufferWindow::getbaseobj(int id)
+ImStudio::BaseObject *ImStudio::BufferWindow::getbaseobj(int id)
 {
     for (Object &o : objects)
     {
@@ -82,7 +82,7 @@ BaseObject *BufferWindow::getbaseobj(int id)
     return nullptr;
 }
 
-void BufferWindow::create(std::string type_)
+void ImStudio::BufferWindow::create(std::string type_)
 {
     idvar++;
     if (!current_child)

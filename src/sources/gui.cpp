@@ -6,7 +6,7 @@
 #include "gui.h"
 
 // ANCHOR MENUBAR.DEFINITION
-void GUI::ShowMenubar()
+void ImStudio::GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
     ImGui::SetNextWindowSize(mb_S);
@@ -92,7 +92,7 @@ void GUI::ShowMenubar()
 }
 
 // ANCHOR SIDEBAR.DEFINITION
-void GUI::ShowSidebar()
+void ImStudio::GUI::ShowSidebar()
 {
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
@@ -354,7 +354,7 @@ void GUI::ShowSidebar()
 }
 
 // ANCHOR PROPERTIES.DEFINITION
-void GUI::ShowProperties()
+void ImStudio::GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
@@ -373,6 +373,7 @@ void GUI::ShowProperties()
                     {
                         for (BaseObject &cw : o.child.objects)
                         {
+                            (void)cw;//for compiler warning
                             allvecsize++;
                         }
                     }
@@ -447,7 +448,6 @@ void GUI::ShowProperties()
                 /////////PROP BUFFER/////////
                 static std::string prop_text1   = "change me";
                 static std::string prop_text2   = "";
-                static bool        prop_bool1   = false;
                 /////////////////////////////
 
                 if (selectobj->id != previd)
@@ -455,7 +455,6 @@ void GUI::ShowProperties()
                     //reset prop buffer so text input value is not transferred from object to object
                     prop_text1 = "change me";
                     prop_text2 = "";
-                    prop_bool1 = false;
                     //bw.resetpropbuffer();
                 }
 
@@ -1262,7 +1261,7 @@ void GUI::ShowProperties()
 }
 
 // ANCHOR VIEWPORT.DEFINITION
-void GUI::ShowViewport(int gen_rand)
+void ImStudio::GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
@@ -1299,7 +1298,7 @@ void GUI::ShowViewport(int gen_rand)
 }
 
 // ANCHOR OUTPUTWKSP.DEFINITION
-void GUI::ShowOutputWorkspace()
+void ImStudio::GUI::ShowOutputWorkspace()
 {
     ImGui::SetNextWindowPos(ot_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
@@ -1307,22 +1306,11 @@ void GUI::ShowOutputWorkspace()
     ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
     {
         ImStudio::GenerateCode(&bw);
-
-        //static char text[1024 * 16] = "/*\n"
-        //                              " GENERATED CODE\n"
-        //                              " READ-ONLY | IMSTUDIO IS NOT A COMPILER FOR C++!\n"
-        //                              "*/\n\n"
-        //                              "auto layout = You.DesignSomethingFunky();\n"
-        //                              "ImStudio.GenerateCode(layout);";
-
-        //ImGui::InputTextMultiline("##source", text, IM_ARRAYSIZE(text),
-        //                          ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
-        
     }
     ImGui::End();
 }
 
-void GUI::ShowConsole(bool *p_open, GUI *gui_)
+void ImStudio::GUI::ShowConsole(bool *p_open, GUI *gui_)
 {
     static Console console(gui_);
     console.Draw("Console", p_open);

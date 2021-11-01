@@ -309,21 +309,21 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
     if (obj.type == "sameline")
     {
         if (staticlayout) {
-        bfs += "\tImGui::SameLine()\n\n";
+        bfs += "\tImGui::SameLine();\n\n";
         }
     }
 
     if (obj.type == "newline")
     {
         if (staticlayout) {
-        bfs += "\tImGui::NewLine()\n\n";
+        bfs += "\tImGui::NewLine();\n\n";
         }
     }
 
     if (obj.type == "separator")
     {
         if (staticlayout) {
-        bfs += "\tImGui::Separator()\n\n";
+        bfs += "\tImGui::Separator();\n\n";
         }
     }
 
@@ -346,7 +346,7 @@ void ImStudio::Recreate(BaseObject obj, std::string* str, bool staticlayout)
 
 void ImStudio::GenerateCode(BufferWindow* bw)
 {
-    std::string output = "/*\nGENERATED CODE\n*/\n\n";
+    std::string output = "/*\nGENERATED CODE | READ-ONLY\nYou can directly copy from here, or click the export button\n*/\n\n";
     output += "static bool window = true;\n";
     output += fmt::format("ImGui::SetNextWindowSize(ImVec2({},{}));\n", bw->size.x, bw->size.y);
     output += "if (ImGui::Begin(\"window_name\", &window))\n{\n\n";
