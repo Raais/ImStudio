@@ -7,7 +7,7 @@
 namespace ImStudio
 {
 
-    void Recreate(BaseObject obj, std::string* str, bool staticlayout);
-    void GenerateCode(BufferWindow* bw);
+    void Recreate(BaseObject obj, std::string* output, bool staticlayout);
+    void GenerateCode(std::string* output, BufferWindow* bw);
 
 }

@@ -145,6 +145,10 @@ int main(int argc, char *argv[])
                 if (gui.child_color) utils::ShowColorExportWindow(&gui.child_color);
 
                 if (gui.child_console) gui.ShowConsole(&gui.child_console,&gui);
+
+                if (gui.child_resources) utils::ShowResourcesWindow(&gui.child_resources);
+
+                if (gui.child_about) utils::ShowAboutWindow(&gui.child_about);
             }
         }
 
@@ -155,7 +159,10 @@ int main(int argc, char *argv[])
 
 #endif
 
+
 #ifdef TEST
+
+
 
 
 #endif

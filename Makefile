@@ -38,7 +38,7 @@ OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(FMT_DIR)/include
+CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(FMT_DIR)/include -I$(SRC_DIR)/sources
 CXXFLAGS += -g -Wall -Wformat
 CXXFLAGS += -std=c++11
 CXXFLAGS += -fsanitize=address

@@ -21,6 +21,12 @@ void ImStudio::GUI::ShowMenubar()
         /// menu-file
         if (ImGui::BeginMenu("File"))
         {
+            if (ImGui::MenuItem("Export to clipboard"))
+            {
+                ImGui::LogToClipboard();
+                ImGui::LogText(output.c_str());
+                ImGui::LogFinish();
+            };
 
             if (ImGui::MenuItem("Exit"))
             {
@@ -59,6 +65,13 @@ void ImStudio::GUI::ShowMenubar()
             ImGui::MenuItem("Metrics", NULL, &child_metrics);
             ImGui::MenuItem("Stack Tool", NULL, &child_stack);
             ImGui::MenuItem("Color Export", NULL, &child_color);
+            ImGui::EndMenu();
+        }
+
+        if (ImGui::BeginMenu("Help"))
+        {
+            if (ImGui::MenuItem("Resources")) child_resources = true;
+            if (ImGui::MenuItem("About ImStudio")) child_about = true;
             ImGui::EndMenu();
         }
 
@@ -1305,7 +1318,7 @@ void ImStudio::GUI::ShowOutputWorkspace()
     ImGui::SetNextWindowSize(ot_S);
     ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
     {
-        ImStudio::GenerateCode(&bw);
+        ImStudio::GenerateCode(&output, &bw);
     }
     ImGui::End();
 }

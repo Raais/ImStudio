@@ -41,6 +41,7 @@ namespace ImStudio
         bool                    wksp_output                = false;                // Workspace "Output"
         ImVec2                  ot_P                       = {};                   // Output Window Pos
         ImVec2                  ot_S                       = {};                   // Output Window Size
+        std::string             output                     = {};
         void                    ShowOutputWorkspace();        
 
         bool                    child_console              = false;                // Show Console
@@ -51,6 +52,8 @@ namespace ImStudio
         bool                    child_metrics              = false;                // Show Metrics Window
         bool                    child_color                = false;                // Show Color Export
         bool                    child_stack                = false;                // Show Stack Tool
+        bool                    child_resources            = false;                // Show Help Resources
+        bool                    child_about                = false;                // Show About Window
     };
 
 }
