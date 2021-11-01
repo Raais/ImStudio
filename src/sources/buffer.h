@@ -11,8 +11,8 @@ namespace ImStudio
     public:
       int                     id                      = 0;                    //
       bool                    state                   = false;                //
-      ImVec2                  size                    = ImVec2(1070, 680);    // FIXME
-      ImVec2                  pos                     = ImVec2(280, 120);     // FIXME
+      ImVec2                  size                    = {};                   //
+      ImVec2                  pos                     = {};                   //
       int                     idvar                   = 0;                    //
       Object*                 current_child           = nullptr;              //
     

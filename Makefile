@@ -5,7 +5,7 @@
 # You will need GLFW (http://www.glfw.org):
 # Linux:
 #   sudo apt-get libglfw3 libglfw3-dev
-#	sudo pacman -S glfw
+#   sudo pacman -S glfw
 # Mac OS X:
 #   brew install glfw
 # MSYS2:
