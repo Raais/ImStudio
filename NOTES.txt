@@ -1,5 +1,5 @@
-Generator
+Generator ✅
 CLI mode - input layout file
 Window grid/canvas
-Namespace
+Namespace ✅
 Window relative size

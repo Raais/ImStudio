@@ -7,7 +7,8 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
     if (state)
     {
         ImGui::SetNextWindowPos(pos, ImGuiCond_Once);
-        ImGui::SetNextWindowSize(size, ImGuiCond_Once);
+        ImGui::SetNextWindowSize(size);
+        ImGui::SetNextWindowSize(ImVec2(ImGui::GetWindowSize().x * 0.7, ImGui::GetWindowSize().y * 0.7), ImGuiCond_Once);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.09f, 1.00f));
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.26f, 0.59f, 0.98f, 0.40f));
         ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.86f, 0.86f, 0.86f, 0.50f));

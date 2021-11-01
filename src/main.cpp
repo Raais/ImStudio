@@ -17,7 +17,6 @@ int main(int argc, char *argv[])
 {
     int  w_w      = 900;
     int  w_h      = 600;
-
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
@@ -61,8 +60,6 @@ int main(int argc, char *argv[])
     ImGui_ImplGlfw_InitForOpenGL(glwindow, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-//-----------------------------------------------------------------------------
-// ANCHOR STYLES & SETTINGS
 
     // io.Fonts->Build();
     io.IniFilename              = NULL;
@@ -84,17 +81,13 @@ int main(int argc, char *argv[])
     colors[ImGuiCol_WindowBg]   = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
     colors[ImGuiCol_Border]     = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
     colors[ImGuiCol_Button]     = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
-    
-//-----------------------------------------------------------------------------
+
 
     ImStudio::GUI gui;
     gui.bw.objects.reserve(250);
     
-//-----------------------------------------------------------------------------
-    std::mt19937 rng(time(NULL)); //MT-PRNG
-//-----------------------------------------------------------------------------
 
-// SECTION MAIN LOOP
+    std::mt19937 rng(time(NULL)); //MT-PRNG
 
     while ((!glfwWindowShouldClose(glwindow)) && (gui.state))
     {
@@ -113,7 +106,6 @@ int main(int argc, char *argv[])
 #define MAIN
 
 #ifdef MAIN
-// SECTION GUI
 
         // window-menubar
         gui.mb_P = ImVec2(0, 0);
@@ -142,7 +134,7 @@ int main(int argc, char *argv[])
 
             }
             { // create-children
-                if (gui.child_style) extra::ShowStyleEditorWindow(&gui.child_style);
+                if (gui.child_style) utils::ShowStyleEditorWindow(&gui.child_style);
 
                 if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);
 
@@ -150,7 +142,7 @@ int main(int argc, char *argv[])
 
                 if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
 
-                if (gui.child_color) extra::ShowColorExportWindow(&gui.child_color);
+                if (gui.child_color) utils::ShowColorExportWindow(&gui.child_color);
 
                 if (gui.child_console) gui.ShowConsole(&gui.child_console,&gui);
             }
@@ -161,7 +153,6 @@ int main(int argc, char *argv[])
         gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
         if (gui.wksp_output) gui.ShowOutputWorkspace();
 
-//! SECTION GUI End
 #endif
 
 #ifdef TEST
@@ -179,8 +170,6 @@ int main(int argc, char *argv[])
 
         glfwSwapBuffers(glwindow);
     }
-
-//! SECTION MAIN LOOP End
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

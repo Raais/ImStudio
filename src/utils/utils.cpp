@@ -1,7 +1,7 @@
 #include "../includes.h"
 #include "utils.h"
 
-void extra::glfwSetWindowCenter(GLFWwindow *window)
+void utils::glfwSetWindowCenter(GLFWwindow *window)
 {
     // Get window position and size
     int window_x, window_y;
@@ -76,7 +76,7 @@ void extra::glfwSetWindowCenter(GLFWwindow *window)
     }
 }
 
-ImVec2 extra::GetLocalCursor()
+ImVec2 utils::GetLocalCursor()
 {
     ImGuiIO &     io         = ImGui::GetIO();
     ImGuiContext &g          = *ImGui::GetCurrentContext();
@@ -90,14 +90,14 @@ ImVec2 extra::GetLocalCursor()
     return cursor;
 }
 
-void extra::ShowStyleEditorWindow(bool *child_sty)
+void utils::ShowStyleEditorWindow(bool *child_sty)
 {
     ImGui::Begin("Style Editor", child_sty, ImGuiWindowFlags_AlwaysAutoResize);
     ImGui::ShowStyleEditor();
     ImGui::End();
 }
 
-void extra::ShowColorExportWindow(bool *child_colexp)
+void utils::ShowColorExportWindow(bool *child_colexp)
 {
     if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
     {
@@ -198,7 +198,7 @@ void extra::ShowColorExportWindow(bool *child_colexp)
     }
 }
 
-bool extra::IsItemActiveAlt(ImVec2 pos, int id)
+bool utils::IsItemActiveAlt(ImVec2 pos, int id)
 {
     bool active = false;
     ImGui::SetCursorPos(pos);
@@ -209,7 +209,7 @@ bool extra::IsItemActiveAlt(ImVec2 pos, int id)
     return active;
 }
 
-bool extra::GrabButton(ImVec2 pos, int random_int)
+bool utils::GrabButton(ImVec2 pos, int random_int)
 {
     bool active = false;
     ImGui::SetCursorPos(pos);
@@ -225,7 +225,7 @@ bool extra::GrabButton(ImVec2 pos, int random_int)
     return active;
 }
 
-void extra::HelpMarker(const char *desc)
+void utils::HelpMarker(const char *desc)
 {
     ImGui::PushStyleColor(ImGuiCol_Text,ImVec4(0.92f, 0.92f, 0.92f, 1.00f));
     ImGui::TextDisabled("(?)");
@@ -240,7 +240,7 @@ void extra::HelpMarker(const char *desc)
     ImGui::PopStyleColor(1);
 }
 
-float extra::CenterHorizontal()
+float utils::CenterHorizontal()
 {
     auto windowWidth = ImGui::GetWindowSize().x;
     auto itemWidth   = ImGui::GetItemRectSize().x;
@@ -248,7 +248,7 @@ float extra::CenterHorizontal()
     return PosX;
 }
 
-void extra::TextCentered(std::string text, int type = 0)
+void utils::TextCentered(std::string text, int type = 0)
 {
     auto windowWidth = ImGui::GetWindowSize().x;
     auto textWidth   = ImGui::CalcTextSize(text.c_str()).x;

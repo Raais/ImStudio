@@ -36,7 +36,7 @@ void ImStudio::GUI::ShowMenubar()
             {
                 ImGui::MenuItem("Static Mode", NULL, &bw.staticlayout);
                 ImGui::SameLine();
-                extra::HelpMarker("Toggle between static/linear layout and fixed/manual layout");
+                utils::HelpMarker("Toggle between static/linear layout and fixed/manual layout");
 
                 ImGui::EndMenu();
             }
@@ -106,7 +106,7 @@ void ImStudio::GUI::ShowSidebar()
     {
 
         ImGui::TextDisabled("NOTE");
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("THESE ARE NOT THE ONLY WIDGETS IMGUI PROVIDES!\n"
         "You can find out more in the Dear ImGui Demo "
         "(Tools > Demo Window) and imgui/imgui_demo.cpp");
@@ -175,7 +175,7 @@ void ImStudio::GUI::ShowSidebar()
         {
             bw.create("inputint");
         }
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("You can apply arithmetic operators +,*,/ on numerical values.\n"
         "  e.g. [ 100 ], input \'*2\', result becomes [ 200 ]\n"
         "Use +- to subtract.");
@@ -194,7 +194,7 @@ void ImStudio::GUI::ShowSidebar()
         {
             bw.create("inputscientific");
         }
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("You can input value using the scientific notation,\n"
         "  e.g. \"1e+8\" becomes \"100000000\".");
 
@@ -207,7 +207,7 @@ void ImStudio::GUI::ShowSidebar()
         {
             bw.create("dragint");
         }
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("Click and drag to edit value.\n"
         "Hold SHIFT/ALT for faster/slower edit.\n"
         "Double-click or CTRL+click to input value.");
@@ -231,7 +231,7 @@ void ImStudio::GUI::ShowSidebar()
         {
             bw.create("sliderint");
         }
-        ImGui::SameLine(); extra::HelpMarker("CTRL+click to input value.");
+        ImGui::SameLine(); utils::HelpMarker("CTRL+click to input value.");
 
         if (ImGui::Button("Slider Float"))
         {
@@ -295,7 +295,7 @@ void ImStudio::GUI::ShowSidebar()
                 bw.create("child");
             }
         }
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("Green = Open (Ready to add items). Calling EndChild will close it, "
         "and you can't add items to it unless you manually re-open it.");
 
@@ -310,7 +310,7 @@ void ImStudio::GUI::ShowSidebar()
             //
         }
         ImGui::EndDisabled();
-        ImGui::SameLine(); extra::HelpMarker
+        ImGui::SameLine(); utils::HelpMarker
         ("Groups are not a feature of ImStudio, but you can probably use "
          "a child (without borders) to reproduce similar behavior.");
 
@@ -1270,7 +1270,7 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
-        extra::TextCentered("Make sure to lock widgets before interacting with them.", 1);
+        utils::TextCentered("Make sure to lock widgets before interacting with them.", 1);
         ImGui::SameLine();
         ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 70);
         ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
@@ -1290,7 +1290,7 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
         bw.drawall(&selectid, gen_rand);
         // ImGui::Text("%d", bw.win.size());
 
-        // extra::metrics();
+        // utils::metrics();
     }
 
     ImGui::End();

@@ -2,7 +2,7 @@
 
 #include "../includes.h"
 
-namespace extra
+namespace utils
 {
 
     void           glfwSetWindowCenter            (GLFWwindow *window);

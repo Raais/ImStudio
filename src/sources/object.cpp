@@ -51,12 +51,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -71,12 +71,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -91,12 +91,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -121,12 +121,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -142,12 +142,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -166,12 +166,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -189,12 +189,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -212,12 +212,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -235,12 +235,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -258,12 +258,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -281,12 +281,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -304,12 +304,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -327,12 +327,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -350,12 +350,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -373,12 +373,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -396,12 +396,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -419,12 +419,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -442,12 +442,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -465,12 +465,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -488,12 +488,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -511,12 +511,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -534,12 +534,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -557,12 +557,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -580,12 +580,12 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -604,7 +604,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             highlight(select);
@@ -650,14 +650,14 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
 
             ImGui::PopID();
             ImGui::PopItemWidth();
-            if ((!locked) && (extra::IsItemActiveAlt(pos, id)))
+            if ((!locked) && (utils::IsItemActiveAlt(pos, id)))
             {
-                pos     = extra::GetLocalCursor();
+                pos     = utils::GetLocalCursor();
                 *select = id;
             }
             if ((!staticlayout) && (center_h))
             {
-                pos.x = extra::CenterHorizontal();
+                pos.x = utils::CenterHorizontal();
             }
             highlight(select);
         }
@@ -722,15 +722,15 @@ void ImStudio::ContainerChild::drawall(int *select, int gen_rand, bool staticlay
     if (!staticlayout)
     {
         if(!locked){
-        if (extra::GrabButton(grab1, grab1_id))
+        if (utils::GrabButton(grab1, grab1_id))
         {
-            grab1   = extra::GetLocalCursor();
+            grab1   = utils::GetLocalCursor();
             *select = id;
         }
 
-        if (extra::GrabButton(grab2, grab2_id))
+        if (utils::GrabButton(grab2, grab2_id))
         {
-            grab2   = extra::GetLocalCursor();
+            grab2   = utils::GetLocalCursor();
             *select = id;
         }}
     }
