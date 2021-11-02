@@ -8,7 +8,7 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
     {
         ImVec2 parent_size = ImGui::GetWindowSize();
         ImVec2 init_size   = ImVec2(parent_size.x * 0.8, parent_size.y * 0.7);
-        ImVec2 center = ImGui::GetMainViewport()->GetCenter();
+        ImVec2 center      = ImGui::GetMainViewport()->GetCenter();
         ImGui::SetNextWindowPos(center, ImGuiCond_Once, ImVec2(0.5f, 0.5f));
         ImGui::SetNextWindowSize(size);
         ImGui::SetNextWindowSize(init_size, ImGuiCond_Once);

@@ -1187,7 +1187,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Max Y", &bw.getobj(selectobj->id)->child.grab2.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &bw.getobj(selectobj->id)->child.locked);
 
-                    if ((ImGui::Button("Open")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O))))
+                    if (ImGui::Button("Open"))
                     {
                         bw.current_child             = bw.getobj(selectobj->id);
                         bw.current_child->child.open = true;

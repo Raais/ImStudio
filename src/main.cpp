@@ -82,10 +82,8 @@ int main(int argc, char *argv[])
     colors[ImGuiCol_Border]     = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
     colors[ImGuiCol_Button]     = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
 
-
     ImStudio::GUI gui;
     gui.bw.objects.reserve(2048);
-    
 
     std::mt19937 rng(time(NULL)); //MT-PRNG
 
