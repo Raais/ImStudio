@@ -467,7 +467,7 @@ void ImStudio::GUI::ShowProperties()
                 {
                     //reset prop buffer so text input value is not transferred from object to object
                     prop_text1 = "change me";
-                    prop_text2 = "";
+                    prop_text2 = "##";
                     //bw.resetpropbuffer();
                 }
 
