@@ -349,6 +349,7 @@ void ImStudio::GenerateCode(std::string* output, BufferWindow* bw)
     *output  = "/*\nGENERATED CODE | READ-ONLY\nYou can directly copy from here, or from File > Export to clipboard\n*/\n\n";
     *output += "static bool window = true;\n";
     *output += fmt::format("ImGui::SetNextWindowSize(ImVec2({},{}));\n", bw->size.x, bw->size.y);
+    *output += "//!! You might want to use these ^^ values in the OS window instead, and add the ImGuiWindowFlags_NoTitleBar flag in the ImGui window !!\n\n";
     *output += "if (ImGui::Begin(\"window_name\", &window))\n{\n\n";
     for (auto i = bw->objects.begin(); i != bw->objects.end(); ++i)
     {
