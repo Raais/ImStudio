@@ -131,6 +131,20 @@ ImVec4 utils::RainbowCol()
     return col;
 }
 
+void utils::DrawGrid()
+{
+    for (float i = ImGui::GetWindowPos().y; i < ImGui::GetWindowSize().x * 4.0f;)
+    {
+        ImGui::GetWindowDrawList()->AddLine(ImVec2(0.0f, i),ImVec2(ImGui::GetMainViewport()->Size.x, i),IM_COL32(88, 88, 88, 50));
+        i += 25.0f;
+    }
+    for (float i = ImGui::GetWindowPos().x; i < ImGui::GetWindowSize().y * 4.0f;)
+    {
+        ImGui::GetWindowDrawList()->AddLine(ImVec2(i, 0.0f),ImVec2(i, ImGui::GetMainViewport()->Size.y),IM_COL32(88, 88, 88, 50));
+        i += 25.0f;
+    }
+}
+
 void utils::ShowStyleEditorWindow(bool *child_sty)
 {
     ImGui::SetNextWindowSize(ImVec2(500,700), ImGuiCond_Once);

@@ -9,7 +9,6 @@ namespace ImStudio
   class BufferWindow
   {
     public:
-      int                     id                      = 0;                    //
       bool                    state                   = false;                //
       ImVec2                  size                    = {};                   //
       ImVec2                  pos                     = {};                   //

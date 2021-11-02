@@ -10,7 +10,7 @@ namespace utils
     void           TextCentered                   (std::string text, int type);
     float          RandomFloat                    (float a, float b);
     ImVec4         RainbowCol                     ();
-    void           RainbowText                    (std::string text);
+    void           DrawGrid                       ();
     void           ShowStyleEditorWindow          (bool *child_sty);
     void           ShowColorExportWindow          (bool *child_colexp);
     void           ShowResourcesWindow            (bool *child_resources);

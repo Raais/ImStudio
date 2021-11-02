@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
     
     colors[ImGuiCol_Text]       = ImVec4(0.92f, 0.92f, 0.92f, 1.00f);
     colors[ImGuiCol_WindowBg]   = ImVec4(0.45f, 0.45f, 0.45f, 1.00f);
-    colors[ImGuiCol_Border]     = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
+    colors[ImGuiCol_Border]     = ImVec4(0.12f, 0.12f, 0.12f, 0.50f);
     colors[ImGuiCol_Button]     = ImVec4(0.59f, 0.59f, 0.59f, 1.00f);
 
     ImStudio::GUI gui;

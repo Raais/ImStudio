@@ -26,6 +26,7 @@ namespace ImStudio
         bool                    properties                 = true;                 // Properties State
         ImVec2                  pt_P                       = {};                   // Properties Pos
         ImVec2                  pt_S                       = {};                   // Properties Size
+        int                     allvecsize                 = 0;                    //
         int                     selectid                   = 0;                    // Selected object (VP)
         int                     previd                     = 0;                    // Previous object
         BaseObject *            selectobj                  = nullptr;              // Pointer to access

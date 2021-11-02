@@ -378,7 +378,7 @@ void ImStudio::GUI::ShowProperties()
             if (!bw.objects.empty())
             {
                 //SECTION CREATE PROPARRAY
-                int allvecsize = 0;
+                allvecsize = 0;
                 for (Object &o : bw.objects) // Calc total objects created in all vectors [bw.objects+all(child.objects)]
                 {
                     allvecsize++;
@@ -1283,27 +1283,17 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
 
     /// content-viewport
     {
-        utils::TextCentered("Make sure to lock widgets before interacting with them.", 1);
+        utils::DrawGrid();
+        
+        ImGui::Text("Buffer Window: %gx%g", bw.size.x, bw.size.y);
         ImGui::SameLine();
-        ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 70);
-        ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
-        ImGui::SetCursorPos(ImVec2(0, 5));
-        if (bw.current_child)
-        {
-            ImGui::Text("cur child name = %d", bw.current_child->id);
-            ImGui::Text("child.open = %d", bw.current_child->child.open);
-        }
-        ImGui::Text("objects.size: %d", static_cast<int>(bw.objects.size()));
-        ImGui::Text("itemcur: %d", selectproparray);
-        if (!bw.objects.empty())
-        {
-            ImGui::Text("Selected = %s", selectobj->identifier.c_str());
-            ImGui::Text("ischild = %d", selectobj->ischild);
-        }
+        utils::TextCentered("Make sure to lock widgets before interacting with them.", 1);
+        ImGui::Text("Objects: %d", static_cast<int>(bw.objects.size()));
+        ImGui::Text("Objects (all): %d", allvecsize);
+        if (!bw.objects.empty()) ImGui::Text("Selected: %s", selectobj->identifier.c_str());
+        ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
+        
         bw.drawall(&selectid, gen_rand);
-        // ImGui::Text("%d", bw.win.size());
-
-        // utils::metrics();
     }
 
     ImGui::End();
