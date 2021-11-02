@@ -40,8 +40,7 @@ int main(int argc, char *argv[])
 
     glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
     glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER,
-                   GLFW_TRUE); // glwindow to transparent; handle color through
-                               // (internal) ImGui Window;
+                   GLFW_TRUE);
 
     GLFWwindow *glwindow = glfwCreateWindow(w_w, w_h, "ImStudio", NULL, NULL);
 
@@ -63,7 +62,8 @@ int main(int argc, char *argv[])
 
     // io.Fonts->Build();
     io.IniFilename              = NULL;
-    ImVec4 bg                   = ImVec4(0.123f, 0.123f, 0.123, 1.00f); // Main bg color
+    ImVec4 bg                   = ImVec4(0.123f, 0.123f, 0.123, 1.00f);
+    //GLFW_TRANSPARENT_FRAMEBUFFER + 0 alpha value ^ works if you have a compositor
 
     ImGuiStyle &style = ImGui::GetStyle();
 
@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
         // workspace-create
         if (gui.wksp_create)
         {
-
             { // create-main
                 // create-sidebar
                 gui.sb_P = ImVec2(0, gui.mb_S.y);
@@ -157,11 +156,7 @@ int main(int argc, char *argv[])
 
 #endif
 
-
 #ifdef TEST
-
-
-
 
 #endif
 
