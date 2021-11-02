@@ -1,9 +1,7 @@
 Generator ✅
 CLI mode - input layout file
-Window grid/canvas
-Help menu/resources
-Viewport metrics
+Window grid/canvas ✅
+Help menu/resources ✅
+Viewport metrics ✅
 Namespace ✅
 Window relative size ✅
-
-Ubuntu one-liner: sudo apt-get -y update && sudo apt-get -y install build-essential git libglfw3 libglfw3-dev && git clone -b test --single-branch https://github.com/Raais/ImStudio && cd ImStudio && make -j2 && ./ImStudio
