@@ -23,7 +23,7 @@ void ImStudio::Recreate(BaseObject obj, std::string* output, bool staticlayout)
         bfs += fmt::format("\tImGui::SetCursorPos(ImVec2({},{}));\n",obj.pos.x,obj.pos.y);
         }
         bfs += fmt::format("\tstatic bool r1{} = false;\n",obj.id);
-        bfs += fmt::format("\tImGui::RadioButton(\"{0}{1}\", r1{1});\n\n",obj.label, obj.id);
+        bfs += fmt::format("\tImGui::RadioButton(\"{}\", r1{});\n\n",obj.label, obj.id);
     }
 
     if (obj.type == "checkbox")
