@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 
 
     ImStudio::GUI gui;
-    gui.bw.objects.reserve(250);
+    gui.bw.objects.reserve(2048);
     
 
     std::mt19937 rng(time(NULL)); //MT-PRNG
