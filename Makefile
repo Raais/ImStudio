@@ -39,8 +39,9 @@ UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
 CXXFLAGS = -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(FMT_DIR)/include -I$(SRC_DIR)/sources
-#CXXFLAGS += -fsanitize=address -g
-CXXFLAGS += -Wall -Wformat
+#CXXFLAGS += -fsanitize=address -g #debug
+CXXFLAGS += -Wall -Wformat #warn
+CXXFLAGS += -Os #optim
 CXXFLAGS += -std=c++11
 LIBS =
 
