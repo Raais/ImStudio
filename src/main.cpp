@@ -89,7 +89,6 @@ int main(int argc, char *argv[])
 
     while ((!glfwWindowShouldClose(glwindow)) && (gui.state))
     {
-        causefail
         std::uniform_int_distribution<int> gen(999, 9999);
 
         glfwPollEvents();
