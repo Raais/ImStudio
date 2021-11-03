@@ -1,7 +1,0 @@
-Generator ✅
-CLI mode - input layout file
-Window grid/canvas ✅
-Help menu/resources ✅
-Viewport metrics ✅
-Namespace ✅
-Window relative size ✅
