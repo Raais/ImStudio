@@ -101,10 +101,6 @@ int main(int argc, char *argv[])
         ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
         ImGui::SetNextWindowBgAlpha(0.00f);
 
-#define MAIN
-
-#ifdef MAIN
-
         // window-menubar
         gui.mb_P = ImVec2(0, 0);
         gui.mb_S = ImVec2(w_w, 46);
@@ -154,11 +150,6 @@ int main(int argc, char *argv[])
         gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
         if (gui.wksp_output) gui.ShowOutputWorkspace();
 
-#endif
-
-#ifdef TEST
-
-#endif
 
         ImGui::Render();
         int display_w, display_h;
