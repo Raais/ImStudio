@@ -39,9 +39,9 @@ else()
             message(FATAL_ERROR "Xrandr library not found - required for GLFW")
         endif()
 
-        if(NOT X11_xf86vmode_FOUND)
-            message(FATAL_ERROR "xf86vmode library not found - required for GLFW")
-        endif()
+        #if(NOT X11_xf86vmode_FOUND)
+        #    message(FATAL_ERROR "xf86vmode library not found - required for GLFW")
+        #endif()
 
         if(NOT X11_Xcursor_FOUND)
             message(FATAL_ERROR "Xcursor library not found - required for GLFW")
