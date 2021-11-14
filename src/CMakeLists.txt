@@ -23,6 +23,7 @@ target_link_libraries(${TARGET} PRIVATE ${GLFW_LIBRARIES})
 target_link_libraries(${TARGET} PRIVATE ${FMT_LIBRARIES})
 target_link_libraries(${TARGET} PRIVATE ${OPENGL_LIBRARIES})
 target_link_libraries(${TARGET} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${TARGET} PRIVATE ${CMAKE_DL_LIBS})
 
 if(UNIX AND NOT APPLE)
     install(TARGETS ${TARGET} DESTINATION bin)
