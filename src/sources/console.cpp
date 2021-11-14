@@ -271,11 +271,11 @@ void ImStudio::Console::ExecCommand(const char *command_line)
     }
     else if (Stricmp(command_line, "WINDOW") == 0)
     {
-        gui_->bw.state = not gui_->bw.state;
+        gui_->bw.state = ! gui_->bw.state;
     }
     else if (Stricmp(command_line, "STATIC") == 0)
     {
-        gui_->bw.staticlayout = not gui_->bw.staticlayout;
+        gui_->bw.staticlayout = ! gui_->bw.staticlayout;
     }
     else if (Stricmp(command_line, "BUTTON") == 0)
     {
@@ -287,11 +287,11 @@ void ImStudio::Console::ExecCommand(const char *command_line)
     }
     else if (Stricmp(command_line, "DEMO") == 0)
     {
-        gui_->child_demo = not gui_->child_demo;
+        gui_->child_demo = ! gui_->child_demo;
     }
     else if (Stricmp(command_line, "STDOUT") == 0)
     {
-        StdoutMode = not StdoutMode;
+        StdoutMode = ! StdoutMode;
     }
     else if (Stricmp(command_line, "EXIT") == 0)
     {

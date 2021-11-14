@@ -14,6 +14,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install glfw
-      run: sudo apt-get install -y libglfw3 libglfw3-dev
+      run: sudo apt-get install -y libglfw3 libglfw3-dev build-essential git cmake
     - name: make
-      run: make
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make
+        make install
