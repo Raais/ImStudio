@@ -32,8 +32,9 @@ jobs:
       run: |
         md build
         cd build
-        cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_CONFIGURATION}} ..
-        cmake --build .
+        $env:CMAKE_BUILD_TYPE = ${{env.BUILD_CONFIGURATION}}
+        cmake ..
+        cmake --build . --config ${{env.BUILD_CONFIGURATION}}
         cpack --verbose
 
     - uses: actions/upload-artifact@v2
