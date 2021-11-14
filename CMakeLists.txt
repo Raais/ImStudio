@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.10)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
@@ -8,8 +8,15 @@ SET(PROJECT_VERSION_PATCH 0)
 
 project(ImStudio C CXX)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-include(glfw)
+if (WIN32 OR APPLE)
+    include(glfw)
+else()  # Linux
+    find_package(glfw3 REQUIRED)
+endif()
+
 find_package(OpenGL REQUIRED)
+find_package(Threads REQUIRED)
+
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
