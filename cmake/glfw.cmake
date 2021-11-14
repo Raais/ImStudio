@@ -18,6 +18,7 @@ else()
             "-DGLFW_BUILD_EXAMPLES=OFF"
             "-DGLFW_BUILD_TESTS=OFF"
             "-DGLFW_BUILD_DOCS=OFF"
+            "-DUSE_MSVC_RUNTIME_LIBRARY_DLL=OFF"
 
             CMAKE_CACHE_ARGS
             "-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}"

@@ -21,14 +21,23 @@ jobs:
 
     - name: Setup Environment
       run: |
+        curl -OLS https://github.com/wixtoolset/wix3/releases/download/wix3111rtm/wix311.exe
+        .\wix311.exe /install /quiet /norestart
+        $wixToolsetBinPath = ";C:\Program Files (x86)\WiX Toolset v3.11\bin;"
+        $env:PATH = $env:PATH + $wixToolsetBinPath
         "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat"
 
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: |
         md build
         cd build
         cmake -DCMAKE_BUILD_TYPE=${{env.BUILD_CONFIGURATION}} ..
-        cmake --build . 
+        cmake --build .
+        cpack --verbose
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Windows Installer
+        path: |
+          build/packages/*.*

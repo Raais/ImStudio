@@ -24,3 +24,4 @@ imgui.ini
 pu.sh
 ge.sh
 .vscode/
+cmake/wixpatch.xml
