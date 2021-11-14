@@ -34,7 +34,7 @@ jobs:
         cd build
         & "C:/Program Files/CMake/bin/cmake.exe" .. -DCMAKE_BUILD_TYPE=${{env.BUILD_CONFIGURATION}}
         & "C:/Program Files/CMake/bin/cmake.exe" --build . --config ${{env.BUILD_CONFIGURATION}}
-        & "C:/Program Files/CMake/bin/cpack.exe" --verbose --config ${{env.BUILD_CONFIGURATION}}
+        & "C:/Program Files/CMake/bin/cpack.exe" --verbose
 
     - uses: actions/upload-artifact@v2
       with:
