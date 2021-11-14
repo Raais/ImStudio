@@ -32,7 +32,7 @@ else()
             ${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
 
     if(APPLE)
-        list(APPEND GLFW_LIBRARIES -framework Cocoa -framework IOKit -framework CoreVideo)
+        list(APPEND GLFW_LIBRARIES "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
     endif()
 endif()
 
