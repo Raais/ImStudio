@@ -30,6 +30,10 @@ else()
     set(GLFW_INCLUDE_DIR ${INSTALL_DIR}/include)
     set(GLFW_LIBRARIES
             ${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+    if(APPLE)
+        list(APPEND GLFW_LIBRARIES -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo)
+    endif()
 endif()
 
 set(GLFW_INCLUDE_DIR ${GLFW_INCLUDE_DIR} CACHE STRING "")
