@@ -12,6 +12,7 @@ if (WIN32 OR APPLE)
     include(glfw)
 else()  # Linux
     find_package(glfw3 REQUIRED)
+    set(GLFW_LIBRARIES ${GLFW3_LIBRARY})
 endif()
 
 find_package(OpenGL REQUIRED)
