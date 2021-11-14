@@ -1,6 +1,10 @@
 name: Windows
 
-on: [push]
+on:
+  push:
+    branches: [ beta ]
+  pull_request:
+    branches: [ beta ]
 
 env:
   # Configuration type to build.
