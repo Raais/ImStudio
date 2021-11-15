@@ -29,23 +29,16 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
 
 ### Dependencies
 
- - [GLFW](https://www.glfw.org/download) \
- <sub><sup> **Ubuntu Linux:** sudo apt-get install libglfw3 libglfw3-dev </sub></sup>\
- <sub><sup> **Arch Linux:** sudo pacman -S glfw </sub></sup>\
- <sub><sup> **MacOS:** brew install glfw </sub></sup>
+ - [CMake](https://cmake.org/download) \
+ - [GLFW (Linux only)](https://www.glfw.org/download)
 
 ### Instructions
 ```bash
 git clone https://github.com/Raais/ImStudio
 cd ImStudio
-make
-./ImStudio
-```
----
-###### Ubuntu one-liner (not recommended)
-```bash
-#tested 20.04 | this is mainly for quickly testing on a VM
-sudo apt-get -y update && sudo apt-get -y install build-essential git libglfw3 libglfw3-dev && git clone https://github.com/Raais/ImStudio && cd ImStudio && make -j2 && ./ImStudio
+mkdir build
+cd build
+cmake ..
 ```
 
 ## Credits

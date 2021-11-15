@@ -424,8 +424,9 @@ void ImStudio::GUI::ShowProperties()
                         for (BaseObject &cw :
                              o.child.objects) // Fill both arrays with contents from child.objects [BaseObject]
                         {
-                            items[i] = cw.identifier.c_str();
-                            idarr[i] = cw.id;
+                            char* identifier = const_cast<char *>(cw.identifier.c_str());
+                            items.push_back(identifier);
+                            idarr.push_back(cw.id);
                             if (cw.id == selectid) // 1. if last select/drag in bw
                             {
                                 if (ImGui::IsMouseDown(0))
@@ -1201,7 +1202,9 @@ void ImStudio::GUI::ShowProperties()
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        bw.getobj(selectobj->id)->child.open = false;
+                        bw.current_child             = bw.getobj(selectobj->id);
+                        bw.current_child->child.open = false;
+                        bw.current_child = nullptr;
                         selectobj->del();
                         if (selectproparray != 0) selectproparray -= 1;
                     }
