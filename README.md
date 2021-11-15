@@ -41,6 +41,7 @@ cd ImStudio
 mkdir build
 cd build
 cmake ..
+cmake --build .
 ```
 
 ## Credits
