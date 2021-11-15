@@ -356,7 +356,7 @@ void ImStudio::GUI::ShowSidebar()
         }
         if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F9)))
         {
-            child_console = not child_console;
+            child_console = ! child_console;
         }
         
     }
@@ -392,13 +392,14 @@ void ImStudio::GUI::ShowProperties()
                     }
                 }
 
-                const char *items[allvecsize]; // contains identifiers ex: child1::button2
-                int         idarr[allvecsize]; // contains id associated with ^
+                std::vector<const char*> items; // contains identifiers ex: child1::button2
+                std::vector<int>         idarr; // contains id associated with ^
                 int         i = 0;
                 for (Object &o : bw.objects) // Fill both arrays with contents from bw.objects [Object]
                 {
-                    items[i] = o.identifier.c_str();
-                    idarr[i] = o.id;
+                    char* identifier = const_cast<char *>(o.identifier.c_str());
+                    items.push_back(identifier);
+                    idarr.push_back(o.id);
                     if (o.id == selectid) // 1. if last select/drag in bw
                     {
                         if (ImGui::IsMouseDown(0))
@@ -445,8 +446,7 @@ void ImStudio::GUI::ShowProperties()
                     }
                 }
                 //!SECTION CREATE PROPARRAY
-
-                ImGui::Combo("combo", &selectproparray, items, IM_ARRAYSIZE(items));
+                ImGui::Combo("combo", &selectproparray,  items.data(), items.size());
 
                 if (ImGui::IsMouseDown(0))
                 { // bw select

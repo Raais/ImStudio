@@ -2,7 +2,9 @@
 
 
 # ImStudio
-[![Build Status](https://github.com/Raais/ImStudio/actions/workflows/linux.yml/badge.svg)](https://github.com/Raais/ImStudio/actions?workflow=linux)
+[![Linux Build Status](https://github.com/Raais/ImStudio/actions/workflows/linux.yml/badge.svg)](https://github.com/Raais/ImStudio/actions?workflow=linux)
+[![Windows Build Status](https://github.com/Raais/ImStudio/actions/workflows/windows.yml/badge.svg)](https://github.com/Raais/ImStudio/actions?workflow=windows)
+[![macOS Build Status](https://github.com/Raais/ImStudio/actions/workflows/macos.yml/badge.svg)](https://github.com/Raais/ImStudio/actions?workflow=macOS)
 
 Real-time GUI layout creator/editor for [Dear ImGui](https://github.com/ocornut/imgui)
 
