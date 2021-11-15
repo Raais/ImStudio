@@ -29,8 +29,10 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
 
 ### Dependencies
 
- - [CMake](https://cmake.org/download) \
- - [GLFW (Linux only)](https://www.glfw.org/download)
+ - [CMake](https://cmake.org/download)
+ - [GLFW (Linux only)](https://www.glfw.org/download) \
+ <sub><sup> **Ubuntu Linux:** sudo apt-get install libglfw3 libglfw3-dev </sub></sup>\
+ <sub><sup> **Arch Linux:** sudo pacman -S glfw </sub></sup>
 
 ### Instructions
 ```bash
