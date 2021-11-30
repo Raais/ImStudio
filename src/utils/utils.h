@@ -5,7 +5,6 @@
 namespace utils
 {
 
-    void           glfwSetWindowCenter            (GLFWwindow *window);
     ImVec2         GetLocalCursor                 ();
     void           TextCentered                   (std::string text, int type);
     float          RandomFloat                    (float a, float b);

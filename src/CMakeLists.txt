@@ -3,7 +3,7 @@ set(TARGET ImStudio)
 include(third-party)
 
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cpp)
-file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/headers/*.h ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.h)
+file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.h ${CMAKE_CURRENT_SOURCE_DIR}/utils/*.h)
 
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE
     ${SOURCES}

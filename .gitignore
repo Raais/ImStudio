@@ -19,9 +19,8 @@
 *.app
 ImStudio
 out
-build
 imgui.ini
-pu.sh
-ge.sh
+build/
+web/
 .vscode/
 cmake/wixpatch.xml

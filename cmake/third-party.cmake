@@ -18,7 +18,8 @@ add_dependencies(imgui glfw)
 
 list(APPEND IMGUI_INCLUDE_DIRS
         ${CMAKE_SOURCE_DIR}/src/third-party/imgui
-        ${CMAKE_SOURCE_DIR}/src/third-party/imgui/backends)
+        ${CMAKE_SOURCE_DIR}/src/third-party/imgui/backends
+        ${CMAKE_SOURCE_DIR}/src/third-party/imgui/misc/cpp)
 list(APPEND IMGUI_LIBRARIES imgui)
 
 target_include_directories(imgui PRIVATE SYSTEM ${IMGUI_INCLUDE_DIRS})
