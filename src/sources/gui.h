@@ -3,7 +3,6 @@
 #include "../includes.h"
 #include "object.h"
 #include "buffer.h"
-#include "console.h"
 
 namespace ImStudio
 {
@@ -44,9 +43,6 @@ namespace ImStudio
         ImVec2                  ot_S                       = {};                   // Output Window Size
         std::string             output                     = {};
         void                    ShowOutputWorkspace();        
-
-        bool                    child_console              = false;                // Show Console
-        static void             ShowConsole                (bool* p_open, GUI* gui_);
 
         bool                    child_style                = false;                // Show Style Editor
         bool                    child_demo                 = false;                // Show Demo Window

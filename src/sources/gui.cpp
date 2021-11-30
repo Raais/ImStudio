@@ -1,7 +1,6 @@
 #include "../includes.h"
 #include "object.h"
 #include "buffer.h"
-#include "console.h"
 #include "generator.h"
 #include "gui.h"
 
@@ -61,7 +60,6 @@ void ImStudio::GUI::ShowMenubar()
         {
             ImGui::MenuItem("Style Editor", NULL, &child_style);
             ImGui::MenuItem("Demo Window", NULL, &child_demo);
-            ImGui::MenuItem("Console", NULL, &child_console);
             ImGui::MenuItem("Metrics", NULL, &child_metrics);
             ImGui::MenuItem("Stack Tool", NULL, &child_stack);
             ImGui::MenuItem("Color Export", NULL, &child_color);
@@ -353,10 +351,6 @@ void ImStudio::GUI::ShowSidebar()
         if ((ImGui::GetIO().KeyAlt) && (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
         {
             state = false;
-        }
-        if (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F9)))
-        {
-            child_console = ! child_console;
         }
         
     }
@@ -1314,10 +1308,4 @@ void ImStudio::GUI::ShowOutputWorkspace()
         ImStudio::GenerateCode(&output, &bw);
     }
     ImGui::End();
-}
-
-void ImStudio::GUI::ShowConsole(bool *p_open, GUI *gui_)
-{
-    static Console console(gui_);
-    console.Draw("Console", p_open);
 }

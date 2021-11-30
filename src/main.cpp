@@ -1,7 +1,6 @@
 #include "includes.h"
 #include "sources/object.h"
 #include "sources/buffer.h"
-#include "sources/console.h"
 #include "sources/gui.h"
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
@@ -136,8 +135,6 @@ int main(int argc, char *argv[])
                 if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
 
                 if (gui.child_color) utils::ShowColorExportWindow(&gui.child_color);
-
-                if (gui.child_console) gui.ShowConsole(&gui.child_console,&gui);
 
                 if (gui.child_resources) utils::ShowResourcesWindow(&gui.child_resources);
 

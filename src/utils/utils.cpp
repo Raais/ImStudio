@@ -148,7 +148,7 @@ void utils::DrawGrid()
 void utils::ShowStyleEditorWindow(bool *child_sty)
 {
     ImGui::SetNextWindowSize(ImVec2(500,700), ImGuiCond_Once);
-    if (ImGui::Begin("Style Editor", child_sty))
+    if (ImGui::Begin("Style Editor", child_sty, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::ShowStyleEditor();
         ImGui::End();
@@ -158,7 +158,7 @@ void utils::ShowStyleEditorWindow(bool *child_sty)
 
 void utils::ShowColorExportWindow(bool *child_colexp)
 {
-    if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
         static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
 
@@ -272,7 +272,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.00f, 2.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5.00f, 3.00f));
     ImGui::SetNextWindowSize(ImVec2(500,600), ImGuiCond_Once);
-    if (ImGui::Begin("Resources", child_resources))
+    if (ImGui::Begin("Resources", child_resources, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::TextWrapped("Some useful resources for developers using Dear ImGui.");
         ImGui::TextWrapped("Keep in mind that the most helpful resource will always be the Dear ImGui Demo (Tools > Demo Window) and imgui/imgui_demo.cpp.");
@@ -330,7 +330,7 @@ void utils::ShowAboutWindow(bool *child_about)
         {
             TextCentered("ImStudio");
             ImGui::Separator();
-            ImGui::Text("Version: 0.1");
+            ImGui::Text("Version: 1.1.1");
             ImGui::Text("Source: Raais/ImStudio");
             ImGui::Text("STD: c++11");
             ImGui::Text("ImGui: 18500 (55d35d8)");
