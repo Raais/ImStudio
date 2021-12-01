@@ -1,0 +1,35 @@
+name: Emscripten
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        wget -q https://github.com/emscripten-core/emsdk/archive/master.tar.gz
+        tar -xvf master.tar.gz
+        emsdk-master/emsdk update
+        emsdk-master/emsdk install latest
+        emsdk-master/emsdk activate latest
+    - name: Build example_emscripten_opengl3
+      run: |
+        pushd emsdk-master
+        source ./emsdk_env.sh
+        popd
+        mv Makefile.emscripten Makefile
+        make
+        sudo tar -cvjSf web.tar.bz2 web
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Wasm
+        path: |
+          web.tar.bz2
