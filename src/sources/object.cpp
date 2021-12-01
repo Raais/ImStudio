@@ -51,6 +51,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -71,6 +72,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -91,6 +93,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -121,6 +124,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -142,6 +146,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -166,6 +171,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -189,6 +195,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -212,6 +219,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -235,6 +243,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -258,6 +267,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -281,6 +291,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -304,6 +315,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -327,6 +339,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -350,6 +363,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -373,6 +387,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -396,6 +411,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -419,6 +435,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -442,6 +459,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -465,6 +483,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -488,6 +507,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -511,6 +531,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -534,6 +555,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -557,6 +579,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -580,6 +603,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (ImGui::IsItemActive()))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -604,6 +628,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopID();
             if ((!locked) && ((ImGui::IsItemActive()) && (ImGui::IsMouseDown(0))))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -652,6 +677,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PopItemWidth();
             if ((!locked) && (utils::IsItemActiveAlt(pos, id)))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
                 pos     = utils::GetLocalCursor();
                 *select = id;
             }
@@ -724,12 +750,14 @@ void ImStudio::ContainerChild::drawall(int *select, int gen_rand, bool staticlay
         if(!locked){
         if (utils::GrabButton(grab1, grab1_id))
         {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
             grab1   = utils::GetLocalCursor();
             *select = id;
         }
 
         if (utils::GrabButton(grab2, grab2_id))
         {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeAll);
             grab2   = utils::GetLocalCursor();
             *select = id;
         }}
