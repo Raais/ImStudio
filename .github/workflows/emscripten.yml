@@ -33,3 +33,11 @@ jobs:
         name: Wasm
         path: |
           web.tar.bz2
+
+    - name: Deploy
+      uses: s0/git-publish-subdir-action@develop
+      env:
+        REPO: self
+        BRANCH: gh-pages
+        FOLDER: web
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
