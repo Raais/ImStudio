@@ -36,7 +36,7 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
 
 ### Instructions
 ```bash
-git clone https://github.com/Raais/ImStudio
+git clone --depth 1 https://github.com/Raais/ImStudio
 cd ImStudio
 mkdir build
 cd build
