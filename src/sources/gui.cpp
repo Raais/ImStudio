@@ -441,7 +441,7 @@ void ImStudio::GUI::ShowProperties()
                     }
                 }
                 //!SECTION CREATE PROPARRAY
-                ImGui::Combo("combo", &selectproparray,  items.data(), items.size());
+                ImGui::Combo("Object", &selectproparray,  items.data(), items.size());
 
                 if (ImGui::IsMouseDown(0))
                 { // bw select
