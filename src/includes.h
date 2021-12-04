@@ -17,3 +17,6 @@
 #include "imgui_internal.h"
 #include "fmt/format.h"
 #include "utils/utils.h"
+#ifdef __EMSCRIPTEN__
+#include "utils/JsClipboardTricks.h"
+#endif

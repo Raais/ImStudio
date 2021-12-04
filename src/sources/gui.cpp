@@ -3,9 +3,6 @@
 #include "buffer.h"
 #include "generator.h"
 #include "gui.h"
-#ifdef __EMSCRIPTEN__
-#include "utils/JsClipboardTricks.h"
-#endif
 
 // ANCHOR MENUBAR.DEFINITION
 void ImStudio::GUI::ShowMenubar()
