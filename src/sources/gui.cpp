@@ -4,7 +4,7 @@
 #include "generator.h"
 #include "gui.h"
 #ifdef __EMSCRIPTEN__
-#include "JsClipboardTricks.h"
+#include "utils/JsClipboardTricks.h"
 #endif
 
 // ANCHOR MENUBAR.DEFINITION
