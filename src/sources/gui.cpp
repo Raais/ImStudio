@@ -3,6 +3,9 @@
 #include "buffer.h"
 #include "generator.h"
 #include "gui.h"
+#ifdef __EMSCRIPTEN__
+#include "JsClipboardTricks.h"
+#endif
 
 // ANCHOR MENUBAR.DEFINITION
 void ImStudio::GUI::ShowMenubar()
@@ -1305,6 +1308,14 @@ void ImStudio::GUI::ShowOutputWorkspace()
     ImGui::SetNextWindowSize(ot_S);
     ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
     {
+#ifdef __EMSCRIPTEN__
+        if(ImGui::Button("Copy")){
+            ImGui::LogToClipboard();
+            ImGui::LogText(output.c_str());
+            ImGui::LogFinish();
+        };
+        JsClipboard_SetClipboardText(ImGui::GetClipboardText());
+#endif
         ImStudio::GenerateCode(&output, &bw);
     }
     ImGui::End();
