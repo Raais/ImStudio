@@ -39,6 +39,11 @@ void ImStudio::GUI::ShowMenubar()
         /// menu-edit
         if (ImGui::BeginMenu("Edit"))
         {
+            if (ImGui::BeginMenu("Layout"))
+            {
+                ImGui::MenuItem("Compact", NULL, &compact);
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu("Behavior"))
             {
                 ImGui::MenuItem("Static Mode", NULL, &bw.staticlayout);

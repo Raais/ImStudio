@@ -110,6 +110,7 @@ int main(int argc, char *argv[])
         if (gui.menubar) gui.ShowMenubar();
 
         // workspace-create
+        if (!gui.compact){
         if (gui.wksp_create)
         {
             { // create-main
@@ -150,6 +151,33 @@ int main(int argc, char *argv[])
         gui.ot_P = ImVec2(0, gui.mb_S.y);
         gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
         if (gui.wksp_output) gui.ShowOutputWorkspace();
+        }
+        else
+        {
+                gui.wksp_output = true;
+                // create-sidebar
+                gui.sb_P = ImVec2(0, gui.mb_S.y);
+                gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
+                if (gui.sidebar) gui.ShowSidebar();
+
+                // workspace-output
+                gui.ot_P = ImVec2(w_w - 600, gui.mb_S.y);
+                gui.ot_S = ImVec2(600, w_h - gui.mb_S.y);
+                if (gui.wksp_output) gui.ShowOutputWorkspace();
+
+                // create-properties
+                gui.pt_P = ImVec2(gui.sb_S.x, w_h - 300);
+                gui.pt_S = ImVec2(gui.ot_P.x - gui.sb_S.x, w_h - 300);
+                if (gui.properties) gui.ShowProperties();
+
+                // create-viewport
+                gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
+                gui.vp_S = ImVec2(gui.ot_P.x - gui.sb_S.x, gui.pt_P.y - gui.mb_S.y);
+                if (gui.viewport) gui.ShowViewport(gen(rng));
+
+
+
+        }
 
 
         ImGui::Render();
