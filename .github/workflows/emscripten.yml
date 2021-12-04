@@ -2,7 +2,7 @@ name: Emscripten
 
 on:
   push:
-    branches: [ em-test ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
