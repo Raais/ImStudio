@@ -208,6 +208,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
             ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui Source: github.com/ocornut/imgui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui");}
             ImGui::Bullet(); if(ImGui::SmallButton("Issues")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues");}
             ImGui::Bullet(); if(ImGui::SmallButton("Wiki")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Manual")) {HyperlinkHelper::OpenUrl("https://pthom.github.io/imgui_manual_online");}
             ImGui::Bullet(); if(ImGui::SmallButton("discourse.dearimgui.org")) {HyperlinkHelper::OpenUrl("https://discourse.dearimgui.org");}
             ImGui::Bullet(); if(ImGui::SmallButton("Discussions")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/discussions");}
             ImGui::Bullet(); if(ImGui::SmallButton("How to open an Issue or Pull Request #2261")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/2261");}
@@ -220,7 +221,6 @@ void utils::ShowResourcesWindow(bool *child_resources)
         ImGui::CollapsingHeader("Cool Addons", ImGuiTreeNodeFlags_DefaultOpen);
         {
             ImGui::Bullet(); if(ImGui::SmallButton("HankiDesign/awesome-dear-imgui")) {HyperlinkHelper::OpenUrl("https://github.com/HankiDesign/awesome-dear-imgui");}
-            ImGui::Bullet(); if(ImGui::SmallButton("issues/useful widgets")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues?q=label%%3A\"useful+widgets\"");}
             ImGui::Bullet(); if(ImGui::SmallButton("epezent/implot")) {HyperlinkHelper::OpenUrl("https://github.com/epezent/implot");}
             ImGui::Bullet(); if(ImGui::SmallButton("soufianekhiat/DearWidgets")) {HyperlinkHelper::OpenUrl("https://github.com/soufianekhiat/DearWidgets");}
             ImGui::Bullet(); if(ImGui::SmallButton("dfranx/ImFileDialog")) {HyperlinkHelper::OpenUrl("https://github.com/dfranx/ImFileDialog");}
@@ -235,6 +235,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
         ImGui::Spacing();
         ImGui::CollapsingHeader("Frameworks", ImGuiTreeNodeFlags_DefaultOpen);
         {
+            ImGui::Bullet(); if(ImGui::SmallButton("pthom/hello_imgui")) {HyperlinkHelper::OpenUrl("https://github.com/pthom/hello_imgui");}
             ImGui::Bullet(); if(ImGui::SmallButton("JamesBoer/ImFrame")) {HyperlinkHelper::OpenUrl("https://github.com/JamesBoer/ImFrame");}
             ImGui::Bullet(); if(ImGui::SmallButton("pr0g/sdl-bgfx-imgui-starter")) {HyperlinkHelper::OpenUrl("https://github.com/pr0g/sdl-bgfx-imgui-starter");}
             ImGui::Bullet(); if(ImGui::SmallButton("mahilab/mahi-gui")) {HyperlinkHelper::OpenUrl("https://github.com/mahilab/mahi-gui");}
@@ -254,6 +255,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
             ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui Source: github.com/ocornut/imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Issues")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Wiki")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("Manual")) {ImGui::LogToClipboard(); ImGui::LogText("https://pthom.github.io/imgui_manual_online"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("discourse.dearimgui.org")) {ImGui::LogToClipboard(); ImGui::LogText("https://discourse.dearimgui.org/"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Discussions")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/discussions"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("How to open an Issue or Pull Request #2261")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/2261"); ImGui::LogFinish();}
@@ -281,6 +283,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
         ImGui::Spacing();
         ImGui::CollapsingHeader("Frameworks", ImGuiTreeNodeFlags_DefaultOpen);
         {
+            ImGui::Bullet(); if(ImGui::SmallButton("pthom/hello_imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/pthom/hello_imgui"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("JamesBoer/ImFrame")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/JamesBoer/ImFrame"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("pr0g/sdl-bgfx-imgui-starter")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/pr0g/sdl-bgfx-imgui-starter"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("mahilab/mahi-gui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/mahilab/mahi-gui"); ImGui::LogFinish();}
