@@ -346,7 +346,11 @@ void ImStudio::Recreate(BaseObject obj, std::string* output, bool staticlayout)
 
 void ImStudio::GenerateCode(std::string* output, BufferWindow* bw)
 {
+#ifdef __EMSCRIPTEN__
+    *output  = "/*\nGENERATED CODE | READ-ONLY\nCopy by clicking the above button\n*/\n\n";
+#else
     *output  = "/*\nGENERATED CODE | READ-ONLY\nYou can directly copy from here, or from File > Export to clipboard\n*/\n\n";
+#endif
     *output += "static bool window = true;\n";
     *output += fmt::format("ImGui::SetNextWindowSize(ImVec2({},{}));\n", bw->size.x, bw->size.y);
     *output += "//!! You might want to use these ^^ values in the OS window instead, and add the ImGuiWindowFlags_NoTitleBar flag in the ImGui window !!\n\n";
