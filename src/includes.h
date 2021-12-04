@@ -19,4 +19,5 @@
 #include "utils/utils.h"
 #ifdef __EMSCRIPTEN__
 #include "utils/JsClipboardTricks.h"
+#include "utils/HyperlinkHelper.h"
 #endif

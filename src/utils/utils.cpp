@@ -197,6 +197,51 @@ void utils::ShowResourcesWindow(bool *child_resources)
     ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(4.00f, 2.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5.00f, 3.00f));
     ImGui::SetNextWindowSize(ImVec2(500,600), ImGuiCond_Once);
+#ifdef __EMSCRIPTEN__
+    if (ImGui::Begin("Resources", child_resources, ImGuiWindowFlags_NoCollapse))
+    {
+        ImGui::TextWrapped("Some useful resources for developers using Dear ImGui.");
+        ImGui::TextWrapped("Keep in mind that the most helpful resource will always be the Dear ImGui Demo (Tools > Demo Window) and imgui/imgui_demo.cpp.");
+        ImGui::Spacing();
+        ImGui::CollapsingHeader("Dear ImGui", ImGuiTreeNodeFlags_DefaultOpen);
+        {
+            ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui Source: github.com/ocornut/imgui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Issues")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Wiki")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki");}
+            ImGui::Bullet(); if(ImGui::SmallButton("discourse.dearimgui.org")) {HyperlinkHelper::OpenUrl("https://discourse.dearimgui.org");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Discussions")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/discussions");}
+            ImGui::Bullet(); if(ImGui::SmallButton("How to open an Issue or Pull Request #2261")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/2261");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Docking")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Docking");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Gallery")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/4451");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Software using DearImGui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui");}
+        }
+        ImGui::Spacing();
+        ImGui::PushStyleColor(ImGuiCol_Header, RainbowCol());
+        ImGui::CollapsingHeader("Cool Addons", ImGuiTreeNodeFlags_DefaultOpen);
+        {
+            ImGui::Bullet(); if(ImGui::SmallButton("HankiDesign/awesome-dear-imgui")) {HyperlinkHelper::OpenUrl("https://github.com/HankiDesign/awesome-dear-imgui");}
+            ImGui::Bullet(); if(ImGui::SmallButton("issues/useful widgets")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues?q=label%%3A\"useful+widgets\"");}
+            ImGui::Bullet(); if(ImGui::SmallButton("epezent/implot")) {HyperlinkHelper::OpenUrl("https://github.com/epezent/implot");}
+            ImGui::Bullet(); if(ImGui::SmallButton("soufianekhiat/DearWidgets")) {HyperlinkHelper::OpenUrl("https://github.com/soufianekhiat/DearWidgets");}
+            ImGui::Bullet(); if(ImGui::SmallButton("dfranx/ImFileDialog")) {HyperlinkHelper::OpenUrl("https://github.com/dfranx/ImFileDialog");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Toggle Button")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/1537#issuecomment-355569554");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Knob")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/942#issuecomment-268369298");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Nelarius/imnodes")) {HyperlinkHelper::OpenUrl("https://github.com/Nelarius/imnodes");}
+            ImGui::Bullet(); if(ImGui::SmallButton("thedmd/imgui-node-editor")) {HyperlinkHelper::OpenUrl("https://github.com/thedmd/imgui-node-editor");}
+            ImGui::Bullet(); if(ImGui::SmallButton("aiekick/ImGuiFontStudio")) {HyperlinkHelper::OpenUrl("https://github.com/aiekick/ImGuiFontStudio");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Add extra keys #2625")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/pull/2625");}
+        }
+        ImGui::PopStyleColor(1);
+        ImGui::Spacing();
+        ImGui::CollapsingHeader("Frameworks", ImGuiTreeNodeFlags_DefaultOpen);
+        {
+            ImGui::Bullet(); if(ImGui::SmallButton("JamesBoer/ImFrame")) {HyperlinkHelper::OpenUrl("https://github.com/JamesBoer/ImFrame");}
+            ImGui::Bullet(); if(ImGui::SmallButton("pr0g/sdl-bgfx-imgui-starter")) {HyperlinkHelper::OpenUrl("https://github.com/pr0g/sdl-bgfx-imgui-starter");}
+            ImGui::Bullet(); if(ImGui::SmallButton("mahilab/mahi-gui")) {HyperlinkHelper::OpenUrl("https://github.com/mahilab/mahi-gui");}
+        }
+        ImGui::End();
+    }
+#else
     if (ImGui::Begin("Resources", child_resources, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::TextWrapped("Some useful resources for developers using Dear ImGui.");
@@ -242,6 +287,7 @@ void utils::ShowResourcesWindow(bool *child_resources)
         }
         ImGui::End();
     }
+#endif
     ImGui::PopStyleVar(2);
     ImGui::PopStyleColor(10);
 }
