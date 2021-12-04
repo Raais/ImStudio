@@ -39,6 +39,11 @@ void ImStudio::GUI::ShowMenubar()
         /// menu-edit
         if (ImGui::BeginMenu("Edit"))
         {
+            if (ImGui::BeginMenu("Layout"))
+            {
+                ImGui::MenuItem("Compact", NULL, &compact);
+                ImGui::EndMenu();
+            }
             if (ImGui::BeginMenu("Behavior"))
             {
                 ImGui::MenuItem("Static Mode", NULL, &bw.staticlayout);
@@ -79,26 +84,30 @@ void ImStudio::GUI::ShowMenubar()
     }
 
     // TAB
-    if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
+    if (!compact)
     {
-        // tab-create
-        if (ImGui::BeginTabItem("Create"))
+        if (ImGui::BeginTabBar("##Tabs", ImGuiTabBarFlags_None))
         {
-            wksp_output = false;
-            wksp_create = true;
-            ImGui::EndTabItem();
-        }
+            // tab-create
+            if (ImGui::BeginTabItem("Create"))
+            {
+                wksp_output = false;
+                wksp_create = true;
+                ImGui::EndTabItem();
+            }
 
-        // tab-output
-        if (ImGui::BeginTabItem("Output"))
-        {
-            wksp_create = false;
-            wksp_output = true;
-            ImGui::EndTabItem();
-        }
+            // tab-output
+            if (ImGui::BeginTabItem("Output"))
+            {
+                wksp_create = false;
+                wksp_output = true;
+                ImGui::EndTabItem();
+            }
 
-        ImGui::EndTabBar();
+            ImGui::EndTabBar();
+        }
     }
+    
 
     ImGui::End();
     ImGui::PopStyleColor(1);
@@ -1305,7 +1314,7 @@ void ImStudio::GUI::ShowOutputWorkspace()
     ImGui::SetNextWindowPos(ot_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(ot_S);
-    ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar);
+    ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
     {
 #ifdef __EMSCRIPTEN__
         if(ImGui::Button("Copy")){

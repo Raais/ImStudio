@@ -10,6 +10,7 @@ namespace ImStudio
     struct GUI
     {
         bool                    state                      = true;                 // Alive
+        bool                    compact                    = false;                // Compact/Spacious Switch
         bool                    wksp_create                = true;                 // Workspace "Create"
 
         bool                    menubar                    = true;                 // Menubar State
