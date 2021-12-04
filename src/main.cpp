@@ -111,72 +111,69 @@ int main(int argc, char *argv[])
 
         // workspace-create
         if (!gui.compact){
-        if (gui.wksp_create)
-        {
-            { // create-main
-                // create-sidebar
-                gui.sb_P = ImVec2(0, gui.mb_S.y);
-                gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
-                if (gui.sidebar) gui.ShowSidebar();
+            if (gui.wksp_create)
+            {// create-main
+                {// create-sidebar
+                    gui.sb_P = ImVec2(0, gui.mb_S.y);
+                    gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
+                    if (gui.sidebar) gui.ShowSidebar();
 
-                // create-properties
-                gui.pt_P = ImVec2(w_w - 300, gui.mb_S.y);
-                gui.pt_S = ImVec2(300, w_h - gui.mb_S.y);
-                if (gui.properties) gui.ShowProperties();
+                    // create-properties
+                    gui.pt_P = ImVec2(w_w - 300, gui.mb_S.y);
+                    gui.pt_S = ImVec2(300, w_h - gui.mb_S.y);
+                    if (gui.properties) gui.ShowProperties();
 
-                // create-viewport
-                gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
-                gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
-                if (gui.viewport) gui.ShowViewport(gen(rng));
+                    // create-viewport
+                    gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
+                    gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
+                    if (gui.viewport) gui.ShowViewport(gen(rng));
 
+                }
             }
-            { // create-children
-                if (gui.child_style) utils::ShowStyleEditorWindow(&gui.child_style);
-
-                if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);
-
-                if (gui.child_metrics) ImGui::ShowMetricsWindow(&gui.child_metrics);
-
-                if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
-
-                if (gui.child_color) utils::ShowColorExportWindow(&gui.child_color);
-
-                if (gui.child_resources) utils::ShowResourcesWindow(&gui.child_resources);
-
-                if (gui.child_about) utils::ShowAboutWindow(&gui.child_about);
-            }
-        }
-
-        // workspace-output
-        gui.ot_P = ImVec2(0, gui.mb_S.y);
-        gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
-        if (gui.wksp_output) gui.ShowOutputWorkspace();
+            // workspace-output
+            gui.ot_P = ImVec2(0, gui.mb_S.y);
+            gui.ot_S = ImVec2(w_w, w_h - gui.mb_S.y);
+            if (gui.wksp_output) gui.ShowOutputWorkspace();
         }
         else
         {
-                gui.wksp_output = true;
-                // create-sidebar
-                gui.sb_P = ImVec2(0, gui.mb_S.y);
-                gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
-                if (gui.sidebar) gui.ShowSidebar();
+            gui.wksp_output = true;
+            
+            // create-sidebar
+            gui.sb_P = ImVec2(0, gui.mb_S.y);
+            gui.sb_S = ImVec2(170, w_h - gui.mb_S.y);
+            if (gui.sidebar) gui.ShowSidebar();
 
-                // workspace-output
-                gui.ot_P = ImVec2(w_w - 600, gui.mb_S.y);
-                gui.ot_S = ImVec2(600, w_h - gui.mb_S.y);
-                if (gui.wksp_output) gui.ShowOutputWorkspace();
+            // create-properties
+            gui.pt_P = ImVec2(w_w - 300, gui.mb_S.y);
+            gui.pt_S = ImVec2(300, w_h - gui.mb_S.y);
+            if (gui.properties) gui.ShowProperties();
 
-                // create-properties
-                gui.pt_P = ImVec2(gui.sb_S.x, w_h - 300);
-                gui.pt_S = ImVec2(gui.ot_P.x - gui.sb_S.x, w_h - 300);
-                if (gui.properties) gui.ShowProperties();
+            // workspace-output
+            gui.ot_P = ImVec2(gui.sb_S.x, w_h - 300);
+            gui.ot_S = ImVec2(gui.pt_P.x - gui.sb_S.x, 300);
+            if (gui.wksp_output) gui.ShowOutputWorkspace();
 
-                // create-viewport
-                gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
-                gui.vp_S = ImVec2(gui.ot_P.x - gui.sb_S.x, gui.pt_P.y - gui.mb_S.y);
-                if (gui.viewport) gui.ShowViewport(gen(rng));
+            // create-viewport
+            gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
+            gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
+            if (gui.viewport) gui.ShowViewport(gen(rng));
+        }
 
+        { // create-children
+            if (gui.child_style) utils::ShowStyleEditorWindow(&gui.child_style);
 
+            if (gui.child_demo) ImGui::ShowDemoWindow(&gui.child_demo);
 
+            if (gui.child_metrics) ImGui::ShowMetricsWindow(&gui.child_metrics);
+
+            if (gui.child_stack) ImGui::ShowStackToolWindow(&gui.child_stack);
+
+            if (gui.child_color) utils::ShowColorExportWindow(&gui.child_color);
+
+            if (gui.child_resources) utils::ShowResourcesWindow(&gui.child_resources);
+
+            if (gui.child_about) utils::ShowAboutWindow(&gui.child_about);
         }
 
 
