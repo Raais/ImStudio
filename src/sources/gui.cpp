@@ -20,12 +20,14 @@ void ImStudio::GUI::ShowMenubar()
         /// menu-file
         if (ImGui::BeginMenu("File"))
         {
+            #ifndef __EMSCRIPTEN__
             if (ImGui::MenuItem("Export to clipboard"))
             {
                 ImGui::LogToClipboard();
                 ImGui::LogText(output.c_str());
                 ImGui::LogFinish();
             };
+            #endif
 
             if (ImGui::MenuItem("Exit"))
             {
