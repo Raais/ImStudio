@@ -109,7 +109,7 @@ void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = f
             ImGui::PushID(id);
             if (!staticlayout)
                 ImGui::SetCursorPos(pos);
-            ImGui::Text(value_s.c_str());
+            ImGui::TextUnformatted(value_s.c_str());
             if (!staticlayout)
             {
                 ImVec2 textsize = ImGui::CalcTextSize(value_s.c_str());
