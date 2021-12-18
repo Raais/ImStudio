@@ -24,7 +24,7 @@ void ImStudio::GUI::ShowMenubar()
             if (ImGui::MenuItem("Export to clipboard"))
             {
                 ImGui::LogToClipboard();
-                ImGui::LogText(output.c_str());
+                ImGui::LogText("%s", output.c_str());
                 ImGui::LogFinish();
             };
             #endif

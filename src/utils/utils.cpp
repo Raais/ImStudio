@@ -24,11 +24,11 @@ void utils::TextCentered(std::string text, int type = 0)
     switch (type)
     {
     case 0:
-        ImGui::Text(text.c_str());
+        ImGui::TextUnformatted(text.c_str());
         break;
     
     case 1:
-        ImGui::TextDisabled(text.c_str());
+        ImGui::TextDisabled("%s", text.c_str());
         break;
     }
 }

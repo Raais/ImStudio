@@ -35,14 +35,26 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
  <sub><sup> **Arch Linux:** sudo pacman -S glfw </sub></sup>
 
 ### Instructions
+
+#### Linux
 ```bash
 git clone --depth 1 https://github.com/Raais/ImStudio.git
 cd ImStudio
-mkdir build
-cd build
-cmake ..
-cmake --build .
+````
+Have a look at create_build.sh file, and change what you want :
+
+- build directory is build (the name is harmless)
+- OPENGL_GL_PREFERENCE is defaulted to GLVND (recent distributions will work). If nothing work, try LEGACY.
+- if you have admin rights, and REALY WANT to install ImStudio : uncomment the lines starting with sudo in the script
+
+Then do :
+
+````
+chmod a+x create_build.sh
+./create_build.sh
+
 ```
+Eric Bachard  17 dec 2021
 
 ## Credits
 Thanks to [Omar](https://github.com/ocornut) for [Dear ImGui](https://github.com/ocornut/imgui).\
