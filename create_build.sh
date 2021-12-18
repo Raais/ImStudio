@@ -4,6 +4,8 @@
 # License MIT
 # Created : friday 17 déc. 2021 21:27:36 CET
 
+# Linux ONLY, but you can add your arch, improve, and so on
+
 BUILD_DIR=build
 
 # other case is LEGACY if nothing works for you
