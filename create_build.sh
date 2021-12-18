@@ -15,8 +15,6 @@ S_UNAME=`uname -s`
 
 if test X${S_UNAME} = "XLinux"
     then
-
-
         if ! test -d ${BUILD_DIR}
            then
                 mkdir ${BUILD_DIR}
