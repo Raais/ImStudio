@@ -22,10 +22,11 @@ if test X${S_UNAME} = "XLinux"
                 mkdir ${BUILD_DIR}
         fi
 
-        cd ${BUILD_DIR}
-
         # push the current build directory
         pushd .
+
+        cd ${BUILD_DIR}
+
         # build
         cmake -DOpenGL_GL_PREFERENCE=GLVND \
         ..
