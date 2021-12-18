@@ -40,8 +40,19 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
 ```bash
 git clone --depth 1 https://github.com/Raais/ImStudio.git
 cd ImStudio
-./create_build.sh
-````
+./build.sh
+```
+
+#### Windows
+Make sure cl.exe is in your enviroment (x64 Native Tools Command Prompt)
+```cmd
+"C:\Program Files\Git\bin\git.exe" clone --depth 1 https://github.com/Raais/ImStudio.git
+cd ImStudio
+md build
+cd build
+"C:\Program Files\CMake\bin\cmake.exe" .. -DCMAKE_BUILD_TYPE=Release
+"C:\Program Files\CMake\bin\cmake.exe" --build . --config Release
+```
 
 ## Credits
 Thanks to [Omar](https://github.com/ocornut) for [Dear ImGui](https://github.com/ocornut/imgui).\
