@@ -35,6 +35,8 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
  <sub><sup> **Arch Linux:** sudo pacman -S glfw </sub></sup>
 
 ### Instructions
+
+#### Linux
 ```bash
 git clone --depth 1 https://github.com/Raais/ImStudio.git
 cd ImStudio
@@ -52,6 +54,7 @@ chmod a+x create_build.sh
 ./create_build.sh
 
 ```
+Eric Bachard  17 dec 2021
 
 ## Credits
 Thanks to [Omar](https://github.com/ocornut) for [Dear ImGui](https://github.com/ocornut/imgui).\
