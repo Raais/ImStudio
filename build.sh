@@ -26,7 +26,7 @@ if test X${S_UNAME} = "XLinux"
         cd ${BUILD_DIR}
 
         # build
-        cmake -DOpenGL_GL_PREFERENCE=GLVND \
+        cmake -DOpenGL_GL_PREFERENCE=${OPENGL_GL_PREFERENCE} \
         ..
         make -j4
 

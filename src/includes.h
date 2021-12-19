@@ -21,3 +21,9 @@
 #include "utils/JsClipboardTricks.h"
 #include "utils/HyperlinkHelper.h"
 #endif
+#ifndef PROJECT_VERSION_STRING
+#define PROJECT_VERSION_STRING "0.0.0"
+#endif
+#ifndef GIT_SHA1
+#define GIT_SHA1 "0000000"
+#endif

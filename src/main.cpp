@@ -18,6 +18,19 @@ static void glfw_error_callback(int error, const char *description)
 
 int main(int argc, char *argv[])
 {
+    if (argc > 1)
+    {
+        if (strcmp(argv[1], "-v") == 0 || strcmp(argv[1], "--version") == 0)
+        {
+            printf("%s\n", PROJECT_VERSION_STRING);
+            return 0;
+        }
+        if (strcmp(argv[1], "--hash") == 0)
+        {
+            printf("%s\n", GIT_SHA1);
+            return 0;
+        }
+    }
     int  w_w      = 900;
     int  w_h      = 600;
     glfwSetErrorCallback(glfw_error_callback);
