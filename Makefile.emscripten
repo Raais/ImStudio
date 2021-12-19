@@ -22,9 +22,11 @@ SOURCES += $(IMGUI_DIR)/misc/cpp/imgui_stdlib.cpp
 
 SOURCES += $(FMT_DIR)/src/format.cc
 
-SOURCES += $(SRC_DIR)/em.cpp
 SOURCES += $(wildcard $(SRC_DIR)/utils/*.cpp)
 SOURCES += $(wildcard $(SRC_DIR)/sources/*.cpp)
+
+SOURCES += $(SRC_DIR)/backend_sdl_emscripten.cpp
+SOURCES += $(SRC_DIR)/main.cpp
 
 ##---------------------------------------------------------------------
 

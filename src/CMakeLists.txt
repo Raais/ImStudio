@@ -8,6 +8,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.h ${CMAKE_CURREN
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE
     ${SOURCES}
     ${HEADERS}
+    backend_glfw_opengl3.cpp
     main.cpp
 )
 
