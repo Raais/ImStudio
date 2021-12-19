@@ -13,6 +13,7 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
         ImGui::SetNextWindowSize(size);
         ImGui::SetNextWindowSize(init_size, ImGuiCond_Once);
         ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.08f, 0.09f, 0.09f, 1.00f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.08f, 0.09f, 0.09f, 1.00f));
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.26f, 0.59f, 0.98f, 0.40f));
         ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.86f, 0.86f, 0.86f, 0.50f));
         ImGui::Begin("buffer", &state);
@@ -48,7 +49,7 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
             }
         }
         ImGui::End();
-        ImGui::PopStyleColor(3);
+        ImGui::PopStyleColor(4);
     }
 }
 

@@ -9,7 +9,6 @@ void ImStudio::GUI::ShowMenubar()
 {
     ImGui::SetNextWindowPos(mb_P);
     ImGui::SetNextWindowSize(mb_S);
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Menubar", NULL,
                  ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
                      ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
@@ -110,7 +109,6 @@ void ImStudio::GUI::ShowMenubar()
     
 
     ImGui::End();
-    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR SIDEBAR.DEFINITION
@@ -119,8 +117,6 @@ void ImStudio::GUI::ShowSidebar()
     ImGui::SetNextWindowPos(sb_P);
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.10f, 0.10f, 0.10f, 1.00f));
-    ImGui::PushStyleColor(ImGuiCol_TextDisabled, ImVec4(0.67f, 0.67f, 0.67f, 1.00f));
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.00f, 5.00f));
     ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
@@ -368,7 +364,6 @@ void ImStudio::GUI::ShowSidebar()
 
     ImGui::End();
     ImGui::PopStyleVar(1);
-    ImGui::PopStyleColor(2);
 }
 
 // ANCHOR PROPERTIES.DEFINITION
@@ -376,7 +371,6 @@ void ImStudio::GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
-    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.859f, 0.859f, 0.859f, 1.000f));
     ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     {
         {
@@ -1278,7 +1272,6 @@ void ImStudio::GUI::ShowProperties()
     }
 
     ImGui::End();
-    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR VIEWPORT.DEFINITION
@@ -1286,7 +1279,6 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
-    ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0.224f, 0.224f, 0.224f, 1.000f));
     ImGui::Begin("Viewport", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoBringToFrontOnFocus);
 
     /// content-viewport
@@ -1305,7 +1297,6 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
     }
 
     ImGui::End();
-    ImGui::PopStyleColor(1);
 }
 
 // ANCHOR OUTPUTWKSP.DEFINITION
