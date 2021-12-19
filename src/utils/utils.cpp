@@ -309,8 +309,7 @@ void utils::ShowAboutWindow(bool *child_about)
         {
             TextCentered("ImStudio");
             ImGui::Separator();
-            ImGui::Text("Version: %s", ver.c_str());
-            ImGui::Text("Commit: %s", hash.c_str());
+            ImGui::Text("Version: %s (%s)", ver.c_str(), hash.c_str());
             ImGui::Text("Source: Raais/ImStudio");
             ImGui::Text("ImGui: 18500 (55d35d8)");
             ImGui::Text("Fmt: 8.0.1 (d141cdb)");
