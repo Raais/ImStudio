@@ -2,6 +2,7 @@
 # Emscripten environment should be loaded
 
 VERSION = $(shell cat VERSION | paste -sd "." -)
+HASH = $(shell git rev-parse HEAD)
 
 CC = emcc
 CXX = em++
@@ -52,6 +53,7 @@ CPPFLAGS += -DIMGUI_DISABLE_FILE_FUNCTIONS
 ##---------------------------------------------------------------------
 
 CPPFLAGS += -DPROJECT_VERSION_STRING="\"$(VERSION)\""
+CPPFLAGS += -DGIT_SHA1="\"$(VERSION)\""
 CPPFLAGS += -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends -I$(IMGUI_DIR)/misc/cpp -I$(FMT_DIR)/include -I$(SRC_DIR)/sources
 CPPFLAGS += -Wall -Wformat -Os $(EMS)
 LDFLAGS += --shell-file shell.html $(EMS)
