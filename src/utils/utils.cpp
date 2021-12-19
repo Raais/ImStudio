@@ -297,6 +297,11 @@ void utils::ShowResourcesWindow(bool *child_resources)
 
 void utils::ShowAboutWindow(bool *child_about)
 {
+    std::string ver = PROJECT_VERSION_STRING;
+    std::string hash = GIT_SHA1;
+    if (hash.length() > 7)
+        hash = hash.substr(0, 7);
+
     ImGui::OpenPopup("About");
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
@@ -304,7 +309,8 @@ void utils::ShowAboutWindow(bool *child_about)
         {
             TextCentered("ImStudio");
             ImGui::Separator();
-            TextCentered(PROJECT_VERSION_STRING);
+            ImGui::Text("Version: %s", ver.c_str());
+            ImGui::Text("Commit: %s", hash.c_str());
             ImGui::Text("Source: Raais/ImStudio");
             ImGui::Text("ImGui: 18500 (55d35d8)");
             ImGui::Text("Fmt: 8.0.1 (d141cdb)");
