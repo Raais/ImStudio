@@ -12,9 +12,13 @@ add_compile_definitions(PROJECT_VERSION_STRING="${PROJECT_VERSION_STRING}")
 project(ImStudio C CXX)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-include(GetGitRevisionDescription)
-get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-add_compile_definitions(GIT_SHA1="${GIT_SHA1}")
+
+find_package(Git)
+if(Git_FOUND)
+    include(GetGitRevisionDescription)
+    get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+    add_compile_definitions(GIT_SHA1="${GIT_SHA1}")
+endif()
 
 if (WIN32 OR APPLE)
     include(glfw)
