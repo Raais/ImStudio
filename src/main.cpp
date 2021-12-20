@@ -60,16 +60,17 @@ void MainWindowStyle()
 void MainWindowGUI(State & state)
 {
 
+    //////////////////////////////////
     ImStudio::GUI &gui = state.gui;
     std::mt19937 &rng = state.rng;
     ImGuiIO &io = ImGui::GetIO();
 
-    int &w_w = state.w_w;
-    int &w_h = state.w_h;
-    w_w = io.DisplaySize.x;
-    w_h = io.DisplaySize.y;
+    static int w_w = io.DisplaySize.x;
+    static int w_h = io.DisplaySize.y;
 
-    std::uniform_int_distribution<int> gen(999, 9999);
+    std::uniform_int_distribution<int>
+        gen(999, 9999);
+    //////////////////////////////////
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize);
