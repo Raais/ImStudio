@@ -31,7 +31,7 @@ var moduleOverrides = objAssign({}, Module);
 
 var arguments_ = [];
 var thisProgram = './this.program';
-var quit_ = function(status, toThrow) {
+var quit_ = (status, toThrow) => {
   throw toThrow;
 };
 
@@ -74,7 +74,7 @@ var read_,
 // this may no longer be needed under node.
 function logExceptionOnExit(e) {
   if (e instanceof ExitStatus) return;
-  var toLog = e;
+  let toLog = e;
   if (e && typeof e === 'object' && e.stack) {
     toLog = [e, e.stack];
   }
@@ -97,9 +97,10 @@ if (ENVIRONMENT_IS_NODE) {
 
 
 requireNodeFS = function() {
-  // We always initialize both of these together, so we can use
-  // either one as the indicator for them not being initialized.
-  if (!fs) {
+  // Use nodePath as the indicator for these not being initialized,
+  // since in some environments a global fs may have already been
+  // created.
+  if (!nodePath) {
     fs = require('fs');
     nodePath = require('path');
   }
@@ -154,7 +155,7 @@ readAsync = function readAsync(filename, onload, onerror) {
   // See https://nodejs.org/api/cli.html#cli_unhandled_rejections_mode
   process['on']('unhandledRejection', function(reason) { throw reason; });
 
-  quit_ = function(status, toThrow) {
+  quit_ = (status, toThrow) => {
     if (keepRuntimeAlive()) {
       process['exitCode'] = status;
       throw toThrow;
@@ -177,7 +178,7 @@ if (ENVIRONMENT_IS_SHELL) {
   }
 
   readBinary = function readBinary(f) {
-    var data;
+    let data;
     if (typeof readbuffer === 'function') {
       return new Uint8Array(readbuffer(f));
     }
@@ -187,7 +188,7 @@ if (ENVIRONMENT_IS_SHELL) {
   };
 
   readAsync = function readAsync(f, onload, onerror) {
-    setTimeout(function() { onload(readBinary(f)); }, 0);
+    setTimeout(() => onload(readBinary(f)), 0);
   };
 
   if (typeof scriptArgs != 'undefined') {
@@ -197,7 +198,7 @@ if (ENVIRONMENT_IS_SHELL) {
   }
 
   if (typeof quit === 'function') {
-    quit_ = function(status, toThrow) {
+    quit_ = (status, toThrow) => {
       logExceptionOnExit(toThrow);
       quit(status);
     };
@@ -277,7 +278,7 @@ if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
 // end include: web_or_worker_shell_read.js
   }
 
-  setWindowTitle = function(title) { document.title = title };
+  setWindowTitle = (title) => document.title = title;
 } else
 {
   throw new Error('environment detection error');
@@ -2038,11 +2039,11 @@ function sapp_js_write_clipboard(c_str){ var str = UTF8ToString(c_str); var ta =
     }
 
   var _emscripten_get_now;if (ENVIRONMENT_IS_NODE) {
-    _emscripten_get_now = function() {
+    _emscripten_get_now = () => {
       var t = process['hrtime']();
       return t[0] * 1e3 + t[1] / 1e6;
     };
-  } else _emscripten_get_now = function() { return performance.now(); }
+  } else _emscripten_get_now = () => performance.now();
   ;
   
   var _emscripten_get_now_is_monotonic = true;;
@@ -2354,7 +2355,7 @@ function sapp_js_write_clipboard(c_str){ var str = UTF8ToString(c_str); var ta =
           var url = Browser.URLObject.createObjectURL(b);
           assert(typeof url == 'string', 'createObjectURL must return a url as a string');
           var img = new Image();
-          img.onload = function img_onload() {
+          img.onload = () => {
             assert(img.complete, 'Image ' + name + ' could not be decoded');
             var canvas = document.createElement('canvas');
             canvas.width = img.width;
@@ -2365,7 +2366,7 @@ function sapp_js_write_clipboard(c_str){ var str = UTF8ToString(c_str); var ta =
             Browser.URLObject.revokeObjectURL(url);
             if (onload) onload(byteArray);
           };
-          img.onerror = function img_onerror(event) {
+          img.onerror = (event) => {
             out('Image ' + url + ' could not be decoded');
             if (onerror) onerror();
           };
