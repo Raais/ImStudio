@@ -31,20 +31,29 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
 
  - [CMake](https://cmake.org/download)
  - [GLFW (Linux only)](https://www.glfw.org/download) \
- <sub><sup> **Ubuntu Linux:** sudo apt-get install libglfw3 libglfw3-dev </sub></sup>\
- <sub><sup> **Arch Linux:** sudo pacman -S glfw </sub></sup>
+ <sub> **Debian:** sudo apt-get install libglfw3 libglfw3-dev </sub>\
+ <sub> **Arch:** sudo pacman -S glfw </sub>\
+ <sub> **Fedora:** sudo dnf install glfw glfw-devel </sub>
 
 ### Instructions
 
-#### Linux
+### Linux
+
+#### Build
 ```bash
 git clone --depth 1 https://github.com/Raais/ImStudio.git
 cd ImStudio
 ./build.sh
 ```
 
-#### Windows
-Make sure cl.exe is in your enviroment (x64 Native Tools Command Prompt)
+### Windows
+
+#### Pre-Built
+
+[Installer x64](https://github.com/Raais/ImStudio/releases)
+
+#### Build
+Make sure MSVC is in your environment (eg. x64 Native Tools Command Prompt)
 ```cmd
 "C:\Program Files\Git\bin\git.exe" clone --depth 1 https://github.com/Raais/ImStudio.git
 cd ImStudio
