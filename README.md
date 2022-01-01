@@ -27,10 +27,11 @@ Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiB
  
 ## Installation
 
-### Dependencies
+### Build Dependencies
 
  - [CMake](https://cmake.org/download)
- - [GLFW (Linux only)](https://www.glfw.org/download) \
+ - [GLFW](https://www.glfw.org/download) \
+ <sup><sub> \*Downloaded during build on Windows and MacOS </sub></sup>\
  <sub> **Debian:** sudo apt-get install libglfw3 libglfw3-dev </sub>\
  <sub> **Arch:** sudo pacman -S glfw </sub>\
  <sub> **Fedora:** sudo dnf install glfw glfw-devel </sub>
