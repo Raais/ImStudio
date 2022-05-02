@@ -10,9 +10,7 @@ Real-time GUI layout creator/editor for [Dear ImGui](https://github.com/ocornut/
 
 ### [Try Online](https://raais.github.io/ImStudio)
 
-![Screenshot with all windows](https://user-images.githubusercontent.com/64605172/140092885-4e1970d6-2518-4c42-a9a0-c14725931aea.png)
-
-![Making a simple layout](https://user-images.githubusercontent.com/64605172/140092697-c7760d6e-6f5a-4dd0-b208-919e9647c117.gif)
+![Screenshot](https://user-images.githubusercontent.com/64605172/166240831-a6bfd5e6-f72c-4834-96d3-fac9683adff3.png)
 
 Inspired by [Code-Building/ImGuiBuilder](https://github.com/Code-Building/ImGuiBuilder)
 
