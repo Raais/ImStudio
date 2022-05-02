@@ -1,7 +1,13 @@
-//TODO: NEEDS REWORK; DESIGN CHANGE;
 #pragma once
 
-#include "../includes.h"
+#include <string>
+#include <vector>
+
+#include "imgui.h"
+#include "imgui_stdlib.h"
+#include "imgui_internal.h"
+
+#include "ims_utils.h"
 
 namespace ImStudio
 {
@@ -40,7 +46,7 @@ namespace ImStudio
   
       int                     item_current            = 0;                    //
   
-      void draw               (int *select,           int gen_rand,           bool staticlayout);
+      void draw               (int *select,           bool staticlayout);
       void del                ();
   
       BaseObject              ()                      = default;
@@ -69,7 +75,7 @@ namespace ImStudio
       bool                    grabinit                = false;                //--
       
       std::vector<BaseObject> objects                 = {};
-      void drawall            (int *select,           int gen_rand,           bool staticlayout);  
+      void drawall            (int *select,           bool staticlayout);  
   };
   
   //Object can now store either a single BaseObject or a vector of BaseObjects

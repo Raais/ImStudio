@@ -8,13 +8,15 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/sources/*.h ${CMAKE_CURREN
 add_executable(${TARGET} WIN32 MACOSX_BUNDLE
     ${SOURCES}
     ${HEADERS}
-    backend_glfw_opengl3.cpp
-    main.cpp
+    main_glfw_opengl3.cpp
+    main_window.cpp
 )
 
 message(STATUS "IMGUI_INCLUDE_DIRS: ${IMGUI_INCLUDE_DIRS}")
 message(STATUS "FMT_INCLUDE_DIRS: ${FMT_INCLUDE_DIRS}")
 
+target_include_directories(${TARGET} PRIVATE SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/sources)
+target_include_directories(${TARGET} PRIVATE SYSTEM ${CMAKE_CURRENT_SOURCE_DIR}/utils)
 target_include_directories(${TARGET} PRIVATE SYSTEM ${IMGUI_INCLUDE_DIRS})
 target_include_directories(${TARGET} PRIVATE SYSTEM ${FMT_INCLUDE_DIRS})
 target_include_directories(${TARGET} PRIVATE SYSTEM ${GLFW_INCLUDE_DIR})

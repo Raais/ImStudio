@@ -1,5 +1,11 @@
-#include "../includes.h"
-#include "utils.h"
+#include "ims_utils.h"
+
+#ifndef PROJECT_VERSION_STRING
+#define PROJECT_VERSION_STRING "0.0.0"
+#endif
+#ifndef GIT_SHA1
+#define GIT_SHA1 "0000000"
+#endif
 
 ImVec2 utils::GetLocalCursor()
 {
@@ -311,7 +317,7 @@ void utils::ShowAboutWindow(bool *child_about)
             ImGui::Separator();
             ImGui::Text("Version: %s (%s)", ver.c_str(), hash.c_str());
             ImGui::Text("Source: Raais/ImStudio");
-            ImGui::Text("ImGui: 18500 (55d35d8)");
+            ImGui::Text("ImGui: 18700 (c71a50d)");
             ImGui::Text("Fmt: 8.0.1 (d141cdb)");
             ImGui::Separator();
 

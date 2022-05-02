@@ -1,7 +1,4 @@
-#include "../includes.h"
-#include "object.h"
-#include "buffer.h"
-#include "generator.h"
+#include "ims_generator.h"
 
 void ImStudio::Recreate(BaseObject obj, std::string* output, bool staticlayout)
 {

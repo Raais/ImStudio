@@ -1,5 +1,4 @@
-#include "../includes.h"
-#include "object.h"
+#include "ims_object.h"
 
 ImStudio::BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
 {
@@ -25,7 +24,7 @@ ImStudio::Object::Object(int idvar_, std::string type_) : BaseObject()
     parent     = this;
 }
 
-void ImStudio::BaseObject::draw(int *select, int gen_rand, bool staticlayout = false)
+void ImStudio::BaseObject::draw(int *select, bool staticlayout = false)
 {
     if (state)
     {
@@ -708,14 +707,15 @@ void ImStudio::BaseObject::highlight(int *select)
     }
 }
 
-void ImStudio::ContainerChild::drawall(int *select, int gen_rand, bool staticlayout)
+void ImStudio::ContainerChild::drawall(int *select, bool staticlayout)
 {
     static auto dl = ImGui::GetWindowDrawList();
 
     if (!grabinit)
     {
-        grab1_id = gen_rand;
-        grab2_id = gen_rand + 1;
+        srand(time(NULL));
+        grab1_id = rand() % 100;
+        grab2_id = grab1_id + 1;
     }
 
     freerect.Min.x = grab1.x;
@@ -737,7 +737,7 @@ void ImStudio::ContainerChild::drawall(int *select, int gen_rand, bool staticlay
         }
         else
         {
-            o.draw(select, gen_rand, staticlayout);
+            o.draw(select, staticlayout);
         }
     }
     ImGui::EndChild();

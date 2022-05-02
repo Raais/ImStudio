@@ -1,7 +1,11 @@
 #pragma once
 
-#include "../includes.h"
-#include "object.h"
+#include <string>
+#include <vector>
+
+#include "imgui.h"
+
+#include "ims_object.h"
 
 namespace ImStudio
 {
@@ -19,7 +23,7 @@ namespace ImStudio
     
       std::vector<Object>     objects                 = {};                   //
   
-      void                    drawall                 (int *select, int gen_rand);
+      void                    drawall                 (int *select);
       Object *                getobj                  (int id);
       BaseObject *            getbaseobj              (int id);
       void                    create                  (std::string type_);

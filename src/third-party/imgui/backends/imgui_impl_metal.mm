@@ -12,6 +12,8 @@
 
 // CHANGELOG
 // (minor and older changes stripped away, please see git history for details)
+//  2022-01-03: Metal: Ignore ImDrawCmd where ElemCount == 0 (very rare but can technically be manufactured by user code).
+//  2021-12-30: Metal: Added Metal C++ support. Enable with '#define IMGUI_IMPL_METAL_CPP' in your imconfig.h file.
 //  2021-08-24: Metal: Fixed a crash when clipping rect larger than framebuffer is submitted. (#4464)
 //  2021-05-19: Metal: Replaced direct access to ImDrawCmd::TextureId with a call to ImDrawCmd::GetTexID(). (will become a requirement)
 //  2021-02-18: Metal: Change blending equation to preserve alpha in output buffer.
@@ -77,7 +79,43 @@
 
 static MetalContext *g_sharedMetalContext = nil;
 
-#pragma mark - ImGui API implementation
+#ifdef IMGUI_IMPL_METAL_CPP
+
+#pragma mark - Dear ImGui Metal C++ Backend API
+
+bool ImGui_ImplMetal_Init(MTL::Device* device)
+{
+    return ImGui_ImplMetal_Init((id<MTLDevice>)(device));
+}
+
+void ImGui_ImplMetal_NewFrame(MTL::RenderPassDescriptor* renderPassDescriptor)
+{
+    ImGui_ImplMetal_NewFrame((MTLRenderPassDescriptor*)(renderPassDescriptor));
+}
+
+void ImGui_ImplMetal_RenderDrawData(ImDrawData* draw_data,
+                                    MTL::CommandBuffer* commandBuffer,
+                                    MTL::RenderCommandEncoder* commandEncoder)
+{
+    ImGui_ImplMetal_RenderDrawData(draw_data,
+                                   (id<MTLCommandBuffer>)(commandBuffer),
+                                   (id<MTLRenderCommandEncoder>)(commandEncoder));
+
+}
+
+bool ImGui_ImplMetal_CreateFontsTexture(MTL::Device* device)
+{
+    return ImGui_ImplMetal_CreateFontsTexture((id<MTLDevice>)(device));
+}
+
+bool ImGui_ImplMetal_CreateDeviceObjects(MTL::Device* device)
+{
+    return ImGui_ImplMetal_CreateDeviceObjects((id<MTLDevice>)(device));
+}
+
+#endif // #ifdef IMGUI_IMPL_METAL_CPP
+
+#pragma mark - Dear ImGui Metal Backend API
 
 bool ImGui_ImplMetal_Init(id<MTLDevice> device)
 {
@@ -513,7 +551,9 @@ void ImGui_ImplMetal_DestroyDeviceObjects()
                 if (clip_min.y < 0.0f) { clip_min.y = 0.0f; }
                 if (clip_max.x > fb_width) { clip_max.x = (float)fb_width; }
                 if (clip_max.y > fb_height) { clip_max.y = (float)fb_height; }
-                if (clip_max.x < clip_min.x || clip_max.y < clip_min.y)
+                if (clip_max.x <= clip_min.x || clip_max.y <= clip_min.y)
+                    continue;
+                if (pcmd->ElemCount == 0) // drawIndexedPrimitives() validation doesn't accept this
                     continue;
 
                 // Apply scissor/clipping rectangle

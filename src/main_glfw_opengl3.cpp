@@ -1,9 +1,16 @@
+#include <GLFW/glfw3.h>
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "includes.h"
-#include "main.h"
+#include "main_window.h"
+
+#ifndef PROJECT_VERSION_STRING
+#define PROJECT_VERSION_STRING "0.0.0"
+#endif
+#ifndef GIT_SHA1
+#define GIT_SHA1 "0000000"
+#endif
 
 #if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
 #pragma comment(lib, "legacy_stdio_definitions")
@@ -30,9 +37,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    State state;
-    state.gui.bw.objects.reserve(2048);
-    state.rng.seed(time(NULL));
+    ImStudio::GUI gui;
+    gui.bw.objects.reserve(2048);
 
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
@@ -75,14 +81,14 @@ int main(int argc, char *argv[])
     ImGui_ImplGlfw_InitForOpenGL(glwindow, true);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
-    while ((!glfwWindowShouldClose(glwindow)) && (state.gui.state))
+    while ((!glfwWindowShouldClose(glwindow)) && (gui.state))
     {
         glfwPollEvents();
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        MainWindowGUI(state);
+        MainWindowGUI(gui);
 
         ImGui::Render();
         int display_w, display_h;

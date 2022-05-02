@@ -1,8 +1,17 @@
 #pragma once
 
-#include "../includes.h"
-#include "object.h"
-#include "buffer.h"
+#include <string>
+
+#include "imgui.h"
+
+#include "ims_utils.h"
+#include "ims_object.h"
+#include "ims_buffer.h"
+#include "ims_generator.h"
+
+#ifdef __EMSCRIPTEN__
+#include "JsClipboardTricks.h"
+#endif
 
 namespace ImStudio
 {
@@ -37,7 +46,7 @@ namespace ImStudio
         ImVec2                  vp_P                       = {};                   // Viewport Pos
         ImVec2                  vp_S                       = {};                   // Viewport Size
         BufferWindow            bw;            
-        void                    ShowViewport               (int gen_rand);         
+        void                    ShowViewport               ();         
 
         bool                    wksp_output                = false;                // Workspace "Output"
         ImVec2                  ot_P                       = {};                   // Output Window Pos

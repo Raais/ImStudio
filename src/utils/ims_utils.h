@@ -1,6 +1,13 @@
 #pragma once
 
-#include "../includes.h"
+#include <string>
+
+#include "imgui.h"
+#include "imgui_internal.h"
+
+#ifdef __EMSCRIPTEN__
+#include "HyperlinkHelper.h"
+#endif
 
 namespace utils
 {

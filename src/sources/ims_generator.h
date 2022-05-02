@@ -1,8 +1,12 @@
 #pragma once
 
-#include "../includes.h"
-#include "object.h"
-#include "buffer.h"
+#include <string>
+
+#include "imgui.h"
+#include "fmt/format.h"
+
+#include "ims_object.h"
+#include "ims_buffer.h"
 
 namespace ImStudio
 {

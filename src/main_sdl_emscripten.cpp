@@ -6,8 +6,7 @@
 #include <SDL.h>
 #include <SDL_opengles2.h>
 
-#include "includes.h"
-#include "main.h"
+#include "main_window.h"
 
 SDL_Window *g_Window = NULL;
 SDL_GLContext g_GLContext = NULL;
@@ -16,9 +15,8 @@ static void main_loop(void *);
 
 int main(int, char **)
 {
-    State state;
-    state.gui.bw.objects.reserve(2048);
-    state.rng.seed(time(NULL));
+    ImStudio::GUI gui;
+    gui.bw.objects.reserve(2048);
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0)
     {
@@ -58,7 +56,7 @@ int main(int, char **)
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     /////////////////////////////////////////////////////////
-    emscripten_set_main_loop_arg(main_loop, &state, 0, true);
+    emscripten_set_main_loop_arg(main_loop, &gui, 0, true);
     /////////////////////////////////////////////////////////
 }
 
@@ -74,8 +72,8 @@ static void main_loop(void *arg)
     ImGui::NewFrame();
 
     ImGuiIO &io = ImGui::GetIO();
-    State &state = *(State *)arg;
-    MainWindowGUI(state);
+    ImStudio::GUI &gui = *(ImStudio::GUI *)arg;
+    MainWindowGUI(gui);
     
     ImGui::Render();
     SDL_GL_MakeCurrent(g_Window, g_GLContext);

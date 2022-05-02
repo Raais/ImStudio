@@ -1,8 +1,6 @@
-#include "../includes.h"
-#include "buffer.h"
-#include "object.h"
+#include "ims_buffer.h"
 
-void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
+void ImStudio::BufferWindow::drawall(int *select)
 {
     if (state)
     {
@@ -33,7 +31,7 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
                 {
                     if (o.type != "child")
                     {
-                        o.draw(select, gen_rand, staticlayout);
+                        o.draw(select, staticlayout);
                     }
                     else
                     {
@@ -43,7 +41,7 @@ void ImStudio::BufferWindow::drawall(int *select, int gen_rand)
                             o.child.init  = true;
                         }
 
-                        o.child.drawall(select, gen_rand, staticlayout);
+                        o.child.drawall(select, staticlayout);
                     }
                 }
             }

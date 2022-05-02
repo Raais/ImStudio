@@ -1,4 +1,4 @@
-#include "main.h"
+#include "main_window.h"
 
 void MainWindowStyle()
 {
@@ -57,19 +57,15 @@ void MainWindowStyle()
     
 }
 
-void MainWindowGUI(State & state)
+void MainWindowGUI(ImStudio::GUI & gui_r)
 {
 
     //////////////////////////////////
-    ImStudio::GUI &gui = state.gui;
-    std::mt19937 &rng = state.rng;
+    ImStudio::GUI &gui = gui_r;
     ImGuiIO &io = ImGui::GetIO();
 
     static int w_w = io.DisplaySize.x;
     static int w_h = io.DisplaySize.y;
-
-    std::uniform_int_distribution<int>
-        gen(999, 9999);
     //////////////////////////////////
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));
@@ -98,7 +94,7 @@ void MainWindowGUI(State & state)
                 // create-viewport
                 gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
                 gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
-                if (gui.viewport) gui.ShowViewport(gen(rng));
+                if (gui.viewport) gui.ShowViewport();
 
             }
         }
@@ -129,7 +125,7 @@ void MainWindowGUI(State & state)
         // create-viewport
         gui.vp_P = ImVec2(gui.sb_S.x, gui.mb_S.y);
         gui.vp_S = ImVec2(gui.pt_P.x - gui.sb_S.x, w_h - gui.mb_S.y);
-        if (gui.viewport) gui.ShowViewport(gen(rng));
+        if (gui.viewport) gui.ShowViewport();
     }
 
     { // create-children

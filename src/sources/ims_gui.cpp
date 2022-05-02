@@ -1,8 +1,4 @@
-#include "../includes.h"
-#include "object.h"
-#include "buffer.h"
-#include "generator.h"
-#include "gui.h"
+#include "ims_gui.h"
 
 // ANCHOR MENUBAR.DEFINITION
 void ImStudio::GUI::ShowMenubar()
@@ -1275,7 +1271,7 @@ void ImStudio::GUI::ShowProperties()
 }
 
 // ANCHOR VIEWPORT.DEFINITION
-void ImStudio::GUI::ShowViewport(int gen_rand)
+void ImStudio::GUI::ShowViewport()
 {
     ImGui::SetNextWindowPos(vp_P);
     ImGui::SetNextWindowSize(vp_S);
@@ -1293,7 +1289,7 @@ void ImStudio::GUI::ShowViewport(int gen_rand)
         if (!bw.objects.empty()) ImGui::Text("Selected: %s", selectobj->identifier.c_str());
         ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
         
-        bw.drawall(&selectid, gen_rand);
+        bw.drawall(&selectid);
     }
 
     ImGui::End();
