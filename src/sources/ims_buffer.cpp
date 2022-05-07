@@ -1,6 +1,6 @@
 #include "ims_buffer.h"
 
-void ImStudio::BufferWindow::drawall(int *select)
+void ImStudio::BufferWindow::drawall()
 {
     if (state)
     {
@@ -31,17 +31,11 @@ void ImStudio::BufferWindow::drawall(int *select)
                 {
                     if (o.type != "child")
                     {
-                        o.draw(select, staticlayout);
+                        o.draw(&selected_obj_id, staticlayout);
                     }
                     else
                     {
-                        if (!o.child.init)
-                        {
-                            current_child = &o;
-                            o.child.init  = true;
-                        }
-
-                        o.child.drawall(select, staticlayout);
+                        o.child.drawall(&selected_obj_id, staticlayout);
                     }
                 }
             }
@@ -87,24 +81,20 @@ ImStudio::BaseObject *ImStudio::BufferWindow::getbaseobj(int id)
 
 void ImStudio::BufferWindow::create(std::string type_)
 {
-    idvar++;
-    if (!current_child)
+    idgen++;
+    if (!((open_child) &&
+          (getbaseobj(open_child_id)) &&
+          (getobj(open_child_id)->child.open)))
     {
-        Object widget(idvar, type_);
+        // no child window open
+        Object widget(idgen, type_);
         objects.push_back(widget);
     }
     else
     {
-        if (!current_child->child.open)
-        {
-            Object widget(idvar, type_);
-            objects.push_back(widget);
-        }
-        else
-        {
-            BaseObject childwidget(idvar, type_, current_child->id);
-            childwidget.parent = current_child;
-            current_child->child.objects.push_back(childwidget);
-        }
+        // child window open
+        BaseObject childwidget(idgen, type_, open_child_id);
+        getobj(open_child_id)->child.objects.push_back(childwidget);
     }
+    selected_obj_id = idgen; // select the new object
 }

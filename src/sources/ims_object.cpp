@@ -1,27 +1,26 @@
 #include "ims_object.h"
 
-ImStudio::BaseObject::BaseObject(int idvar_, std::string type_, int parent_id_) // for child widgets
+ImStudio::BaseObject::BaseObject(int idgen_, std::string type_, int parent_id_) // for child widgets
 {
     ischildwidget = true;
-    id            = idvar_;
+    id            = idgen_;
     type          = type_;
-    identifier    = "child" + std::to_string(parent_id_) + "::" + type_ + std::to_string(idvar_);
-    value_s       = type_ + std::to_string(idvar_);
+    identifier    = "child" + std::to_string(parent_id_) + "::" + type_ + std::to_string(idgen_);
+    value_s       = type_ + std::to_string(idgen_);
 }
 
-ImStudio::Object::Object(int idvar_, std::string type_) : BaseObject()
+ImStudio::Object::Object(int idgen_, std::string type_) : BaseObject()
 {
     if (type_ == "child")
     {
         child.objects.reserve(250);
         child.open = true;
-        child.id   = idvar_;
+        child.id   = idgen_;
     }
-    id         = idvar_;
+    id         = idgen_;
     type       = type_;
-    identifier = type_ + std::to_string(idvar_);
-    value_s    = type_ + std::to_string(idvar_);
-    parent     = this;
+    identifier = type_ + std::to_string(idgen_);
+    value_s    = type_ + std::to_string(idgen_);
 }
 
 void ImStudio::BaseObject::draw(int *select, bool staticlayout = false)
@@ -611,10 +610,6 @@ void ImStudio::BaseObject::draw(int *select, bool staticlayout = false)
                 pos.x = utils::CenterHorizontal();
             }
             highlight(select);
-        }
-        if (type == "child")
-        {
-            // ischild = true;
         }
         if (type == "bullet")
         {

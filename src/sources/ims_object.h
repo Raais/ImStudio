@@ -30,7 +30,7 @@ namespace ImStudio
   
       bool                    init                    = false;                //--
       bool                    propinit                = false;                //  | Initialised
-      bool                    selectinit              = true;                 //--
+      bool                    initial_selection       = true;                 //--
   
       bool                    locked                  = false;                //--
       bool                    center_h                = false;                //  | Properties
@@ -41,9 +41,6 @@ namespace ImStudio
       std::string             value_s                 = {};                   //  | Widget values/contents
       bool                    value_b                 = false;                //--
   
-      Object*                 parent                  = nullptr;              //--
-      //int                     parentid                = 0;                  //  | For child objects and
-      bool                    ischild                 = false;                //  | child widgets
       bool                    ischildwidget           = false;                //--
   
       int                     item_current            = 0;                    //
@@ -52,7 +49,7 @@ namespace ImStudio
       void del                ();
   
       BaseObject              ()                      = default;
-      BaseObject              (int idvar_,            std::string type_,      int parent_id_);
+      BaseObject              (int idgen_,            std::string type_,      int parent_id_);
   
     private:
       void highlight          (int *select);
@@ -87,7 +84,7 @@ namespace ImStudio
     //BaseObject{}
       ContainerChild          child;
     //ContainerGroup          group;
-      Object                  (int idvar_, std::string type_);
+      Object                  (int idgen_, std::string type_);
   };
 
 }

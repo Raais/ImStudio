@@ -49,9 +49,11 @@ void ImStudio::GUI::ShowMenubar()
             }
             if (ImGui::MenuItem("Reset"))
             {
-                if (bw.current_child)
-                    bw.current_child = nullptr;
                 bw.objects.clear();
+                bw.selected_obj_id = -1;
+                bw.open_child_id = -1;
+                bw.open_child = false;
+                bw.idgen = 0;
             }
 
             ImGui::EndMenu();
@@ -286,27 +288,19 @@ void ImStudio::GUI::ShowSidebar()
         ImGui::Text("Others");
         ImGui::Separator();
 
-        if (bw.current_child)// child exists
+        if (bw.open_child)
         {
-            if (bw.current_child->child.open)// child open
-            {
-                ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
-                ImGui::Button("BeginChild"); // does nothing
-                ImGui::PopStyleColor(1);
-            }
-            else // child closed
-            {
-                if (ImGui::Button("BeginChild"))
-                {
-                    bw.create("child");
-                }
-            }
+            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.000f, 1.000f, 0.110f, 1.000f));
+            ImGui::Button("BeginChild");
+            ImGui::PopStyleColor(1);
         }
-        else // no child
+        else
         {
             if (ImGui::Button("BeginChild"))
             {
                 bw.create("child");
+                bw.open_child_id = bw.idgen;
+                bw.open_child = true;
             }
         }
         ImGui::SameLine(); utils::HelpMarker
@@ -315,7 +309,12 @@ void ImStudio::GUI::ShowSidebar()
 
         if (ImGui::Button("EndChild"))
         {
-            if(bw.current_child) bw.current_child->child.open = false;
+            if ((bw.getbaseobj(bw.open_child_id)))
+            {
+                bw.getobj(bw.open_child_id)->child.open = false;
+                bw.open_child_id = -1;
+            }
+            bw.open_child = false;
         }
 
         ImGui::BeginDisabled(true);
@@ -370,899 +369,872 @@ void ImStudio::GUI::ShowProperties()
     ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     {
         {
+            /*
+            Apologies for this convoluted mess. Will probably rewrite all this sometime.
+            TODO: Break this up into multiple files.
+            */
             if (!bw.objects.empty())
             {
-                //SECTION CREATE PROPARRAY
-                allvecsize = 0;
-                for (Object &o : bw.objects) // Calc total objects created in all vectors [bw.objects+all(child.objects)]
-                {
-                    allvecsize++;
-                    if (!o.child.objects.empty())
-                    {
-                        for (BaseObject &cw : o.child.objects)
-                        {
-                            (void)cw;//for compiler warning
-                            allvecsize++;
-                        }
-                    }
-                }
+                // array for Properties "object" drop down combo
+                std::vector<const char*> prop_objects_arr; // contains identifiers ex: child1::button2
+                std::vector<int>         idof_prop_objects_arr; // contains id associated with ^
+                int                      curr_index = 0;
+                static int               selected_index = 0;
 
-                std::vector<const char*> items; // contains identifiers ex: child1::button2
-                std::vector<int>         idarr; // contains id associated with ^
-                int         i = 0;
-                for (Object &o : bw.objects) // Fill both arrays with contents from bw.objects [Object]
+                static BaseObject* selected_obj_ptr = nullptr;
+                static int         prev_selected_obj_id = 0;
+                // static = persistent in loop / between calls
+                
+                for (Object &obj : bw.objects) // Fill both arrays with contents from bw.objects
                 {
-                    char* identifier = const_cast<char *>(o.identifier.c_str());
-                    items.push_back(identifier);
-                    idarr.push_back(o.id);
-                    if (o.id == selectid) // 1. if last select/drag in bw
+                    prop_objects_arr.push_back(const_cast<char *>(obj.identifier.c_str()));
+                    idof_prop_objects_arr.push_back(obj.id);
+
+                    if (obj.id == bw.selected_obj_id) // if o is last selected item
                     {
-                        if (ImGui::IsMouseDown(0))
-                        {
-                            selectproparray = i; // 2. select prop from bw
-                        }
+                        selected_index = curr_index; // select it from prop_objects_arr
                     }
-                    if (o.id == bw.idvar) // 1. o is last created item
-                    {
-                        if (o.selectinit == true)
+                    curr_index++;
+
+                    // now do the same if obj is a child window and has children
+                    // we cant use recursion because different types Object vs BaseObject
+                    ////////////////////////////////////////////////////////////////////////////////////////////
+                    if (!obj.child.objects.empty()){
+                        for (BaseObject &childobj : obj.child.objects)
                         {
-                            selectproparray = i; // select last created item
-                            o.selectinit    = false;
-                        }
-                    }
-                    i++;
-                }
-                for (Object &o : bw.objects) // cpy-grp
-                {
-                    if (!o.child.objects.empty())
-                    {
-                        for (BaseObject &cw :
-                             o.child.objects) // Fill both arrays with contents from child.objects [BaseObject]
-                        {
-                            char* identifier = const_cast<char *>(cw.identifier.c_str());
-                            items.push_back(identifier);
-                            idarr.push_back(cw.id);
-                            if (cw.id == selectid) // 1. if last select/drag in bw
+                            prop_objects_arr.push_back(const_cast<char *>(childobj.identifier.c_str()));
+                            idof_prop_objects_arr.push_back(childobj.id);
+                            if (childobj.id == bw.selected_obj_id)
                             {
-                                if (ImGui::IsMouseDown(0))
-                                {
-                                    selectproparray = i; // 2. select prop from bw
-                                }
+                                selected_index = curr_index;
                             }
-                            if (cw.id == bw.idvar) // 1. o is last created item
-                            {
-                                if (cw.selectinit == true)
-                                {
-                                    selectproparray = i; // select last created item
-                                    cw.selectinit   = false;
-                                }
-                            }
-                            i++;
+                            curr_index++;
                         }
                     }
-                }
-                //!SECTION CREATE PROPARRAY
-                ImGui::Combo("Object", &selectproparray,  items.data(), items.size());
-
-                if (ImGui::IsMouseDown(0))
-                { // bw select
-                    selectobj = bw.getbaseobj(selectid);
-                }
-                else
-                { // combo select if (newest) else {selectid = newest}
-                    selectobj = bw.getbaseobj(idarr[selectproparray]);
-                    selectid  = selectobj->id;
+                    ////////////////////////////////////////////////////////////////////////////////////////////
                 }
 
-                /////////PROP BUFFER/////////
-                static std::string prop_text1   = "change me";
-                static std::string prop_text2   = "";
+                ImGui::Combo("Object", &selected_index,  prop_objects_arr.data(), prop_objects_arr.size());
+
+                selected_obj_ptr = bw.getbaseobj(idof_prop_objects_arr[selected_index]);
+                bw.selected_obj_id  = selected_obj_ptr->id;
+                // selecting object from properties
+                // this will be overridden from viewport bufferwindow drag (BaseObject.draw() assigns to active item)
+                // and vice versa
+
+                ////////PROP BUFFERS/////////
+                static std::string prop_inputbuf_value   = "change me";
+                static std::string prop_inputbuf_label   = "##";
                 /////////////////////////////
 
-                if (selectobj->id != previd)
+                if (bw.selected_obj_id != prev_selected_obj_id)
                 {
-                    //reset prop buffer so text input value is not transferred from object to object
-                    prop_text1 = "change me";
-                    prop_text2 = "##";
-                    //bw.resetpropbuffer();
+                    //reset prop buffers so text input value is not transferred from object to object
+                    prop_inputbuf_value = "change me";
+                    prop_inputbuf_label = "##";
                 }
 
-                if (selectobj->type == "button")
+                if (selected_obj_ptr->type == "button")
                 {
-                    if (selectobj->propinit) prop_text1 = selectobj->value_s; // run after first time
+                    if (selected_obj_ptr->propinit) prop_inputbuf_value = selected_obj_ptr->value_s; // run after first time
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Value", &prop_text1);
-                    selectobj->value_s = prop_text1;
+                    ImGui::InputText("Value", &prop_inputbuf_value);
+                    selected_obj_ptr->value_s = prop_inputbuf_value;
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
 
-                    if (selectobj->center_h) ImGui::BeginDisabled(true);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    if (selectobj->center_h) ImGui::EndDisabled();
+                    if (selected_obj_ptr->center_h) ImGui::BeginDisabled(true);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    if (selected_obj_ptr->center_h) ImGui::EndDisabled();
 
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
 
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Auto Resize", &selectobj->autoresize);
+                    ImGui::Checkbox("Auto Resize", &selected_obj_ptr->autoresize);
                     
-                    if (selectobj->autoresize) ImGui::BeginDisabled(true);
-                    ImGui::InputFloat("Size X", &selectobj->size.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Size Y", &selectobj->size.y, 1.0f, 10.0f, "%.3f");
-                    if (selectobj->autoresize) ImGui::EndDisabled();
+                    if (selected_obj_ptr->autoresize) ImGui::BeginDisabled(true);
+                    ImGui::InputFloat("Size X", &selected_obj_ptr->size.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Size Y", &selected_obj_ptr->size.y, 1.0f, 10.0f, "%.3f");
+                    if (selected_obj_ptr->autoresize) ImGui::EndDisabled();
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
 
-                if (selectobj->type == "checkbox")
+                if (selected_obj_ptr->type == "checkbox")
                 {
                     const char *items[] = {"False", "True"};
                     static int  cur     = 0;
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
-                        cur = selectobj->value_b;
+                        prop_inputbuf_label = selected_obj_ptr->label;
+                        cur = selected_obj_ptr->value_b;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
-                    selectobj->label   = prop_text2;
+                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    selected_obj_ptr->label   = prop_inputbuf_label;
                     ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
-                    if (cur == 0) selectobj->value_b = false;
-                    else selectobj->value_b = true;
+                    if (cur == 0) selected_obj_ptr->value_b = false;
+                    else selected_obj_ptr->value_b = true;
                     
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
 
-                if (selectobj->type == "radio")
+                if (selected_obj_ptr->type == "radio")
                 {
                     const char *items[] = {"False", "True"};
                     static int  cur     = 0;
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
-                        cur = selectobj->value_b;
+                        prop_inputbuf_label = selected_obj_ptr->label;
+                        cur = selected_obj_ptr->value_b;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
-                    selectobj->label   = prop_text2;
+                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    selected_obj_ptr->label   = prop_inputbuf_label;
                     ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
-                    if (cur == 0) selectobj->value_b = false;
-                    else selectobj->value_b = true;
+                    if (cur == 0) selected_obj_ptr->value_b = false;
+                    else selected_obj_ptr->value_b = true;
                     
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "text")
+                if (selected_obj_ptr->type == "text")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text1 = selectobj->value_s;
+                        prop_inputbuf_value = selected_obj_ptr->value_s;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Value", &prop_text1);
+                    ImGui::InputText("Value", &prop_inputbuf_value);
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->value_s = prop_text1;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->value_s = prop_inputbuf_value;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "bullet")
+                if (selected_obj_ptr->type == "bullet")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "arrow")
+                if (selected_obj_ptr->type == "arrow")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
                     
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "combo")
+                if (selected_obj_ptr->type == "combo")
                 {
-                    if (selectobj->propinit) prop_text2 = selectobj->label;
+                    if (selected_obj_ptr->propinit) prop_inputbuf_label = selected_obj_ptr->label;
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
-                    selectobj->label = prop_text2;
+                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
 
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "listbox")
+                if (selected_obj_ptr->type == "listbox")
                 {
-                    if (selectobj->propinit) prop_text2 = selectobj->label;
+                    if (selected_obj_ptr->propinit) prop_inputbuf_label = selected_obj_ptr->label;
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
-                    selectobj->label = prop_text2;
+                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
 
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "textinput")
+                if (selected_obj_ptr->type == "textinput")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text1 = selectobj->value_s;
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_value = selected_obj_ptr->value_s;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
-                    ImGui::InputText("Value", &prop_text1);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("Value", &prop_inputbuf_value);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label   = prop_text2;
-                    selectobj->value_s = prop_text1;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label   = prop_inputbuf_label;
+                    selected_obj_ptr->value_s = prop_inputbuf_value;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "inputint")
+                if (selected_obj_ptr->type == "inputint")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "inputfloat")
+                if (selected_obj_ptr->type == "inputfloat")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "inputdouble")
+                if (selected_obj_ptr->type == "inputdouble")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "inputscientific")
+                if (selected_obj_ptr->type == "inputscientific")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "inputfloat3")
+                if (selected_obj_ptr->type == "inputfloat3")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "dragint")
+                if (selected_obj_ptr->type == "dragint")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "dragint100")
+                if (selected_obj_ptr->type == "dragint100")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "dragfloat")
+                if (selected_obj_ptr->type == "dragfloat")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "dragfloatsmall")
+                if (selected_obj_ptr->type == "dragfloatsmall")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "sliderint")
+                if (selected_obj_ptr->type == "sliderint")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "sliderfloat")
+                if (selected_obj_ptr->type == "sliderfloat")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "sliderfloatlog")
+                if (selected_obj_ptr->type == "sliderfloatlog")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "sliderangle")
+                if (selected_obj_ptr->type == "sliderangle")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "color1")
+                if (selected_obj_ptr->type == "color1")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "color2")
+                if (selected_obj_ptr->type == "color2")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "color3")
+                if (selected_obj_ptr->type == "color3")
                 {
-                    if (selectobj->propinit)
+                    if (selected_obj_ptr->propinit)
                     {
-                        prop_text2 = selectobj->label;
+                        prop_inputbuf_label = selected_obj_ptr->label;
                     }
 
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    ImGui::InputText("Label", &prop_text2);
+                    ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selectobj->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
-                    selectobj->label = prop_text2;
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    selected_obj_ptr->label = prop_inputbuf_label;
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
 
-                if (selectobj->type == "child")
+                if (selected_obj_ptr->type == "child")
                 {
-                    if (bw.getobj(selectobj->id)->child.open) ImGui::Text("OPEN");
+                    if (bw.getobj(selected_obj_ptr->id)->child.open) ImGui::Text("OPEN");
                     else ImGui::Text("CLOSED");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Border", &bw.getobj(selectobj->id)->child.border);
+                    ImGui::Checkbox("Border", &bw.getobj(selected_obj_ptr->id)->child.border);
                     ImGui::NewLine();
 
-                    ImGui::InputFloat("Min X", &bw.getobj(selectobj->id)->child.grab1.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Min Y", &bw.getobj(selectobj->id)->child.grab1.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Max X", &bw.getobj(selectobj->id)->child.grab2.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Max Y", &bw.getobj(selectobj->id)->child.grab2.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &bw.getobj(selectobj->id)->child.locked);
+                    ImGui::InputFloat("Min X", &bw.getobj(selected_obj_ptr->id)->child.grab1.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Min Y", &bw.getobj(selected_obj_ptr->id)->child.grab1.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Max X", &bw.getobj(selected_obj_ptr->id)->child.grab2.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Max Y", &bw.getobj(selected_obj_ptr->id)->child.grab2.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &bw.getobj(selected_obj_ptr->id)->child.locked);
 
                     if (ImGui::Button("Open"))
                     {
-                        bw.current_child             = bw.getobj(selectobj->id);
-                        bw.current_child->child.open = true;
+                        bw.getobj(selected_obj_ptr->id)->child.open = true;
+                        bw.open_child = true;
+                        bw.open_child_id = selected_obj_ptr->id;
                     }
                     if (ImGui::Button("Close"))
                     {
-                        bw.current_child             = bw.getobj(selectobj->id);
-                        bw.current_child->child.open = false;
+                        bw.getobj(selected_obj_ptr->id)->child.open = false;
+                        bw.open_child = false;
+                        bw.open_child_id = -1;
                     }
                     ImGui::NewLine();
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        bw.current_child             = bw.getobj(selectobj->id);
-                        bw.current_child->child.open = false;
-                        bw.current_child = nullptr;
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        if (bw.open_child_id == selected_obj_ptr->id)
+                        {
+                            bw.open_child = false;
+                            bw.open_child_id = -1;
+                        }
+                        bw.getobj(selected_obj_ptr->id)->child.open = false;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "sameline")
+                if (selected_obj_ptr->type == "sameline")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
                     
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "newline")
+                if (selected_obj_ptr->type == "newline")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "separator")
+                if (selected_obj_ptr->type == "separator")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                if (selectobj->type == "progressbar")
+                if (selected_obj_ptr->type == "progressbar")
                 {
                     //Stats
-                    if (selectobj->ischildwidget) ImGui::Text("Child Widget: True");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
                     
-                    ImGui::Checkbox("Center Horizontally", &selectobj->center_h);
-                    ImGui::InputFloat("Position X", &selectobj->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selectobj->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selectobj->locked);
+                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
                     if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
                     {
-                        selectobj->del();
-                        if (selectproparray != 0) selectproparray -= 1;
+                        selected_obj_ptr->del();
+                        if (selected_index != 0) selected_index -= 1;
                     }
                 }
-                selectobj->propinit = true;
-                previd              = selectobj->id;
+                selected_obj_ptr->propinit = true;
+                prev_selected_obj_id = selected_obj_ptr->id;
             }
         }
     }
@@ -1285,11 +1257,10 @@ void ImStudio::GUI::ShowViewport()
         ImGui::SameLine();
         utils::TextCentered("Make sure to lock widgets before interacting with them.", 1);
         ImGui::Text("Objects: %d", static_cast<int>(bw.objects.size()));
-        ImGui::Text("Objects (all): %d", allvecsize);
-        if (!bw.objects.empty()) ImGui::Text("Selected: %s", selectobj->identifier.c_str());
+        if (!bw.objects.empty()) ImGui::Text("Selected: %s", bw.getbaseobj(bw.selected_obj_id)->identifier.c_str());
         ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
         
-        bw.drawall(&selectid);
+        bw.drawall();
     }
 
     ImGui::End();
