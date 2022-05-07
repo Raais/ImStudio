@@ -376,7 +376,7 @@ void ImStudio::GenerateCode(std::string* output, BufferWindow* bw)
             *output += "\tImGui::EndChild();\n\n";
         }
     }
-    *output += "\n\tImGui::End();\n}\n";
+    *output += "}\nImGui::End();\n\n";
     *output += "\n/*\nReminder: some widgets may have the same label \"##\" (if you didn't change it), and can lead to undesired ID collisions.\nMore info: https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-about-the-id-stack-system\n*/\n";
     ImGui::InputTextMultiline("##source", output,
                               ImVec2(-FLT_MIN, ImGui::GetTextLineHeight() * 64), ImGuiInputTextFlags_ReadOnly);
