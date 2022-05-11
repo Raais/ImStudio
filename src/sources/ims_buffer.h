@@ -13,10 +13,11 @@ namespace ImStudio
   class BufferWindow
   {
     public:
-      bool                    state                   = false;                //
+      bool                    state                   = true;                //
       ImVec2                  size                    = {};                   //
       ImVec2                  pos                     = {};                   //
       int                     idgen                   = 0;                    //
+      bool                    hovered                 = false;                //
       bool                    open_child              = false;                //
       int                     open_child_id           = -1;                   //
       int                     selected_obj_id         = -1;                   //
@@ -28,7 +29,7 @@ namespace ImStudio
       void                    drawall                 ();
       Object *                getobj                  (int id);
       BaseObject *            getbaseobj              (int id);
-      void                    create                  (std::string type_);
+      void                    create                  (std::string type_, bool atcursor = false);
   };
 
 }

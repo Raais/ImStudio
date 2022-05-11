@@ -18,6 +18,82 @@ void ImStudio::BufferWindow::drawall()
         size = ImGui::GetWindowSize();
         pos  = ImGui::GetWindowPos();
         {
+            if (ImGui::IsWindowHovered() && ImGui::GetIO().MouseClicked[1])
+            {
+                ImGui::OpenPopup("bwcontextmenu");
+
+            }
+            if (ImGui::BeginPopupContextWindow("bwcontextmenu"))
+            {
+                if (ImGui::BeginMenu("Add"))
+                {
+                    if (ImGui::BeginMenu("Primitives"))
+                    {
+                        if (ImGui::MenuItem("Button"))
+                            create("button",1);
+                        if (ImGui::MenuItem("Radio Button"))
+                            create("radio",1);
+                        if (ImGui::MenuItem("Checkbox"))
+                            create("checkbox",1);
+                        if (ImGui::MenuItem("Text"))
+                            create("text",1);
+                        if (ImGui::MenuItem("Bullet"))
+                            create("bullet",1);
+                        if (ImGui::MenuItem("Arrow"))
+                            create("arrow",1);
+                        if (ImGui::MenuItem("Combo"))
+                            create("combo",1);
+                        if (ImGui::MenuItem("Listbox"))
+                            create("listbox",1);
+                        ImGui::EndMenu();
+                    }
+                    if (ImGui::BeginMenu("Data Inputs"))
+                    {
+                        if (ImGui::MenuItem("Input Text"))
+                            create("textinput",1);
+                        if (ImGui::MenuItem("Input Int"))
+                            create("inputint",1);
+                        if (ImGui::MenuItem("Input Float"))
+                            create("inputfloat",1);
+                        if (ImGui::MenuItem("Input Double"))
+                            create("inputdouble",1);
+                        if (ImGui::MenuItem("Input Scientific"))
+                            create("inputscientific",1);
+                        if (ImGui::MenuItem("Input Float3"))
+                            create("inputfloat3",1);
+                        if (ImGui::MenuItem("Drag Int"))
+                            create("dragint",1);
+                        if (ImGui::MenuItem("Drag Int %"))
+                            create("dragint100",1);
+                        if (ImGui::MenuItem("Drag Float"))
+                            create("dragfloat",1);
+                        if (ImGui::MenuItem("Drag Float Small"))
+                            create("dragfloatsmall",1);
+                        if (ImGui::MenuItem("Slider Int"))
+                            create("sliderint",1);
+                        if (ImGui::MenuItem("Slider Float"))
+                            create("sliderfloat",1);
+                        if (ImGui::MenuItem("Slider Float Log"))
+                            create("sliderfloatlog",1);
+                        if (ImGui::MenuItem("Slider Angle"))
+                            create("sliderangle",1);
+                        ImGui::EndMenu();
+                    }
+                    if (ImGui::BeginMenu("Color Pickers"))
+                    {
+                        if (ImGui::MenuItem("Color 1"))
+                            create("color1",1);
+                        if (ImGui::MenuItem("Color 2"))
+                            create("color2",1);
+                        if (ImGui::MenuItem("Color 3"))
+                            create("color3",1);
+                        ImGui::EndMenu();
+                    }
+                    ImGui::EndMenu();
+                }
+                ImGui::EndPopup();
+            }
+
             for (auto i = objects.begin(); i != objects.end(); ++i)
             {
                 Object &o = *i;
@@ -39,6 +115,7 @@ void ImStudio::BufferWindow::drawall()
                     }
                 }
             }
+            hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup);
         }
         ImGui::End();
         ImGui::PopStyleColor(4);
@@ -79,7 +156,7 @@ ImStudio::BaseObject *ImStudio::BufferWindow::getbaseobj(int id)
     return nullptr;
 }
 
-void ImStudio::BufferWindow::create(std::string type_)
+void ImStudio::BufferWindow::create(std::string type_, bool atcursor)
 {
     idgen++;
     if (!((open_child) &&
@@ -88,6 +165,10 @@ void ImStudio::BufferWindow::create(std::string type_)
     {
         // no child window open
         Object widget(idgen, type_);
+        if (atcursor)
+        {
+            widget.pos = ImVec2(ImGui::GetMousePos().x - pos.x, ImGui::GetMousePos().y - pos.y);
+        }
         objects.push_back(widget);
     }
     else
