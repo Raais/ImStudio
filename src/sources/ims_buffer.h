@@ -17,7 +17,6 @@ namespace ImStudio
       ImVec2                  size                    = {};                   //
       ImVec2                  pos                     = {};                   //
       int                     idgen                   = 0;                    //
-      bool                    hovered                 = false;                //
       bool                    open_child              = false;                //
       int                     open_child_id           = -1;                   //
       int                     selected_obj_id         = -1;                   //

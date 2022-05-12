@@ -18,7 +18,20 @@ void ImStudio::BufferWindow::drawall()
         size = ImGui::GetWindowSize();
         pos  = ImGui::GetWindowPos();
         {
-            if (ImGui::IsWindowHovered() && ImGui::GetIO().MouseClicked[1])
+            // Draw gl cursor when dragging
+            if (ImGui::IsMouseDown(0))
+            {
+                ImGui::GetIO().MouseDrawCursor = true;
+            }
+            else
+            {
+                ImGui::GetIO().MouseDrawCursor = false;
+            }
+
+            //HOTKEY: ALT + B - "Add Item" Context Menu
+            if ((ImGui::IsWindowHovered()) &&
+                ((ImGui::IsKeyPressed(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_E))) ||
+                (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1))))
             {
                 ImGui::OpenPopup("bwcontextmenu");
 
@@ -115,7 +128,6 @@ void ImStudio::BufferWindow::drawall()
                     }
                 }
             }
-            hovered = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup);
         }
         ImGui::End();
         ImGui::PopStyleColor(4);

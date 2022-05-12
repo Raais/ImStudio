@@ -48,6 +48,32 @@ void ImStudio::GUI::ShowProperties()
                     ////////////////////////////////////////////////////////////////////////////////////////////
                 }
 
+                // Cycle selection through array elements using left/right arrow keys
+                //HOTKEY: RIGHT ARROW - Cycle selected item forward
+                if (ImGui::IsKeyPressed(ImGuiKey_RightArrow))
+                {
+                    if (selected_index < prop_objects_arr.size() - 1)
+                    {
+                        selected_index++;
+                    }
+                    else
+                    {
+                        selected_index = 0;
+                    }
+                }
+                //HOTKEY: LEFT ARROW - Cycle selected item backward
+                if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow))
+                {
+                    if (selected_index > 0)
+                    {
+                        selected_index--;
+                    }
+                    else
+                    {
+                        selected_index = prop_objects_arr.size() - 1;
+                    }
+                }
+
                 ImGui::Combo("Object", &selected_index,  prop_objects_arr.data(), prop_objects_arr.size());
 
                 selected_obj_ptr = bw.getbaseobj(idof_prop_objects_arr[selected_index]);
@@ -78,6 +104,11 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    //HOTKEY: CTRL + E - Focus on property field
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Value", &prop_inputbuf_value);
                     selected_obj_ptr->value_s = prop_inputbuf_value;
                     ImGui::NewLine();
@@ -100,7 +131,8 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Size Y", &selected_obj_ptr->size.y, 1.0f, 10.0f, "%.3f");
                     if (selected_obj_ptr->autoresize) ImGui::EndDisabled();
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    //HOTKEY: DELETE - Delete selected object
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -122,6 +154,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     selected_obj_ptr->label   = prop_inputbuf_label;
                     ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
@@ -135,7 +171,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -157,6 +193,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     selected_obj_ptr->label   = prop_inputbuf_label;
                     ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
@@ -170,7 +210,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -188,8 +228,7 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-
-                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyDown(ImGuiKey_E)))
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
@@ -201,7 +240,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->value_s = prop_inputbuf_value;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -219,7 +258,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -237,7 +276,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -252,6 +291,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
@@ -264,7 +307,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -279,6 +322,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
@@ -291,7 +338,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -310,6 +357,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::InputText("Value", &prop_inputbuf_value);
                     ImGui::NewLine();
@@ -322,7 +373,7 @@ void ImStudio::GUI::ShowProperties()
                     selected_obj_ptr->label   = prop_inputbuf_label;
                     selected_obj_ptr->value_s = prop_inputbuf_value;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -340,6 +391,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -350,7 +405,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -368,6 +423,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -378,7 +437,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -396,6 +455,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -406,7 +469,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -424,6 +487,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -434,7 +501,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -452,6 +519,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -462,7 +533,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -480,6 +551,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -490,7 +565,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -508,6 +583,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -518,7 +597,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -536,6 +615,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -546,7 +629,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -564,6 +647,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -574,7 +661,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -592,6 +679,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -602,7 +693,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -620,6 +711,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -630,7 +725,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -648,6 +743,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -658,7 +757,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -676,6 +775,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -686,7 +789,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -704,6 +807,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
@@ -712,7 +819,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -730,6 +837,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -740,7 +851,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -758,6 +869,10 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
+                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    {
+                        ImGui::SetKeyboardFocusHere();
+                    }
                     ImGui::InputText("Label", &prop_inputbuf_label);
                     ImGui::NewLine();
                     ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
@@ -768,7 +883,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -804,7 +919,7 @@ void ImStudio::GUI::ShowProperties()
                     }
                     ImGui::NewLine();
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         if (bw.open_child_id == selected_obj_ptr->id)
                         {
@@ -823,7 +938,7 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
                     
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -836,7 +951,7 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -849,7 +964,7 @@ void ImStudio::GUI::ShowProperties()
                     else ImGui::Text("Child Widget: False");
                     ImGui::NewLine();
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -867,7 +982,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
                     ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete))))
+                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;

@@ -17,6 +17,9 @@ void ImStudio::GUI::ShowViewport()
         ImGui::Text("Objects: %d", static_cast<int>(bw.objects.size()));
         if (!bw.objects.empty()) ImGui::Text("Selected: %s", bw.getbaseobj(bw.selected_obj_id)->identifier.c_str());
         ImGui::Text("Performance: %.1f FPS", ImGui::GetIO().Framerate);
+        utils::HelpMarker("Hotkeys:\nAlt + E - \"Add Item\" context menu\n"\
+                          "Left/Right Arrow - Cycle object selection\n"\
+                          "Ctrl + E - Focus on property field\nDelete - Delete selected object");
         
         bw.drawall();
     }
