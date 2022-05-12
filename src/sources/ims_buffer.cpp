@@ -28,9 +28,9 @@ void ImStudio::BufferWindow::drawall()
                 ImGui::GetIO().MouseDrawCursor = false;
             }
 
-            //HOTKEY: ALT + B - "Add Item" Context Menu
+            //HOTKEY: ALT + M - "Add" Context Menu
             if ((ImGui::IsWindowHovered()) &&
-                ((ImGui::IsKeyPressed(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_E))) ||
+                ((ImGui::IsKeyPressed(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_M))) ||
                 (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1))))
             {
                 ImGui::OpenPopup("bwcontextmenu");
