@@ -30,7 +30,7 @@ void ImStudio::BufferWindow::drawall()
 
             //HOTKEY: ALT + M - "Add" Context Menu
             if ((ImGui::IsWindowHovered()) &&
-                ((ImGui::IsKeyPressed(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_M))) ||
+                ((ImGui::IsKeyDown(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_M))) ||
                 (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1))))
             {
                 ImGui::OpenPopup("bwcontextmenu");

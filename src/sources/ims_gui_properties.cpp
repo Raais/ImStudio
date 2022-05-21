@@ -105,7 +105,7 @@ void ImStudio::GUI::ShowProperties()
                     ImGui::NewLine();
 
                     //HOTKEY: CTRL + E - Focus on property field
-                    if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
+                    if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
