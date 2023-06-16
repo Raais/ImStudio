@@ -1,5 +1,5 @@
 #include "ims_generator.h"
-
+# TODO: reformat this so it would be more human readable. place the quoted generated source code text into multiline string literal
 void ImStudio::Recreate(BaseObject obj, std::string* output, bool staticlayout)
 {
     std::string bfs;
