@@ -76,6 +76,17 @@ int main(int argc, char *argv[])
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     
+    // Add Chinese font support
+    ImGuiIO& io = ImGui::GetIO();
+    // Add Chinese font as default
+    #ifdef _WIN32
+    // Use system Chinese font
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\simhei.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesChineseFull());
+    #else
+    // Fallback to default font on non-Windows systems
+    io.Fonts->AddFontDefault();
+    #endif
+    
     MainWindowStyle();
 
     ImGui_ImplGlfw_InitForOpenGL(glwindow, true);

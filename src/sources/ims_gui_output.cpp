@@ -8,7 +8,7 @@ void ImStudio::GUI::ShowOutputWorkspace()
     ImGui::Begin("wksp_output", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoScrollbar);
     {
 #ifdef __EMSCRIPTEN__
-        if(ImGui::Button("Copy")){
+        if(ImGui::Button("复制")){
             ImGui::LogToClipboard();
             ImGui::LogText(output.c_str());
             ImGui::LogFinish();

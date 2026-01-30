@@ -79,7 +79,7 @@ void utils::DrawGrid()
 void utils::ShowStyleEditorWindow(bool *child_sty)
 {
     ImGui::SetNextWindowSize(ImVec2(500,700), ImGuiCond_Once);
-    if (ImGui::Begin("Style Editor", child_sty, ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("样式编辑器", child_sty, ImGuiWindowFlags_NoCollapse))
     {
         ImGui::ShowStyleEditor();
         ImGui::End();
@@ -89,7 +89,7 @@ void utils::ShowStyleEditorWindow(bool *child_sty)
 
 void utils::ShowColorExportWindow(bool *child_colexp)
 {
-    if (ImGui::Begin("Color Export", child_colexp, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("颜色导出", child_colexp, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
     {
         static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
 
@@ -104,21 +104,21 @@ void utils::ShowColorExportWindow(bool *child_colexp)
                                                              : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) |
                                          (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 
-        ImGui::Text("Color widget:");
+        ImGui::Text("颜色控件：");
         ImGui::SameLine();
-        HelpMarker("Click on the color square to open a color picker.\n"
-                   "CTRL+click on individual component to input value.\n");
-        ImGui::ColorEdit3("MyColor##1", (float *)&color, misc_flags);
+        HelpMarker("点击颜色方块打开颜色选择器。\n"
+                   "按住 CTRL 点击单个组件输入值。\n");
+        ImGui::ColorEdit3("我的颜色##1", (float *)&color, misc_flags);
         ImGui::SameLine();
-        HelpMarker("Right click me to export colors with your preferred format.");
+        HelpMarker("右键点击我以你喜欢的格式导出颜色。");
 
-        ImGui::Text("Color widget HSV with Alpha:");
-        ImGui::ColorEdit4("MyColor##2", (float *)&color, ImGuiColorEditFlags_DisplayHSV | misc_flags);
+        ImGui::Text("带 Alpha 的 HSV 颜色控件：");
+        ImGui::ColorEdit4("我的颜色##2", (float *)&color, ImGuiColorEditFlags_DisplayHSV | misc_flags);
 
-        ImGui::Text("Color widget with Float Display:");
-        ImGui::ColorEdit4("MyColor##2f", (float *)&color, ImGuiColorEditFlags_Float | misc_flags);
+        ImGui::Text("带浮点显示的颜色控件：");
+        ImGui::ColorEdit4("我的颜色##2f", (float *)&color, ImGuiColorEditFlags_Float | misc_flags);
 
-        ImGui::Text("Color picker:");
+        ImGui::Text("颜色选择器：");
         static bool   alpha        = true;
         static bool   alpha_bar    = true;
         static bool   side_preview = true;
@@ -126,18 +126,16 @@ void utils::ShowColorExportWindow(bool *child_colexp)
         static ImVec4 ref_color_v(1.0f, 0.0f, 1.0f, 0.5f);
         static int    display_mode = 0;
         static int    picker_mode  = 2;
-        ImGui::Combo("Display Mode", &display_mode, "Auto/Current\0None\0RGB Only\0HSV Only\0Hex Only\0");
+        ImGui::Combo("显示模式", &display_mode, "自动/当前\0无\0仅 RGB\0仅 HSV\0仅 Hex\0");
         ImGui::SameLine();
-        HelpMarker("ColorEdit defaults to displaying RGB inputs if you don't specify a display mode, "
-                   "but the user can change it with a right-click.\n\nColorPicker defaults to displaying RGB+HSV+Hex "
-                   "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().");
-        ImGui::Combo("Picker Mode", &picker_mode, "Auto/Current\0Hue bar + SV rect\0Hue wheel + SV triangle\0");
+        HelpMarker("如果你不指定显示模式，ColorEdit 默认显示 RGB 输入，但用户可以通过右键更改。\n\n如果你不指定显示模式，ColorPicker 默认显示 RGB+HSV+Hex。\n\n你可以使用 SetColorEditOptions() 更改默认值。");
+        ImGui::Combo("选择器模式", &picker_mode, "自动/当前\0色相条 + SV 矩形\0色相轮 + SV 三角形\0");
         ImGui::SameLine();
-        HelpMarker("User can right-click the picker to change mode.");
+        HelpMarker("用户可以右键点击选择器更改模式。");
         ImGuiColorEditFlags flags = misc_flags;
         if (!alpha)
             flags |=
-                ImGuiColorEditFlags_NoAlpha; // This is by default if you call ColorPicker3() instead of ColorPicker4()
+                ImGuiColorEditFlags_NoAlpha; // 如果你调用 ColorPicker3() 而不是 ColorPicker4()，这是默认的
         if (alpha_bar)
             flags |= ImGuiColorEditFlags_AlphaBar;
         if (!side_preview)
@@ -147,43 +145,43 @@ void utils::ShowColorExportWindow(bool *child_colexp)
         if (picker_mode == 2)
             flags |= ImGuiColorEditFlags_PickerHueWheel;
         if (display_mode == 1)
-            flags |= ImGuiColorEditFlags_NoInputs; // Disable all RGB/HSV/Hex displays
+            flags |= ImGuiColorEditFlags_NoInputs; // 禁用所有 RGB/HSV/Hex 显示
         if (display_mode == 2)
-            flags |= ImGuiColorEditFlags_DisplayRGB; // Override display mode
+            flags |= ImGuiColorEditFlags_DisplayRGB; // 覆盖显示模式
         if (display_mode == 3)
             flags |= ImGuiColorEditFlags_DisplayHSV;
         if (display_mode == 4)
             flags |= ImGuiColorEditFlags_DisplayHex;
-        ImGui::ColorPicker4("MyColor##4", (float *)&color, flags, ref_color ? &ref_color_v.x : NULL);
+        ImGui::ColorPicker4("我的颜色##4", (float *)&color, flags, ref_color ? &ref_color_v.x : NULL);
 
-        ImGui::Text("Set defaults in code:");
+        ImGui::Text("在代码中设置默认值：");
         ImGui::SameLine();
-        HelpMarker("SetColorEditOptions() is designed to allow you to set boot-time default.\n"
-                   "We don't have Push/Pop functions because you can force options on a per-widget basis if needed,"
-                   "and the user can change non-forced ones with the options menu.\nWe don't have a getter to avoid"
-                   "encouraging you to persistently save values that aren't forward-compatible.");
-        if (ImGui::Button("Default: Uint8 + HSV + Hue Bar"))
+        HelpMarker("SetColorEditOptions() 旨在允许你设置启动时的默认值。\n"
+                   "我们没有 Push/Pop 函数，因为如果需要，你可以在每个控件的基础上强制选项，"
+                   "用户可以通过选项菜单更改非强制选项。\n我们没有 getter 是为了避免"
+                   "鼓励你持久保存不向前兼容的值。");
+        if (ImGui::Button("默认：Uint8 + HSV + 色相条"))
             ImGui::SetColorEditOptions(ImGuiColorEditFlags_Uint8 | ImGuiColorEditFlags_DisplayHSV |
                                        ImGuiColorEditFlags_PickerHueBar);
-        if (ImGui::Button("Default: Float + HDR + Hue Wheel"))
+        if (ImGui::Button("默认：Float + HDR + 色相轮"))
             ImGui::SetColorEditOptions(ImGuiColorEditFlags_Float | ImGuiColorEditFlags_HDR |
                                        ImGuiColorEditFlags_PickerHueWheel);
 
-        // HSV encoded support (to avoid RGB<>HSV round trips and singularities when S==0 or V==0)
-        static ImVec4 color_hsv(0.23f, 1.0f, 1.0f, 1.0f); // Stored as HSV!
+        // HSV 编码支持（避免 RGB<>HSV 往返和 S==0 或 V==0 时的奇点）
+        static ImVec4 color_hsv(0.23f, 1.0f, 1.0f, 1.0f); // 存储为 HSV！
         ImGui::Spacing();
-        ImGui::Text("HSV encoded colors");
+        ImGui::Text("HSV 编码颜色");
         ImGui::SameLine();
         HelpMarker(
-            "By default, colors are given to ColorEdit and ColorPicker in RGB, but ImGuiColorEditFlags_InputHSV"
-            "allows you to store colors as HSV and pass them to ColorEdit and ColorPicker as HSV. This comes with the"
-            "added benefit that you can manipulate hue values with the picker even when saturation or value are zero.");
-        ImGui::Text("Color widget with InputHSV:");
-        ImGui::ColorEdit4("HSV shown as RGB##1", (float *)&color_hsv,
+            "默认情况下，颜色以 RGB 形式提供给 ColorEdit 和 ColorPicker，但 ImGuiColorEditFlags_InputHSV"
+            "允许你将颜色存储为 HSV 并以 HSV 形式传递给 ColorEdit 和 ColorPicker。这带来了"
+            "额外的好处，即使在饱和度或值为零时，你也可以使用选择器操作色相值。");
+        ImGui::Text("带 InputHSV 的颜色控件：");
+        ImGui::ColorEdit4("显示为 RGB 的 HSV##1", (float *)&color_hsv,
                           ImGuiColorEditFlags_DisplayRGB | ImGuiColorEditFlags_InputHSV | ImGuiColorEditFlags_Float);
-        ImGui::ColorEdit4("HSV shown as HSV##1", (float *)&color_hsv,
+        ImGui::ColorEdit4("显示为 HSV 的 HSV##1", (float *)&color_hsv,
                           ImGuiColorEditFlags_DisplayHSV | ImGuiColorEditFlags_InputHSV | ImGuiColorEditFlags_Float);
-        ImGui::DragFloat4("Raw HSV values", (float *)&color_hsv, 0.01f, 0.0f, 1.0f);
+        ImGui::DragFloat4("原始 HSV 值", (float *)&color_hsv, 0.01f, 0.0f, 1.0f);
         ImGui::End();
     }
 }
@@ -204,42 +202,42 @@ void utils::ShowResourcesWindow(bool *child_resources)
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(5.00f, 3.00f));
     ImGui::SetNextWindowSize(ImVec2(500,600), ImGuiCond_Once);
 #ifdef __EMSCRIPTEN__
-    if (ImGui::Begin("Resources", child_resources, ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("资源", child_resources, ImGuiWindowFlags_NoCollapse))
     {
-        ImGui::TextWrapped("Some useful resources for developers using Dear ImGui.");
-        ImGui::TextWrapped("Keep in mind that the most helpful resource will always be the Dear ImGui Demo (Tools > Demo Window) and imgui/imgui_demo.cpp.");
+        ImGui::TextWrapped("为使用 Dear ImGui 的开发者提供的一些有用资源。");
+        ImGui::TextWrapped("请记住，最有帮助的资源永远是 Dear ImGui 演示（工具 > 演示窗口）和 imgui/imgui_demo.cpp。");
         ImGui::Spacing();
         ImGui::CollapsingHeader("Dear ImGui", ImGuiTreeNodeFlags_DefaultOpen);
         {
-            ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui Source: github.com/ocornut/imgui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui");}
+            ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui 源码：github.com/ocornut/imgui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui");}
             ImGui::Bullet(); if(ImGui::SmallButton("Issues")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues");}
             ImGui::Bullet(); if(ImGui::SmallButton("Wiki")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Manual")) {HyperlinkHelper::OpenUrl("https://pthom.github.io/imgui_manual_online");}
+            ImGui::Bullet(); if(ImGui::SmallButton("手册")) {HyperlinkHelper::OpenUrl("https://pthom.github.io/imgui_manual_online");}
             ImGui::Bullet(); if(ImGui::SmallButton("discourse.dearimgui.org")) {HyperlinkHelper::OpenUrl("https://discourse.dearimgui.org");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Discussions")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/discussions");}
-            ImGui::Bullet(); if(ImGui::SmallButton("How to open an Issue or Pull Request #2261")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/2261");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Docking")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Docking");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Gallery")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/4451");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Software using DearImGui")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui");}
+            ImGui::Bullet(); if(ImGui::SmallButton("讨论")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/discussions");}
+            ImGui::Bullet(); if(ImGui::SmallButton("如何打开 Issue 或 Pull Request #2261")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/2261");}
+            ImGui::Bullet(); if(ImGui::SmallButton("停靠")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Docking");}
+            ImGui::Bullet(); if(ImGui::SmallButton("图库")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/4451");}
+            ImGui::Bullet(); if(ImGui::SmallButton("使用 DearImGui 的软件")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui");}
         }
         ImGui::Spacing();
         ImGui::PushStyleColor(ImGuiCol_Header, RainbowCol());
-        ImGui::CollapsingHeader("Cool Addons", ImGuiTreeNodeFlags_DefaultOpen);
+        ImGui::CollapsingHeader("酷插件", ImGuiTreeNodeFlags_DefaultOpen);
         {
             ImGui::Bullet(); if(ImGui::SmallButton("HankiDesign/awesome-dear-imgui")) {HyperlinkHelper::OpenUrl("https://github.com/HankiDesign/awesome-dear-imgui");}
             ImGui::Bullet(); if(ImGui::SmallButton("epezent/implot")) {HyperlinkHelper::OpenUrl("https://github.com/epezent/implot");}
             ImGui::Bullet(); if(ImGui::SmallButton("soufianekhiat/DearWidgets")) {HyperlinkHelper::OpenUrl("https://github.com/soufianekhiat/DearWidgets");}
             ImGui::Bullet(); if(ImGui::SmallButton("dfranx/ImFileDialog")) {HyperlinkHelper::OpenUrl("https://github.com/dfranx/ImFileDialog");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Toggle Button")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/1537#issuecomment-355569554");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Knob")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/942#issuecomment-268369298");}
+            ImGui::Bullet(); if(ImGui::SmallButton("切换按钮")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/1537#issuecomment-355569554");}
+            ImGui::Bullet(); if(ImGui::SmallButton("旋钮")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/issues/942#issuecomment-268369298");}
             ImGui::Bullet(); if(ImGui::SmallButton("Nelarius/imnodes")) {HyperlinkHelper::OpenUrl("https://github.com/Nelarius/imnodes");}
             ImGui::Bullet(); if(ImGui::SmallButton("thedmd/imgui-node-editor")) {HyperlinkHelper::OpenUrl("https://github.com/thedmd/imgui-node-editor");}
             ImGui::Bullet(); if(ImGui::SmallButton("aiekick/ImGuiFontStudio")) {HyperlinkHelper::OpenUrl("https://github.com/aiekick/ImGuiFontStudio");}
-            ImGui::Bullet(); if(ImGui::SmallButton("Add extra keys #2625")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/pull/2625");}
+            ImGui::Bullet(); if(ImGui::SmallButton("添加额外键 #2625")) {HyperlinkHelper::OpenUrl("https://github.com/ocornut/imgui/pull/2625");}
         }
         ImGui::PopStyleColor(1);
         ImGui::Spacing();
-        ImGui::CollapsingHeader("Frameworks", ImGuiTreeNodeFlags_DefaultOpen);
+        ImGui::CollapsingHeader("框架", ImGuiTreeNodeFlags_DefaultOpen);
         {
             ImGui::Bullet(); if(ImGui::SmallButton("pthom/hello_imgui")) {HyperlinkHelper::OpenUrl("https://github.com/pthom/hello_imgui");}
             ImGui::Bullet(); if(ImGui::SmallButton("JamesBoer/ImFrame")) {HyperlinkHelper::OpenUrl("https://github.com/JamesBoer/ImFrame");}
@@ -249,45 +247,45 @@ void utils::ShowResourcesWindow(bool *child_resources)
         ImGui::End();
     }
 #else
-    if (ImGui::Begin("Resources", child_resources, ImGuiWindowFlags_NoCollapse))
+    if (ImGui::Begin("资源", child_resources, ImGuiWindowFlags_NoCollapse))
     {
-        ImGui::TextWrapped("Some useful resources for developers using Dear ImGui.");
-        ImGui::TextWrapped("Keep in mind that the most helpful resource will always be the Dear ImGui Demo (Tools > Demo Window) and imgui/imgui_demo.cpp.");
+        ImGui::TextWrapped("为使用 Dear ImGui 的开发者提供的一些有用资源。");
+        ImGui::TextWrapped("请记住，最有帮助的资源永远是 Dear ImGui 演示（工具 > 演示窗口）和 imgui/imgui_demo.cpp。");
         ImGui::Spacing();
-        ImGui::TextWrapped("Click = Copy to clipboard");
+        ImGui::TextWrapped("点击 = 复制到剪贴板");
         ImGui::Spacing();
         ImGui::CollapsingHeader("Dear ImGui", ImGuiTreeNodeFlags_DefaultOpen);
         {
-            ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui Source: github.com/ocornut/imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("Dear ImGui 源码：github.com/ocornut/imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Issues")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Wiki")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Manual")) {ImGui::LogToClipboard(); ImGui::LogText("https://pthom.github.io/imgui_manual_online"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("手册")) {ImGui::LogToClipboard(); ImGui::LogText("https://pthom.github.io/imgui_manual_online"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("discourse.dearimgui.org")) {ImGui::LogToClipboard(); ImGui::LogText("https://discourse.dearimgui.org/"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Discussions")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/discussions"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("How to open an Issue or Pull Request #2261")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/2261"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Docking")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki/Docking"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Gallery")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/4451"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Software using DearImGui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("讨论")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/discussions"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("如何打开 Issue 或 Pull Request #2261")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/2261"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("停靠")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki/Docking"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("图库")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/4451"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("使用 DearImGui 的软件")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui"); ImGui::LogFinish();}
         }
         ImGui::Spacing();
         ImGui::PushStyleColor(ImGuiCol_Header, RainbowCol());
-        ImGui::CollapsingHeader("Cool Addons", ImGuiTreeNodeFlags_DefaultOpen);
+        ImGui::CollapsingHeader("酷插件", ImGuiTreeNodeFlags_DefaultOpen);
         {
             ImGui::Bullet(); if(ImGui::SmallButton("HankiDesign/awesome-dear-imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/HankiDesign/awesome-dear-imgui"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("issues/useful widgets")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues?q=label%%3A\"useful+widgets\""); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("epezent/implot")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/epezent/implot"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("soufianekhiat/DearWidgets")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/soufianekhiat/DearWidgets"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("dfranx/ImFileDialog")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/dfranx/ImFileDialog"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Toggle Button")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/1537#issuecomment-355569554"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Knob")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/942#issuecomment-268369298"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("切换按钮")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/1537#issuecomment-355569554"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("旋钮")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/issues/942#issuecomment-268369298"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("Nelarius/imnodes")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/Nelarius/imnodes"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("thedmd/imgui-node-editor")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/thedmd/imgui-node-editor"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("aiekick/ImGuiFontStudio")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/aiekick/ImGuiFontStudio"); ImGui::LogFinish();}
-            ImGui::Bullet(); if(ImGui::SmallButton("Add extra keys #2625")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/pull/2625"); ImGui::LogFinish();}
+            ImGui::Bullet(); if(ImGui::SmallButton("添加额外键 #2625")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/ocornut/imgui/pull/2625"); ImGui::LogFinish();}
         }
         ImGui::PopStyleColor(1);
         ImGui::Spacing();
-        ImGui::CollapsingHeader("Frameworks", ImGuiTreeNodeFlags_DefaultOpen);
+        ImGui::CollapsingHeader("框架", ImGuiTreeNodeFlags_DefaultOpen);
         {
             ImGui::Bullet(); if(ImGui::SmallButton("pthom/hello_imgui")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/pthom/hello_imgui"); ImGui::LogFinish();}
             ImGui::Bullet(); if(ImGui::SmallButton("JamesBoer/ImFrame")) {ImGui::LogToClipboard(); ImGui::LogText("https://github.com/JamesBoer/ImFrame"); ImGui::LogFinish();}
@@ -308,20 +306,21 @@ void utils::ShowAboutWindow(bool *child_about)
     if (hash.length() > 7)
         hash = hash.substr(0, 7);
 
-    ImGui::OpenPopup("About");
+    ImGui::OpenPopup("关于");
     ImVec2 center = ImGui::GetMainViewport()->GetCenter();
     ImGui::SetNextWindowPos(center, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-    if (ImGui::BeginPopupModal("About", NULL, ImGuiWindowFlags_AlwaysAutoResize))
+    if (ImGui::BeginPopupModal("关于", NULL, ImGuiWindowFlags_AlwaysAutoResize))
         {
             TextCentered("ImStudio");
             ImGui::Separator();
-            ImGui::Text("Version: %s (%s)", ver.c_str(), hash.c_str());
-            ImGui::Text("Source: Raais/ImStudio");
-            ImGui::Text("ImGui: 18700 (c71a50d)");
-            ImGui::Text("Fmt: 8.0.1 (d141cdb)");
+            ImGui::Text("版本：%s (%s)", ver.c_str(), hash.c_str());
+            ImGui::Text("源码：Raais/ImStudio");
+            ImGui::Text("汉化/CN：noob-xiaoyu/ImStudio-CN");
+            ImGui::Text("ImGui：18700 (c71a50d)");
+            ImGui::Text("Fmt：8.0.1 (d141cdb)");
             ImGui::Separator();
 
-            if (ImGui::Button("Back")) { ImGui::CloseCurrentPopup(); *child_about = false; }
+            if (ImGui::Button("返回")) { ImGui::CloseCurrentPopup(); *child_about = false; }
             ImGui::EndPopup();
         }
 

@@ -1,39 +1,32 @@
+# 尝试使用系统已安装的 GLFW 库
 find_package(GLFW 3.3.5 QUIET)
 
 if(GLFW_FOUND)
     message(STATUS "Found GLFW")
 else()
-    message(STATUS "GLFW not found - will build from source")
-    include(ExternalProject)
-
-    ExternalProject_Add(glfw PREFIX glfw
-            GIT_REPOSITORY https://github.com/glfw/glfw.git
-            GIT_TAG 3.3.5
-
-            UPDATE_COMMAND ""
-
-            CMAKE_ARGS
-            "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
-            "-DCMAKE_BUILD_TYPE=Release"
-            "-DGLFW_BUILD_EXAMPLES=OFF"
-            "-DGLFW_BUILD_TESTS=OFF"
-            "-DGLFW_BUILD_DOCS=OFF"
-            "-DUSE_MSVC_RUNTIME_LIBRARY_DLL=OFF"
-
-            CMAKE_CACHE_ARGS
-            "-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}"
-            "-DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}"
-
-            LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
-            )
-
-    ExternalProject_Get_Property(glfw INSTALL_DIR)
-    set(GLFW_INCLUDE_DIR ${INSTALL_DIR}/include)
-    set(GLFW_LIBRARIES
-            ${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-    if(APPLE)
-        list(APPEND GLFW_LIBRARIES "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
+    message(STATUS "GLFW not found - will use local source")
+    
+    # 设置本地 GLFW 源码目录
+    set(GLFW_SOURCE_DIR "${CMAKE_SOURCE_DIR}/src/third-party/glfw")
+    
+    # 检查 GLFW 源码是否存在
+    if (EXISTS "${GLFW_SOURCE_DIR}")
+        # 使用本地 GLFW 源码
+        add_subdirectory(${GLFW_SOURCE_DIR})
+        set(GLFW_INCLUDE_DIR ${GLFW_SOURCE_DIR}/include)
+        set(GLFW_LIBRARIES glfw)
+        message(STATUS "Using local GLFW source")
+    else()
+        # 如果本地没有 GLFW 源码，则尝试使用 VCPKG 安装的 GLFW
+        if (DEFINED ENV{VCPKG_ROOT})
+            set(CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain file")
+            find_package(glfw3 REQUIRED)
+            set(GLFW_LIBRARIES glfw)
+            message(STATUS "Using VCPKG GLFW library")
+        else()
+            # 如果本地没有 GLFW 源码，也没有 VCPKG，则显示错误消息
+            message(FATAL_ERROR "GLFW not found. Please install GLFW or download GLFW source to ${GLFW_SOURCE_DIR}")
+        endif()
     endif()
 endif()
 

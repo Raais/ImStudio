@@ -4,34 +4,34 @@ void ImStudio::GUI::ShowProperties()
 {
     ImGui::SetNextWindowPos(pt_P);
     ImGui::SetNextWindowSize(pt_S);
-    ImGui::Begin("Properties", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("属性", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
     {
         {
             if (!bw.objects.empty())
             {
-                // array for Properties "object" drop down combo
-                std::vector<const char*> prop_objects_arr; // contains identifiers ex: child1::button2
-                std::vector<int>         idof_prop_objects_arr; // contains id associated with ^
+                // 属性"对象"下拉组合框的数组
+                std::vector<const char*> prop_objects_arr; // 包含标识符，例如：child1::button2
+                std::vector<int>         idof_prop_objects_arr; // 包含与^关联的ID
                 int                      curr_index = 0;
                 static int               selected_index = 0;
 
                 static BaseObject* selected_obj_ptr = nullptr;
                 static int         prev_selected_obj_id = 0;
-                // static = persistent in loop / between calls
+                // static = 在循环/调用之间持久化
                 
-                for (Object &obj : bw.objects) // Fill both arrays with contents from bw.objects
+                for (Object &obj : bw.objects) // 用bw.objects的内容填充两个数组
                 {
                     prop_objects_arr.push_back(const_cast<char *>(obj.identifier.c_str()));
                     idof_prop_objects_arr.push_back(obj.id);
 
-                    if (obj.id == bw.selected_obj_id) // if o is last selected item
+                    if (obj.id == bw.selected_obj_id) // 如果o是最后选择的项目
                     {
-                        selected_index = curr_index; // select it from prop_objects_arr
+                        selected_index = curr_index; // 从prop_objects_arr中选择它
                     }
                     curr_index++;
 
-                    // now do the same if obj is a child window and has children
-                    // we cant use recursion because different types Object vs BaseObject
+                    // 现在如果obj是子窗口并具有子项，则执行相同操作
+                    // 我们不能使用递归，因为不同类型的Object与BaseObject
                     ////////////////////////////////////////////////////////////////////////////////////////////
                     if (!obj.child.objects.empty()){
                         for (BaseObject &childobj : obj.child.objects)
@@ -48,8 +48,8 @@ void ImStudio::GUI::ShowProperties()
                     ////////////////////////////////////////////////////////////////////////////////////////////
                 }
 
-                // Cycle selection through array elements using left/right arrow keys
-                //HOTKEY: RIGHT ARROW - Cycle selected item forward
+                // 使用左右箭头键循环选择数组元素
+                // 热键: 右箭头 - 向前循环选择项目
                 if (ImGui::IsKeyPressed(ImGuiKey_RightArrow))
                 {
                     if (selected_index < prop_objects_arr.size() - 1)
@@ -61,7 +61,7 @@ void ImStudio::GUI::ShowProperties()
                         selected_index = 0;
                     }
                 }
-                //HOTKEY: LEFT ARROW - Cycle selected item backward
+                // 热键: 左箭头 - 向后循环选择项目
                 if (ImGui::IsKeyPressed(ImGuiKey_LeftArrow))
                 {
                     if (selected_index > 0)
@@ -74,65 +74,65 @@ void ImStudio::GUI::ShowProperties()
                     }
                 }
 
-                ImGui::Combo("Object", &selected_index,  prop_objects_arr.data(), prop_objects_arr.size());
+                ImGui::Combo("对象", &selected_index,  prop_objects_arr.data(), prop_objects_arr.size());
 
                 selected_obj_ptr = bw.getbaseobj(idof_prop_objects_arr[selected_index]);
                 bw.selected_obj_id  = selected_obj_ptr->id;
-                // selecting object from properties
-                // this will be overridden from viewport bufferwindow drag (BaseObject.draw() assigns to active item)
-                // and vice versa
+                // 从属性中选择对象
+                // 这将被视口缓冲区窗口拖动覆盖（BaseObject.draw()分配给活动项目）
+                // 反之亦然
 
-                ////////PROP BUFFERS/////////
+                ////////属性缓冲区/////////
                 static std::string prop_inputbuf_value   = "change me";
                 static std::string prop_inputbuf_label   = "##";
                 /////////////////////////////
 
                 if (bw.selected_obj_id != prev_selected_obj_id)
                 {
-                    //reset prop buffers so text input value is not transferred from object to object
+                    // 重置属性缓冲区，以便文本输入值不会从一个对象传递到另一个对象
                     prop_inputbuf_value = "change me";
                     prop_inputbuf_label = "##";
                 }
 
-                // Per object property fields
+                // 每个对象的属性字段
                 if (selected_obj_ptr->type == "button")
                 {
-                    if (selected_obj_ptr->propinit) prop_inputbuf_value = selected_obj_ptr->value_s; // run after first time
+                    if (selected_obj_ptr->propinit) prop_inputbuf_value = selected_obj_ptr->value_s; // 第一次运行后执行
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
-                    //HOTKEY: CTRL + E - Focus on property field
+                    // 热键: CTRL + E - 聚焦到属性字段
                     if (ImGui::IsKeyDown(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Value", &prop_inputbuf_value);
+                    ImGui::InputText("值", &prop_inputbuf_value);
                     selected_obj_ptr->value_s = prop_inputbuf_value;
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
 
                     if (selected_obj_ptr->center_h) ImGui::BeginDisabled(true);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
                     if (selected_obj_ptr->center_h) ImGui::EndDisabled();
 
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
 
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Auto Resize", &selected_obj_ptr->autoresize);
+                    ImGui::Checkbox("自动调整大小", &selected_obj_ptr->autoresize);
                     
                     if (selected_obj_ptr->autoresize) ImGui::BeginDisabled(true);
-                    ImGui::InputFloat("Size X", &selected_obj_ptr->size.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Size Y", &selected_obj_ptr->size.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("大小 X", &selected_obj_ptr->size.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("大小 Y", &selected_obj_ptr->size.y, 1.0f, 10.0f, "%.3f");
                     if (selected_obj_ptr->autoresize) ImGui::EndDisabled();
 
-                    //HOTKEY: DELETE - Delete selected object
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    // 热键: DELETE - 删除选中的对象
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -150,28 +150,28 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     selected_obj_ptr->label   = prop_inputbuf_label;
-                    ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
+                    ImGui::Combo("值", &cur, items, IM_ARRAYSIZE(items));
                     if (cur == 0) selected_obj_ptr->value_b = false;
                     else selected_obj_ptr->value_b = true;
                     
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -189,28 +189,28 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     selected_obj_ptr->label   = prop_inputbuf_label;
-                    ImGui::Combo("Value", &cur, items, IM_ARRAYSIZE(items));
+                    ImGui::Combo("值", &cur, items, IM_ARRAYSIZE(items));
                     if (cur == 0) selected_obj_ptr->value_b = false;
                     else selected_obj_ptr->value_b = true;
                     
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -224,23 +224,23 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Value", &prop_inputbuf_value);
+                    ImGui::InputText("值", &prop_inputbuf_value);
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->value_s = prop_inputbuf_value;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -249,16 +249,16 @@ void ImStudio::GUI::ShowProperties()
                 if (selected_obj_ptr->type == "bullet")
                 {
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -267,16 +267,16 @@ void ImStudio::GUI::ShowProperties()
                 if (selected_obj_ptr->type == "arrow")
                 {
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
                     
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -287,27 +287,27 @@ void ImStudio::GUI::ShowProperties()
                     if (selected_obj_ptr->propinit) prop_inputbuf_label = selected_obj_ptr->label;
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
 
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -318,27 +318,27 @@ void ImStudio::GUI::ShowProperties()
                     if (selected_obj_ptr->propinit) prop_inputbuf_label = selected_obj_ptr->label;
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     selected_obj_ptr->label = prop_inputbuf_label;
                     ImGui::NewLine();
 
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
 
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -353,27 +353,27 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
-                    ImGui::InputText("Value", &prop_inputbuf_value);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
+                    ImGui::InputText("值", &prop_inputbuf_value);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label   = prop_inputbuf_label;
                     selected_obj_ptr->value_s = prop_inputbuf_value;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -387,25 +387,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -419,25 +419,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -451,25 +451,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -483,25 +483,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -515,25 +515,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -547,25 +547,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -579,25 +579,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -611,25 +611,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -643,25 +643,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -675,25 +675,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -707,25 +707,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -739,25 +739,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -771,25 +771,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -803,23 +803,23 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -833,25 +833,25 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
@@ -865,134 +865,32 @@ void ImStudio::GUI::ShowProperties()
                     }
 
                     
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
+                    if (selected_obj_ptr->ischildwidget) ImGui::Text("子控件: True");
+                    else ImGui::Text("子控件: False");
                     ImGui::NewLine();
 
                     if (ImGui::IsKeyPressed(ImGuiKey_ModCtrl) && (ImGui::IsKeyPressed(ImGuiKey_E)))
                     {
                         ImGui::SetKeyboardFocusHere();
                     }
-                    ImGui::InputText("Label", &prop_inputbuf_label);
+                    ImGui::InputText("标签", &prop_inputbuf_label);
                     ImGui::NewLine();
-                    ImGui::InputFloat("Width", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("宽度", &selected_obj_ptr->width, 1.0f, 10.0f, "%.3f");
                     ImGui::NewLine();
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
+                    ImGui::Checkbox("水平居中", &selected_obj_ptr->center_h);
+                    ImGui::InputFloat("位置 X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
+                    ImGui::InputFloat("位置 Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
+                    ImGui::Checkbox("拖动锁定", &selected_obj_ptr->locked);
                     selected_obj_ptr->label = prop_inputbuf_label;
 
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
+                    if ((ImGui::Button("删除")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
                     {
                         selected_obj_ptr->del();
                         if (selected_index != 0) selected_index -= 1;
                     }
                 }
-
-                if (selected_obj_ptr->type == "child")
-                {
-                    if (bw.getobj(selected_obj_ptr->id)->child.open) ImGui::Text("OPEN");
-                    else ImGui::Text("CLOSED");
-                    ImGui::NewLine();
-
-                    ImGui::Checkbox("Border", &bw.getobj(selected_obj_ptr->id)->child.border);
-                    ImGui::NewLine();
-
-                    ImGui::InputFloat("Min X", &bw.getobj(selected_obj_ptr->id)->child.grab1.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Min Y", &bw.getobj(selected_obj_ptr->id)->child.grab1.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Max X", &bw.getobj(selected_obj_ptr->id)->child.grab2.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Max Y", &bw.getobj(selected_obj_ptr->id)->child.grab2.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &bw.getobj(selected_obj_ptr->id)->child.locked);
-
-                    if (ImGui::Button("Open"))
-                    {
-                        bw.getobj(selected_obj_ptr->id)->child.open = true;
-                        bw.open_child = true;
-                        bw.open_child_id = selected_obj_ptr->id;
-                    }
-                    if (ImGui::Button("Close"))
-                    {
-                        bw.getobj(selected_obj_ptr->id)->child.open = false;
-                        bw.open_child = false;
-                        bw.open_child_id = -1;
-                    }
-                    ImGui::NewLine();
-
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
-                    {
-                        if (bw.open_child_id == selected_obj_ptr->id)
-                        {
-                            bw.open_child = false;
-                            bw.open_child_id = -1;
-                        }
-                        bw.getobj(selected_obj_ptr->id)->child.open = false;
-                        selected_obj_ptr->del();
-                        if (selected_index != 0) selected_index -= 1;
-                    }
-                }
-                if (selected_obj_ptr->type == "sameline")
-                {
-                    
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
-                    ImGui::NewLine();
-                    
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
-                    {
-                        selected_obj_ptr->del();
-                        if (selected_index != 0) selected_index -= 1;
-                    }
-                }
-                if (selected_obj_ptr->type == "newline")
-                {
-                    
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
-                    ImGui::NewLine();
-
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
-                    {
-                        selected_obj_ptr->del();
-                        if (selected_index != 0) selected_index -= 1;
-                    }
-                }
-                if (selected_obj_ptr->type == "separator")
-                {
-                    
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
-                    ImGui::NewLine();
-
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
-                    {
-                        selected_obj_ptr->del();
-                        if (selected_index != 0) selected_index -= 1;
-                    }
-                }
-                if (selected_obj_ptr->type == "progressbar")
-                {
-                    
-                    if (selected_obj_ptr->ischildwidget) ImGui::Text("Child Widget: True");
-                    else ImGui::Text("Child Widget: False");
-                    ImGui::NewLine();
-                    
-                    ImGui::Checkbox("Center Horizontally", &selected_obj_ptr->center_h);
-                    ImGui::InputFloat("Position X", &selected_obj_ptr->pos.x, 1.0f, 10.0f, "%.3f");
-                    ImGui::InputFloat("Position Y", &selected_obj_ptr->pos.y, 1.0f, 10.0f, "%.3f");
-                    ImGui::Checkbox("Drag Locked", &selected_obj_ptr->locked);
-
-                    if ((ImGui::Button("Delete")) || (ImGui::IsKeyPressed(ImGuiKey_Delete)))
-                    {
-                        selected_obj_ptr->del();
-                        if (selected_index != 0) selected_index -= 1;
-                    }
-                }
-                selected_obj_ptr->propinit = true;
-                prev_selected_obj_id = selected_obj_ptr->id;
             }
         }
     }
-
     ImGui::End();
 }
