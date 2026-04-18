@@ -22,12 +22,42 @@ if(Git_FOUND)
     add_compile_definitions(GIT_SHA1="${GIT_SHA1}")
 endif()
 
-if (WIN32 OR APPLE)
-    include(glfw)
-else()  # Linux
-    find_package(glfw3 REQUIRED)
-    set(GLFW_LIBRARIES glfw)
+# 从源码构建 GLFW
+include(ExternalProject)
+
+# 尝试使用 HTTP 下载 GLFW 源码，而不是 Git 克隆
+ExternalProject_Add(glfw PREFIX glfw
+        URL https://github.com/glfw/glfw/archive/refs/tags/3.3.5.zip
+        URL_HASH SHA256=59977c65188c2a43f2c50a4c6bd8f3a3d31a1761b07c572f40604bcf7123b92d
+
+        UPDATE_COMMAND ""
+
+        CMAKE_ARGS
+        "-DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>"
+        "-DCMAKE_BUILD_TYPE=Release"
+        "-DGLFW_BUILD_EXAMPLES=OFF"
+        "-DGLFW_BUILD_TESTS=OFF"
+        "-DGLFW_BUILD_DOCS=OFF"
+        "-DUSE_MSVC_RUNTIME_LIBRARY_DLL=OFF"
+
+        CMAKE_CACHE_ARGS
+        "-DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}"
+        "-DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}"
+
+        LOG_DOWNLOAD 1 LOG_UPDATE 1 LOG_CONFIGURE 1 LOG_BUILD 1 LOG_INSTALL 1
+        )
+
+ExternalProject_Get_Property(glfw INSTALL_DIR)
+set(GLFW_INCLUDE_DIR ${INSTALL_DIR}/include)
+set(GLFW_LIBRARIES
+        ${INSTALL_DIR}/lib/${CMAKE_STATIC_LIBRARY_PREFIX}glfw3${CMAKE_STATIC_LIBRARY_SUFFIX})
+
+if(APPLE)
+    list(APPEND GLFW_LIBRARIES "-framework Cocoa" "-framework IOKit" "-framework CoreVideo")
 endif()
+
+set(GLFW_INCLUDE_DIR ${GLFW_INCLUDE_DIR} CACHE STRING "")
+set(GLFW_LIBRARIES ${GLFW_LIBRARIES} CACHE STRING "")
 
 find_package(OpenGL REQUIRED)
 find_package(Threads REQUIRED)
@@ -41,6 +71,7 @@ if (WIN32)
     add_compile_definitions(NOMINMAX)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
     add_compile_definitions(_SCL_SECURE_NO_WARNINGS)
+    add_compile_options(/utf-8)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup")
 else()
     find_program(CCACHE_FOUND ccache)

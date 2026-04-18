@@ -6,133 +6,133 @@ void ImStudio::GUI::ShowSidebar()
     ImGui::SetNextWindowSizeConstraints(ImVec2(0, -1), ImVec2(FLT_MAX, -1));
     ImGui::SetNextWindowSize(sb_S);
     ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4.00f, 5.00f));
-    ImGui::Begin("Sidebar", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+    ImGui::Begin("侧边栏", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
 
-    /// content-sidebar
+    /// 侧边栏内容
     {
 
-        ImGui::TextDisabled("NOTE");
+        ImGui::TextDisabled("注意");
         ImGui::SameLine(); utils::HelpMarker
-        ("THESE ARE NOT THE ONLY WIDGETS IMGUI PROVIDES!\n"
-        "You can find out more in the Dear ImGui Demo "
-        "(Tools > Demo Window) and imgui/imgui_demo.cpp");
+        ("这些不是 ImGui 提供的唯一控件！\n"
+        "你可以在 Dear ImGui 演示中找到更多内容 "
+        "（工具 > 演示窗口）和 imgui/imgui_demo.cpp");
         ImGui::Separator();
 
-        //ANCHOR SIDEBAR.PRIMITIVES
-        ImGui::Text("Primitives");
+        // 锚点 SIDEBAR.PRIMITIVES
+        ImGui::Text("基础组件");
         ImGui::Separator();
 
-        if (ImGui::Button("Window"))
+        if (ImGui::Button("窗口"))
         {
             bw.state = true;
         }
 
-        if (ImGui::Button("Button"))
+        if (ImGui::Button("按钮"))
             bw.create("button");
 
-        if (ImGui::Button("Radio Button"))
+        if (ImGui::Button("单选按钮"))
             bw.create("radio");
 
-        if (ImGui::Button("Checkbox"))
+        if (ImGui::Button("复选框"))
             bw.create("checkbox");
 
-        if (ImGui::Button("Text"))
+        if (ImGui::Button("文本"))
             bw.create("text");
 
-        if (ImGui::Button("Bullet"))
+        if (ImGui::Button("项目符号"))
             bw.create("bullet");
 
-        if (ImGui::Button("Arrow"))
+        if (ImGui::Button("箭头"))
             bw.create("arrow");
 
-        if (ImGui::Button("Combo"))
+        if (ImGui::Button("下拉菜单"))
             bw.create("combo");
 
-        if (ImGui::Button("Listbox"))
+        if (ImGui::Button("列表框"))
             bw.create("listbox");
 
         ImGui::Separator();
 
-        //ANCHOR SIDEBAR.DATAINPUTS
-        ImGui::Text("Data Inputs");
+        // 锚点 SIDEBAR.DATAINPUTS
+        ImGui::Text("数据输入");
         ImGui::Separator();
 
-        if (ImGui::Button("Input Text"))
+        if (ImGui::Button("文本输入"))
             bw.create("textinput");
 
-        if (ImGui::Button("Input Int"))
+        if (ImGui::Button("整数输入"))
             bw.create("inputint");
 
         ImGui::SameLine(); utils::HelpMarker
-        ("You can apply arithmetic operators +,*,/ on numerical values.\n"
-        "  e.g. [ 100 ], input \'*2\', result becomes [ 200 ]\n"
-        "Use +- to subtract.");
+        ("你可以对数值应用算术运算符 +,*,/。\n"
+        " 例如：[ 100 ]，输入 '*2'，结果变为 [ 200 ]\n"
+        "使用 +- 进行减法。");
 
-        if (ImGui::Button("Input Float"))
+        if (ImGui::Button("浮点数输入"))
             bw.create("inputfloat");
 
-        if (ImGui::Button("Input Double"))
+        if (ImGui::Button("双精度输入"))
             bw.create("inputdouble");
 
-        if (ImGui::Button("Input Scientific"))
+        if (ImGui::Button("科学计数法输入"))
             bw.create("inputscientific");
 
         ImGui::SameLine(); utils::HelpMarker
-        ("You can input value using the scientific notation,\n"
-        "  e.g. \"1e+8\" becomes \"100000000\".");
+        ("你可以使用科学计数法输入值，\n"
+        " 例如：\"1e+8\" 变为 \"100000000\"。");
 
-        if (ImGui::Button("Input Float3"))
+        if (ImGui::Button("三维向量输入"))
             bw.create("inputfloat3");
 
-        if (ImGui::Button("Drag Int"))
+        if (ImGui::Button("拖动整数"))
             bw.create("dragint");
 
         ImGui::SameLine(); utils::HelpMarker
-        ("Click and drag to edit value.\n"
-        "Hold SHIFT/ALT for faster/slower edit.\n"
-        "Double-click or CTRL+click to input value.");
+        ("点击并拖动以编辑值。\n"
+        "按住 SHIFT/ALT 可加快/减慢编辑速度。\n"
+        "双击或 CTRL+点击以输入值。");
 
-        if (ImGui::Button("Drag Int %"))
+        if (ImGui::Button("拖动整数百分比"))
             bw.create("dragint100");
 
-        if (ImGui::Button("Drag Float"))
+        if (ImGui::Button("拖动浮点数"))
             bw.create("dragfloat");
 
-        if (ImGui::Button("Drag Float Small"))
+        if (ImGui::Button("拖动小浮点数"))
             bw.create("dragfloatsmall");
 
-        if (ImGui::Button("Slider Int"))
+        if (ImGui::Button("滑块整数"))
             bw.create("sliderint");
 
-        ImGui::SameLine(); utils::HelpMarker("CTRL+click to input value.");
+        ImGui::SameLine(); utils::HelpMarker("CTRL+点击以输入值。");
 
-        if (ImGui::Button("Slider Float"))
+        if (ImGui::Button("滑块浮点数"))
             bw.create("sliderfloat");
 
-        if (ImGui::Button("Slider Float Log"))
+        if (ImGui::Button("对数滑块"))
             bw.create("sliderfloatlog");
 
-        if (ImGui::Button("Slider Angle"))
+        if (ImGui::Button("角度滑块"))
             bw.create("sliderangle");
 
         ImGui::Separator();
         
-        ImGui::Text("Color Pickers");
+        ImGui::Text("颜色选择器");
         ImGui::Separator();
 
-        if (ImGui::Button("Color 1"))
+        if (ImGui::Button("颜色 1"))
             bw.create("color1");
 
-        if (ImGui::Button("Color 2"))
+        if (ImGui::Button("颜色 2"))
             bw.create("color2");
 
-        if (ImGui::Button("Color 3"))
+        if (ImGui::Button("颜色 3"))
             bw.create("color3");
 
         ImGui::Separator();
 
-        //ANCHOR SIDEBAR.OTHERS
-        ImGui::Text("Misc");
+        // 锚点 SIDEBAR.OTHERS
+        ImGui::Text("其他");
         ImGui::Separator();
 
         if (bw.open_child)
@@ -151,8 +151,8 @@ void ImStudio::GUI::ShowSidebar()
             }
         }
         ImGui::SameLine(); utils::HelpMarker
-        ("Green = Open (Ready to add items). Calling EndChild will close it, "
-        "and you can't add items to it unless you manually re-open it.");
+        ("绿色 = 打开（准备添加项目）。调用 EndChild 将关闭它，"
+        " 除非你手动重新打开，否则无法向其添加项目。");
 
         if (ImGui::Button("EndChild"))
         {
@@ -171,31 +171,31 @@ void ImStudio::GUI::ShowSidebar()
         }
         ImGui::EndDisabled();
         ImGui::SameLine(); utils::HelpMarker
-        ("Groups are not a feature of ImStudio, but you can probably use "
-         "a child (without borders) to reproduce similar behavior.");
+        ("组不是 ImStudio 的功能，但你可以使用"
+         " 子项（无边框）来重现类似行为。");
 
-        if (ImGui::Button("<< Same Line"))
+        if (ImGui::Button("<< 同一行"))
         {
             bw.create("sameline");
         }
 
-        if (ImGui::Button("New Line"))
+        if (ImGui::Button("新行"))
         {
             bw.create("newline");
         }
 
-        if (ImGui::Button("Separator"))
+        if (ImGui::Button("分隔线"))
         {
             bw.create("separator");
         }
 
-        if (ImGui::Button("Progress Bar"))
+        if (ImGui::Button("进度条"))
         {
             bw.create("progressbar");
         }
         ImGui::Separator();
 
-        ImGui::Checkbox("Static Mode", &bw.staticlayout);
+        ImGui::Checkbox("静态模式", &bw.staticlayout);
 
         if ((ImGui::GetIO().KeyAlt) && (ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_F4))))
         {

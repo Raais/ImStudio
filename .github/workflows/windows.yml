@@ -41,3 +41,5 @@ jobs:
         name: Windows Installer
         path: |
           build/packages/*.*
+
+          

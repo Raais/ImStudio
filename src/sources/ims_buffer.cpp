@@ -14,11 +14,11 @@ void ImStudio::BufferWindow::drawall()
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.08f, 0.09f, 0.09f, 1.00f));
         ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.26f, 0.59f, 0.98f, 0.40f));
         ImGui::PushStyleColor(ImGuiCol_Border, ImVec4(0.86f, 0.86f, 0.86f, 0.50f));
-        ImGui::Begin("buffer", &state);
+        ImGui::Begin("缓冲区", &state);
         size = ImGui::GetWindowSize();
         pos  = ImGui::GetWindowPos();
         {
-            // Draw gl cursor when dragging
+            // 拖动时绘制光标
             if (ImGui::IsMouseDown(0))
             {
                 ImGui::GetIO().MouseDrawCursor = true;
@@ -28,7 +28,7 @@ void ImStudio::BufferWindow::drawall()
                 ImGui::GetIO().MouseDrawCursor = false;
             }
 
-            //HOTKEY: ALT + M - "Add" Context Menu
+            // 热键: ALT + M - "添加" 上下文菜单
             if ((ImGui::IsWindowHovered()) &&
                 ((ImGui::IsKeyDown(ImGuiKey_ModAlt) && (ImGui::IsKeyPressed(ImGuiKey_M))) ||
                 (ImGui::IsWindowHovered() && ImGui::IsMouseClicked(1))))
@@ -38,67 +38,67 @@ void ImStudio::BufferWindow::drawall()
             }
             if (ImGui::BeginPopupContextWindow("bwcontextmenu"))
             {
-                if (ImGui::BeginMenu("Add"))
+                if (ImGui::BeginMenu("添加"))
                 {
-                    if (ImGui::BeginMenu("Primitives"))
+                    if (ImGui::BeginMenu("基础组件"))
                     {
-                        if (ImGui::MenuItem("Button"))
+                        if (ImGui::MenuItem("按钮"))
                             create("button",1);
-                        if (ImGui::MenuItem("Radio Button"))
+                        if (ImGui::MenuItem("单选按钮"))
                             create("radio",1);
-                        if (ImGui::MenuItem("Checkbox"))
+                        if (ImGui::MenuItem("复选框"))
                             create("checkbox",1);
-                        if (ImGui::MenuItem("Text"))
+                        if (ImGui::MenuItem("文本"))
                             create("text",1);
-                        if (ImGui::MenuItem("Bullet"))
+                        if (ImGui::MenuItem("项目符号"))
                             create("bullet",1);
-                        if (ImGui::MenuItem("Arrow"))
+                        if (ImGui::MenuItem("箭头"))
                             create("arrow",1);
-                        if (ImGui::MenuItem("Combo"))
+                        if (ImGui::MenuItem("下拉菜单"))
                             create("combo",1);
-                        if (ImGui::MenuItem("Listbox"))
+                        if (ImGui::MenuItem("列表框"))
                             create("listbox",1);
                         ImGui::EndMenu();
                     }
-                    if (ImGui::BeginMenu("Data Inputs"))
+                    if (ImGui::BeginMenu("数据输入"))
                     {
-                        if (ImGui::MenuItem("Input Text"))
+                        if (ImGui::MenuItem("文本输入"))
                             create("textinput",1);
-                        if (ImGui::MenuItem("Input Int"))
+                        if (ImGui::MenuItem("整数输入"))
                             create("inputint",1);
-                        if (ImGui::MenuItem("Input Float"))
+                        if (ImGui::MenuItem("浮点数输入"))
                             create("inputfloat",1);
-                        if (ImGui::MenuItem("Input Double"))
+                        if (ImGui::MenuItem("双精度输入"))
                             create("inputdouble",1);
-                        if (ImGui::MenuItem("Input Scientific"))
+                        if (ImGui::MenuItem("科学计数法输入"))
                             create("inputscientific",1);
-                        if (ImGui::MenuItem("Input Float3"))
+                        if (ImGui::MenuItem("三维向量输入"))
                             create("inputfloat3",1);
-                        if (ImGui::MenuItem("Drag Int"))
+                        if (ImGui::MenuItem("拖动整数"))
                             create("dragint",1);
-                        if (ImGui::MenuItem("Drag Int %"))
+                        if (ImGui::MenuItem("拖动整数百分比"))
                             create("dragint100",1);
-                        if (ImGui::MenuItem("Drag Float"))
+                        if (ImGui::MenuItem("拖动浮点数"))
                             create("dragfloat",1);
-                        if (ImGui::MenuItem("Drag Float Small"))
+                        if (ImGui::MenuItem("拖动小浮点数"))
                             create("dragfloatsmall",1);
-                        if (ImGui::MenuItem("Slider Int"))
+                        if (ImGui::MenuItem("滑块整数"))
                             create("sliderint",1);
-                        if (ImGui::MenuItem("Slider Float"))
+                        if (ImGui::MenuItem("滑块浮点数"))
                             create("sliderfloat",1);
-                        if (ImGui::MenuItem("Slider Float Log"))
+                        if (ImGui::MenuItem("对数滑块"))
                             create("sliderfloatlog",1);
-                        if (ImGui::MenuItem("Slider Angle"))
+                        if (ImGui::MenuItem("角度滑块"))
                             create("sliderangle",1);
                         ImGui::EndMenu();
                     }
-                    if (ImGui::BeginMenu("Color Pickers"))
+                    if (ImGui::BeginMenu("颜色选择器"))
                     {
-                        if (ImGui::MenuItem("Color 1"))
+                        if (ImGui::MenuItem("颜色 1"))
                             create("color1",1);
-                        if (ImGui::MenuItem("Color 2"))
+                        if (ImGui::MenuItem("颜色 2"))
                             create("color2",1);
-                        if (ImGui::MenuItem("Color 3"))
+                        if (ImGui::MenuItem("颜色 3"))
                             create("color3",1);
                         ImGui::EndMenu();
                     }
@@ -175,7 +175,7 @@ void ImStudio::BufferWindow::create(std::string type_, bool atcursor)
           (getbaseobj(open_child_id)) &&
           (getobj(open_child_id)->child.open)))
     {
-        // no child window open
+        // 没有打开子窗口
         Object widget(idgen, type_);
         if (atcursor)
         {
@@ -185,9 +185,9 @@ void ImStudio::BufferWindow::create(std::string type_, bool atcursor)
     }
     else
     {
-        // child window open
+        // 打开子窗口
         BaseObject childwidget(idgen, type_, open_child_id);
         getobj(open_child_id)->child.objects.push_back(childwidget);
     }
-    selected_obj_id = idgen; // select the new object
+    selected_obj_id = idgen; // 选择新对象
 }
